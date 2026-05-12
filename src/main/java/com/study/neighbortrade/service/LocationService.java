@@ -4,6 +4,7 @@ import com.study.neighbortrade.domain.location.LocationVerification;
 import com.study.neighbortrade.domain.location.Neighborhood;
 import com.study.neighbortrade.domain.member.Member;
 import com.study.neighbortrade.dto.location.LocationVerifyRequestDto;
+import com.study.neighbortrade.dto.location.NeighborhoodSelectDto;
 import com.study.neighbortrade.repository.LocationVerificationRepository;
 import com.study.neighbortrade.repository.MemberRepository;
 import com.study.neighbortrade.repository.NeighborhoodRepository;
@@ -11,7 +12,11 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -26,6 +31,31 @@ public class LocationService {
 
     public List<Neighborhood> findAllNeighborhoods() {
         return neighborhoodRepository.findAll();
+    }
+
+    // 서버에서 동네별 경계여부 내려주기 : postgis 켜짐 그리고 선택 동네에 경계 있을 때만 문구 표시 추가(20260512)
+    public List<NeighborhoodSelectDto> findAllNeighborhoodsForSelect() {
+        List<Neighborhood> all = neighborhoodRepository.findAll();
+        Map<Long, Boolean> boundaryById = Map.of();
+        if (postgisEnabled) {
+            boundaryById = new HashMap<>();
+            for (Object[] row : neighborhoodRepository.findAllBoundaryPresence()) {
+                Long id = ((Number) row[0]).longValue();
+                boolean hasB = row[1] instanceof Boolean b ? b : Boolean.parseBoolean(String.valueOf(row[1]));
+                boundaryById.put(id, hasB);
+            }
+        }
+        Map<Long, Boolean> flags = boundaryById;
+        return all.stream()
+                .map(n -> new NeighborhoodSelectDto(
+                        n.getId(),
+                        n.getDisplayName(),
+                        n.getCenterLatitude(),
+                        n.getCenterLongitude(),
+                        n.getVerifyRadiusMeters(),
+                        flags.getOrDefault(n.getId(), false)))
+                .sorted(Comparator.comparing(NeighborhoodSelectDto::displayName))
+                .toList();
     }
 
     @Transactional

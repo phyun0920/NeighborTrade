@@ -1,48 +1,108 @@
 <!doctype html>
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
-  <head>
-    <meta charset="UTF-8" />
-    <title>동네 인증</title>
-    <link rel="stylesheet" th:href="@{/css/common.css}" />
-    <script defer th:src="@{/js/location.js}"></script>
-  </head>
-  <body>
-    <div th:replace="~{fragments/header :: header}"></div>
-    <main class="container narrow">
-      <h1>내 동네 인증</h1>
-      <p>브라우저 위치 권한을 허용한 뒤 인증할 동네를 선택하세요.</p>
-      <form
-        th:action="@{/location/verify}"
-        th:object="${locationVerifyRequestDto}"
-        method="post"
-        class="form"
-        id="locationForm"
+<head>
+  <meta charset="UTF-8" />
+  <title>동네 인증</title>
+  <link rel="stylesheet" th:href="@{/css/common.css}" />
+  <link
+          rel="stylesheet"
+          href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+          integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+          crossorigin=""
+  />
+  <script
+          defer
+          src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+          integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+          crossorigin=""
+  ></script>
+  <script defer th:src="@{/js/location.js}"></script>
+</head>
+<body>
+<div th:replace="~{fragments/header :: header}"></div>
+<main class="container location-verify">
+  <h1>내 동네 인증</h1>
+  <p>
+    브라우저 위치 권한을 허용한 뒤 인증할 동네를 선택하세요. 지도에서 동네
+    중심, 인증 허용 원(반경), 현재 GPS 위치를 함께 확인할 수 있습니다.
+  </p>
+  <div class="location-verify-grid">
+    <div class="location-verify-map">
+      <div id="locationMap" aria-label="동네 인증 지도"></div>
+      <p class="muted location-map-legend" id="locationRadiusLegend">
+        동네를 선택하면 중심과 인증 반경이 표시됩니다.
+      </p>
+      <p
+              class="muted location-map-legend"
+              id="locationPostgisBoundaryNote"
+              style="display: none"
       >
-        <select th:field="*{neighborhoodId}" required>
-          <option value="">동네 선택</option>
-          <option
-            th:each="n : ${neighborhoods}"
-            th:value="${n.id}"
-            th:text="${n.displayName}"
-          ></option></select
-        ><input
-          th:field="*{latitude}"
-          id="latitude"
-          placeholder="위도"
-          required
-        /><input
-          th:field="*{longitude}"
-          id="longitude"
-          placeholder="경도"
-          required
-        /><button
-          class="btn secondary"
-          type="button"
-          onclick="fillCurrentLocation()"
-        >
-          현재 위치 가져오기</button
-        ><button class="btn" type="submit">인증 요청</button>
-      </form>
-    </main>
-  </body>
+        PostGIS 경계(boundary)가 있는 동네는 서버에서 다각형 내부 여부로
+        검증합니다. 지도 원은 반경 검증 기준을 시각화한 것입니다.
+      </p>
+      <div class="location-map-legend muted">
+        <div class="legend-row">
+          <span class="swatch neighborhood" aria-hidden="true"></span>
+          <span>파란 마커: 선택한 동네 중심</span>
+        </div>
+        <div class="legend-row">
+          <span class="swatch radius" aria-hidden="true"></span>
+          <span>주황 영역: 동네별 인증 허용 반경(서버 DB 값)</span>
+        </div>
+        <div class="legend-row">
+          <span class="swatch gps" aria-hidden="true"></span>
+          <span>붉은 점: 입력된 GPS(현재 위치 가져오기 또는 좌표)</span>
+        </div>
+      </div>
+    </div>
+    <form
+            th:action="@{/location/verify}"
+            th:object="${locationVerifyRequestDto}"
+            method="post"
+            class="form location-verify-form"
+            id="locationForm"
+            th:attr="data-postgis-enabled=${postgisEnabled}"
+    >
+      <select th:field="*{neighborhoodId}" id="neighborhoodId" required>
+        <option value="">동네 선택</option>
+        <option
+                th:each="n : ${neighborhoods}"
+                th:value="${n.id}"
+                th:data-center-lat="${n.centerLatitude}"
+                th:data-center-lng="${n.centerLongitude}"
+                th:data-radius-m="${n.verifyRadiusMeters}"
+                th:data-has-boundary="${n.hasBoundary}"
+                th:text="${n.displayName}"
+        ></option>
+      </select>
+      <label class="muted"
+      >위도<input
+              th:field="*{latitude}"
+              id="latitude"
+              type="number"
+              step="any"
+              placeholder="위도"
+              required
+      /></label>
+      <label class="muted"
+      >경도<input
+              th:field="*{longitude}"
+              id="longitude"
+              type="number"
+              step="any"
+              placeholder="경도"
+              required
+      /></label>
+      <button
+              class="btn secondary"
+              type="button"
+              onclick="fillCurrentLocation()"
+      >
+        현재 위치 가져오기
+      </button>
+      <button class="btn" type="submit">인증 요청</button>
+    </form>
+  </div>
+</main>
+</body>
 </html>
