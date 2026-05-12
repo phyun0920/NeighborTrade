@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="UTF-8" />
+    <title>판매글 관리</title>
+    <link rel="stylesheet" th:href="@{/css/common.css}" />
+  </head>
+  <body>
+    <div th:replace="~{fragments/header :: header}"></div>
+    <main class="container">
+      <h1>판매글 관리</h1>
+      <div class="list">
+        <div class="row" th:each="post : ${page.content}">
+          <span th:text="${post.title} + ' / ' + ${post.seller.nickname}"></span
+          ><b th:text="${post.status.label}"></b>
+          <form
+            th:action="@{/admin/posts/hide/{id}(id=${post.id})}"
+            method="post"
+          >
+            <button class="btn danger" type="submit">숨김</button>
+          </form>
+        </div>
+      </div>
+    </main>
+  </body>
+</html>

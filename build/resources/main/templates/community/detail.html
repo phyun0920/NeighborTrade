@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="UTF-8" />
+    <title th:text="${post.title}">동네생활</title>
+    <link rel="stylesheet" th:href="@{/css/common.css}" />
+  </head>
+  <body>
+    <div th:replace="~{fragments/header :: header}"></div>
+    <main class="container detail">
+      <h1 th:text="${post.title}"></h1>
+      <p class="muted" th:text="${post.neighborhood.emdName} + ' · ' + ${post.author.nickname} + ' · 조회 ' + ${post.viewCount}"></p>
+      <p class="content" th:text="${post.content}"></p>
+      <div class="actions">
+        <a class="btn secondary" th:if="${currentMember.id == post.author.id}" th:href="@{/community/edit/{id}(id=${post.id})}">수정</a>
+        <a class="btn danger" th:href="@{/reports/community_post/{id}(id=${post.id})}">신고</a>
+      </div>
+      <section class="panel">
+        <h2>댓글</h2>
+        <div class="list">
+          <div class="row" th:each="comment : ${comments}">
+            <span><b th:text="${comment.author.nickname}"></b> <span th:text="${comment.content}"></span></span>
+            <form th:if="${currentMember.id == comment.author.id}" th:action="@{/community/comment/delete/{id}(id=${comment.id})}" method="post">
+              <input type="hidden" name="postId" th:value="${post.id}" />
+              <button class="btn danger" type="submit">삭제</button>
+            </form>
+          </div>
+        </div>
+        <form th:action="@{/community/comment/{id}(id=${post.id})}" th:object="${commentDto}" method="post" class="form">
+          <input th:field="*{content}" placeholder="댓글을 입력하세요" />
+          <button class="btn" type="submit">댓글 등록</button>
+        </form>
+      </section>
+    </main>
+  </body>
+</html>

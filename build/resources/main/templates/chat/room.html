@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="UTF-8" />
+    <title>채팅방</title>
+    <link rel="stylesheet" th:href="@{/css/common.css}" />
+  </head>
+  <body>
+    <div th:replace="~{fragments/header :: header}"></div>
+    <main class="container narrow">
+      <h1 th:text="${room.productPost.title}">채팅방</h1>
+      <p class="muted" th:text="'판매자 ' + ${room.seller.nickname} + ' · 구매자 ' + ${room.buyer.nickname}"></p>
+      <div id="chatBox" class="chat-box" th:data-room-id="${room.id}" th:data-current-member-id="${currentMember.id}">
+        <div class="chat-message" th:each="message : ${messages}" th:classappend="${message.sender.id == currentMember.id} ? ' mine'">
+          <b th:text="${message.sender.nickname}"></b>
+          <span th:text="${message.content}"></span>
+          <a class="muted" th:href="@{/reports/chat_message/{id}(id=${message.id})}">신고</a>
+        </div>
+      </div>
+      <form id="chatForm" class="filters">
+        <input id="chatInput" placeholder="메시지 입력" autocomplete="off" />
+        <button class="btn" type="submit">전송</button>
+      </form>
+    </main>
+    <script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/stompjs@2.3.3/lib/stomp.min.js"></script>
+    <script th:src="@{/js/chat.js}"></script>
+  </body>
+</html>

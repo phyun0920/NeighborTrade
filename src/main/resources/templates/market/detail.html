@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="UTF-8" />
+    <title th:text="${post.title}">상세</title>
+    <link rel="stylesheet" th:href="@{/css/common.css}" />
+  </head>
+  <body>
+    <div th:replace="~{fragments/header :: header}"></div>
+    <main class="container detail">
+      <p class="error" th:if="${errorMessage}" th:text="${errorMessage}"></p>
+      <img class="detail-image" th:src="${post.displayImageUrl}" alt="상품" />
+      <h1 th:text="${post.title}"></h1>
+      <p
+        class="price"
+        th:text="${post.giveaway ? '나눔' : #numbers.formatInteger(post.price, 0, 'COMMA') + '원'}"
+      ></p>
+      <p
+        th:text="${post.neighborhood.emdName} + ' · ' + ${post.status.label} + ' · 조회 ' + ${post.viewCount}"
+      ></p>
+      <section class="seller">
+        <b th:text="${post.seller.nickname}"></b>
+        <span th:text="'매너점수 ' + ${post.seller.mannerScore}"></span>
+      </section>
+      <p class="content" th:text="${post.content}"></p>
+      <p
+        th:if="${post.tradePlace}"
+        th:text="'거래 희망 장소: ' + ${post.tradePlace}"
+      ></p>
+      <div th:if="${!#lists.isEmpty(images)}" class="image-strip">
+        <img th:each="image : ${images}" th:src="${image.imageUrl}" alt="상품 이미지" />
+      </div>
+      <div class="actions">
+        <form
+          th:if="${currentMember != null && currentMember.id != post.seller.id}"
+          th:action="@{/trade/request/{id}(id=${post.id})}"
+          method="post"
+        >
+          <button class="btn" type="submit">거래 요청</button>
+        </form>
+        <form
+          th:if="${currentMember != null && currentMember.id != post.seller.id}"
+          th:action="@{/chat/start/{id}(id=${post.id})}"
+          method="post"
+        >
+          <button class="btn secondary" type="submit">채팅하기</button>
+        </form>
+        <a
+          class="btn secondary"
+          th:if="${currentMember != null && currentMember.id == post.seller.id}"
+          th:href="@{/market/edit/{id}(id=${post.id})}"
+          >수정</a
+        >
+        <form
+          th:if="${currentMember != null && currentMember.id == post.seller.id}"
+          th:action="@{/market/status/{id}(id=${post.id})}"
+          method="post"
+        >
+          <select name="status">
+            <option
+              th:each="s : ${T(com.study.neighbortrade.domain.product.ProductStatus).values()}"
+              th:value="${s}"
+              th:text="${s.label}"
+            ></option></select
+          ><button class="btn secondary" type="submit">상태 변경</button>
+        </form>
+        <a
+          class="btn danger"
+          th:if="${currentMember != null && currentMember.id != post.seller.id}"
+          th:href="@{/reports/product_post/{id}(id=${post.id})}"
+          >신고</a
+        >
+      </div>
+    </main>
+  </body>
+</html>

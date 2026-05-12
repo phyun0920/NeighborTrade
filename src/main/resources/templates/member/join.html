@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="UTF-8" />
+    <title>회원가입</title>
+    <link rel="stylesheet" th:href="@{/css/common.css}" />
+  </head>
+  <body>
+    <div th:replace="~{fragments/header :: header}"></div>
+    <main class="container narrow">
+      <h1>회원가입</h1>
+      <p class="error" th:if="${errorMessage}" th:text="${errorMessage}"></p>
+      <form
+        th:action="@{/member/join}"
+        th:object="${memberJoinRequestDto}"
+        method="post"
+        class="form"
+      >
+        <input th:field="*{username}" placeholder="아이디" required /><input
+          th:field="*{password}"
+          type="password"
+          placeholder="비밀번호"
+          required
+        /><input th:field="*{email}" placeholder="이메일" required /><input
+          th:field="*{nickname}"
+          placeholder="닉네임"
+          required
+        /><button class="btn" type="submit">가입하기</button>
+      </form>
+    </main>
+  </body>
+</html>

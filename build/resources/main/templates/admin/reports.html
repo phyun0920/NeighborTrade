@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="UTF-8" />
+    <title>신고 관리</title>
+    <link rel="stylesheet" th:href="@{/css/common.css}" />
+  </head>
+  <body>
+    <div th:replace="~{fragments/header :: header}"></div>
+    <main class="container">
+      <h1>신고 관리</h1>
+      <div class="list">
+        <div class="row" th:each="report : ${page.content}">
+          <span>
+            <b th:text="${report.targetType.label} + ' #' + ${report.targetId}"></b><br />
+            <small th:text="${report.reason} + ' · ' + ${report.status.label} + ' · ' + ${report.reporter.nickname}"></small><br />
+            <small th:if="${report.detail}" th:text="${report.detail}"></small>
+          </span>
+          <form th:action="@{/admin/reports/process/{id}(id=${report.id})}" method="post" class="filters">
+            <select name="status">
+              <option th:each="s : ${statuses}" th:value="${s}" th:text="${s.label}" th:selected="${s == report.status}"></option>
+            </select>
+            <input name="processorNote" placeholder="처리 메모" />
+            <button class="btn secondary" type="submit">처리</button>
+          </form>
+        </div>
+      </div>
+    </main>
+  </body>
+</html>

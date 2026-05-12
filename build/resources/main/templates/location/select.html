@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="UTF-8" />
+    <title>동네 인증</title>
+    <link rel="stylesheet" th:href="@{/css/common.css}" />
+    <script defer th:src="@{/js/location.js}"></script>
+  </head>
+  <body>
+    <div th:replace="~{fragments/header :: header}"></div>
+    <main class="container narrow">
+      <h1>내 동네 인증</h1>
+      <p>브라우저 위치 권한을 허용한 뒤 인증할 동네를 선택하세요.</p>
+      <form
+        th:action="@{/location/verify}"
+        th:object="${locationVerifyRequestDto}"
+        method="post"
+        class="form"
+        id="locationForm"
+      >
+        <select th:field="*{neighborhoodId}" required>
+          <option value="">동네 선택</option>
+          <option
+            th:each="n : ${neighborhoods}"
+            th:value="${n.id}"
+            th:text="${n.displayName}"
+          ></option></select
+        ><input
+          th:field="*{latitude}"
+          id="latitude"
+          placeholder="위도"
+          required
+        /><input
+          th:field="*{longitude}"
+          id="longitude"
+          placeholder="경도"
+          required
+        /><button
+          class="btn secondary"
+          type="button"
+          onclick="fillCurrentLocation()"
+        >
+          현재 위치 가져오기</button
+        ><button class="btn" type="submit">인증 요청</button>
+      </form>
+    </main>
+  </body>
+</html>

@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="UTF-8" />
+    <title>내 동네</title>
+    <link rel="stylesheet" th:href="@{/css/common.css}" />
+  </head>
+  <body>
+    <div th:replace="~{fragments/header :: header}"></div>
+    <main class="container narrow">
+      <h1>내 동네</h1>
+      <p th:if="${currentMember.localVerified}" class="success">
+        <span
+          th:text="${currentMember.verifiedNeighborhood.displayName}"
+        ></span>
+        인증 완료
+      </p>
+      <p th:unless="${currentMember.localVerified}" class="error">
+        동네 인증이 필요합니다.
+      </p>
+      <a class="btn" th:href="@{/location/select}">동네 인증/변경</a>
+    </main>
+  </body>
+</html>

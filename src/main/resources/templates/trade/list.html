@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="UTF-8" />
+    <title>내 거래</title>
+    <link rel="stylesheet" th:href="@{/css/common.css}" />
+  </head>
+  <body>
+    <div th:replace="~{fragments/header :: header}"></div>
+    <main class="container">
+      <h1>내 거래 목록</h1>
+      <div class="list">
+        <a
+          class="row"
+          th:each="trade : ${trades}"
+          th:href="@{/trade/detail/{id}(id=${trade.id})}"
+          ><span th:text="${trade.productPost.title}"></span
+          ><b th:text="${trade.status.label}"></b
+        ></a>
+      </div>
+    </main>
+  </body>
+</html>

@@ -1,0 +1,16 @@
+<!doctype html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="UTF-8" />
+    <title>신고 접수 완료</title>
+    <link rel="stylesheet" th:href="@{/css/common.css}" />
+  </head>
+  <body>
+    <div th:replace="~{fragments/header :: header}"></div>
+    <main class="container narrow">
+      <h1>신고가 접수되었습니다.</h1>
+      <p>관리자가 내용을 확인한 뒤 처리합니다.</p>
+      <a class="btn" th:href="@{/market/list}">중고거래로 이동</a>
+    </main>
+  </body>
+</html>

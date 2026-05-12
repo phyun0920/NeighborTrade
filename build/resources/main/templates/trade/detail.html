@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="UTF-8" />
+    <title>거래 상세</title>
+    <link rel="stylesheet" th:href="@{/css/common.css}" />
+  </head>
+  <body>
+    <div th:replace="~{fragments/header :: header}"></div>
+    <main class="container narrow">
+      <h1 th:text="${trade.productPost.title}"></h1>
+      <p th:text="'상태: ' + ${trade.status.label}"></p>
+      <p
+        th:text="'판매자: ' + ${trade.seller.nickname} + ' / 구매자: ' + ${trade.buyer.nickname}"
+      ></p>
+      <div class="actions">
+        <form
+          th:if="${currentMember.id == trade.seller.id && trade.status.name() == 'REQUESTED'}"
+          th:action="@{/trade/accept/{id}(id=${trade.id})}"
+          method="post"
+        >
+          <button class="btn secondary" type="submit">예약 수락</button>
+        </form>
+        <form
+          th:if="${currentMember.id == trade.seller.id && trade.status.name() == 'ACCEPTED'}"
+          th:action="@{/trade/complete/{id}(id=${trade.id})}"
+          method="post"
+        >
+          <button class="btn" type="submit">거래 완료</button>
+        </form>
+        <form
+          th:if="${trade.status.name() == 'REQUESTED' || trade.status.name() == 'ACCEPTED'}"
+          th:action="@{/trade/cancel/{id}(id=${trade.id})}"
+          method="post"
+        >
+          <button class="btn danger" type="submit">취소</button>
+        </form>
+        <a
+          class="btn secondary"
+          th:if="${trade.status.name() == 'COMPLETED'}"
+          th:href="@{/review/form/{id}(id=${trade.id})}"
+          >후기 작성</a
+        >
+      </div>
+    </main>
+  </body>
+</html>
