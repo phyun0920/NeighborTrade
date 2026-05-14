@@ -1,6 +1,5 @@
 package com.study.neighbortrade.service;
 
-import com.study.neighbortrade.domain.location.Neighborhood;
 import com.study.neighbortrade.domain.member.Member;
 import com.study.neighbortrade.domain.product.ProductPost;
 import com.study.neighbortrade.domain.product.ProductStatus;
@@ -20,11 +19,10 @@ import java.util.List;
 public class ProductPostService {
     private final ProductPostRepository productPostRepository;
     private final ProductImageService productImageService;
-    public Page<ProductPost> list(Member viewer, String keyword, boolean onlyOnSale, int page) {
+    public Page<ProductPost> list(String keyword, boolean onlyOnSale, int page) {
         Pageable pageable = PageRequest.of(Math.max(page, 0), 12, Sort.by("createdAt").descending());
         if (onlyOnSale) return productPostRepository.findByStatus(ProductStatus.ON_SALE, pageable);
-        Neighborhood n = viewer != null ? viewer.getVerifiedNeighborhood() : null;
-        return n != null ? productPostRepository.searchVisibleByNeighborhood(n, keyword, pageable) : productPostRepository.searchVisible(keyword, pageable);
+        return productPostRepository.searchVisible(keyword, pageable);
     }
 
     @Transactional

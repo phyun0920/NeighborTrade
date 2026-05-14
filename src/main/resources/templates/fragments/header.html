@@ -1,13 +1,26 @@
-<header
-  th:fragment="header"
-  class="site-header"
-  xmlns:th="http://www.thymeleaf.org"
-  xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
->
-  <div class="nav">
-    <a class="brand" th:href="@{/}">NeighborTrade</a
-    ><a th:href="@{/market/list}">중고거래</a
-    ><a th:href="@{/community/list}" sec:authorize="isAuthenticated()">동네생활</a
+<th:block th:fragment="header" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+  <header
+          class="site-header"
+          th:attr="data-context-path=${requestContextPath},data-neighborhoods-api=@{/api/neighborhoods}"
+  >
+    <div class="nav">
+      <div class="nav-brand-group">
+        <a class="brand" th:href="@{/}">NeighborTrade</a>
+        <button
+                type="button"
+                id="region-chip-open"
+                class="region-chip"
+                aria-haspopup="dialog"
+                aria-controls="region-modal"
+        >
+        <span
+                th:text="${browsingNeighborhood != null ? browsingNeighborhood.emdName + ' ▼' : '지역 선택 ▼'}"
+        >지역 선택 ▼</span
+        >
+        </button>
+      </div>
+      <a th:href="@{/market/list}">중고거래</a
+      ><a th:href="@{/community/list}" sec:authorize="isAuthenticated()">동네생활</a
     ><a th:href="@{/chat/rooms}" sec:authorize="isAuthenticated()">채팅</a
     ><a th:href="@{/location/my}" sec:authorize="isAuthenticated()">내 동네</a
     ><a th:href="@{/mypage}" sec:authorize="isAuthenticated()">마이페이지</a
@@ -15,12 +28,55 @@
     ><span class="spacer"></span
     ><a th:href="@{/member/login}" sec:authorize="isAnonymous()">로그인</a
     ><a th:href="@{/member/join}" sec:authorize="isAnonymous()">회원가입</a>
-    <form
-      th:action="@{/member/logout}"
-      method="post"
-      sec:authorize="isAuthenticated()"
-    >
-      <button type="submit">로그아웃</button>
-    </form>
+      <form
+              th:action="@{/member/logout}"
+              method="post"
+              sec:authorize="isAuthenticated()"
+      >
+        <button type="submit">로그아웃</button>
+      </form>
+    </div>
+  </header>
+
+  <!-- sticky 헤더 밖에 두어 position:fixed 모달·목록이 잘리거나 안 그려지는 브라우저 이슈를 피함 -->
+  <div
+          id="region-modal"
+          class="region-modal"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="region-modal-title"
+          hidden
+  >
+    <div class="region-modal-backdrop" id="region-modal-backdrop"></div>
+    <div class="region-modal-dialog">
+      <div class="region-modal-head">
+        <h2 id="region-modal-title">지역 변경</h2>
+        <button type="button" class="region-modal-close" id="region-modal-close" aria-label="닫기">
+          ×
+        </button>
+      </div>
+      <p class="region-modal-hint">
+        보고 있는 동네를 바꿉니다. 글 목록만 바뀌며, 동네 인증(내 동네 등록)과는 별개입니다.
+      </p>
+      <input
+              type="search"
+              id="region-search"
+              class="region-modal-search"
+              placeholder="시·구·동 이름으로 검색"
+              autocomplete="off"
+      />
+      <ul class="region-modal-list" id="region-list"></ul>
+      <form th:action="@{/browse/neighborhood/clear}" method="post" class="region-modal-actions">
+        <input type="hidden" name="redirect" th:value="${currentRedirect}" />
+        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+        <button type="submit" class="btn secondary region-modal-wide">전체 동네 보기</button>
+      </form>
+      <form th:action="@{/browse/neighborhood}" method="post" id="region-select-form" hidden>
+        <input type="hidden" name="neighborhoodId" id="region-selected-id" />
+        <input type="hidden" name="redirect" id="region-redirect-field" th:value="${currentRedirect}" />
+        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+      </form>
+    </div>
   </div>
-</header>
+  <script th:src="@{/js/region-modal.js}" defer></script>
+</th:block>

@@ -12,7 +12,13 @@ public class CurrentMemberService {
     private final MemberRepository memberRepository;
     public Member get(Principal principal) {
         if (principal == null) return null;
-        return memberRepository.findByUsername(principal.getName()).orElseThrow(() -> new IllegalArgumentException("로그인 사용자를 찾을 수 없습니다."));
+        String username = principal.getName();
+        if (username == null
+                || username.isBlank()
+                || "anonymousUser".equals(username)) {
+            return null;
+        }
+        return memberRepository.findByUsername(username).orElse(null);
     }
     public Member require(Principal principal) {
         Member member = get(principal);

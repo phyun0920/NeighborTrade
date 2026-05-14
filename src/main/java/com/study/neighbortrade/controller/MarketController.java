@@ -26,14 +26,14 @@ public class MarketController {
     @GetMapping("/list")
     public String list(@RequestParam(defaultValue = "") String keyword,
 
-    @RequestParam(defaultValue = "false")
-    boolean onlyOnSale,
+                       @RequestParam(defaultValue = "false")
+                       boolean onlyOnSale,
 
-    @RequestParam(defaultValue = "0")
-    int page, Model model, Principal principal) {
+                       @RequestParam(defaultValue = "0")
+                       int page, Model model, Principal principal) {
         Member member = currentMemberService.get(principal);
         model.addAttribute("currentMember", member);
-        model.addAttribute("page", productPostService.list(member, keyword, onlyOnSale, page));
+        model.addAttribute("page", productPostService.list(keyword, onlyOnSale, page));
         model.addAttribute("keyword", keyword);
         model.addAttribute("onlyOnSale", onlyOnSale);
         return "market/list";
@@ -59,8 +59,8 @@ public class MarketController {
     @PostMapping("/form")
     public String create(@Valid
 
-    @ModelAttribute
-    ProductPostRequestDto dto, BindingResult br, @RequestParam(name = "imageFiles", required = false) List<MultipartFile> imageFiles, Model model, Principal principal) {
+                         @ModelAttribute
+                         ProductPostRequestDto dto, BindingResult br, @RequestParam(name = "imageFiles", required = false) List<MultipartFile> imageFiles, Model model, Principal principal) {
         if (br.hasErrors()) {
             model.addAttribute("categories", ProductCategory.values());
             return "market/form";
@@ -96,10 +96,10 @@ public class MarketController {
     @PostMapping("/edit/{id}")
     public String edit(@PathVariable Long id,
 
-    @Valid
+                       @Valid
 
-    @ModelAttribute
-    ProductPostRequestDto dto, BindingResult br, @RequestParam(name = "imageFiles", required = false) List<MultipartFile> imageFiles, Model model, Principal principal) {
+                       @ModelAttribute
+                       ProductPostRequestDto dto, BindingResult br, @RequestParam(name = "imageFiles", required = false) List<MultipartFile> imageFiles, Model model, Principal principal) {
         if (br.hasErrors()) {
             model.addAttribute("categories", ProductCategory.values());
             return "market/edit";
@@ -111,8 +111,8 @@ public class MarketController {
     @PostMapping("/status/{id}")
     public String status(@PathVariable Long id,
 
-    @RequestParam
-    ProductStatus status, Principal principal) {
+                         @RequestParam
+                         ProductStatus status, Principal principal) {
         productPostService.changeStatus(id, currentMemberService.require(principal), status);
         return "redirect:/market/detail/" + id;
     }

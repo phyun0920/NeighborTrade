@@ -16,7 +16,7 @@ public class HomeController {
     @GetMapping("/")
     public String home(Model model, Principal principal) {
         model.addAttribute("currentMember", currentMemberService.get(principal));
-        model.addAttribute("page", productPostService.list(currentMemberService.get(principal), "", false, 0));
+        model.addAttribute("page", productPostService.list("", false, 0));
         return "index";
     }
 }

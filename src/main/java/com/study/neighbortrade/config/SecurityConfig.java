@@ -30,7 +30,7 @@ public class SecurityConfig {
                 .requestMatchers("/css/**", "/js/**", "/images/**", "/uploads/**", "/h2-console/**").permitAll()
                 .requestMatchers("/ws/**").authenticated()
                 .requestMatchers("/oauth2/**", "/login/oauth2/**").permitAll()
-                .requestMatchers("/", "/member/join", "/member/login", "/market/list", "/market/detail/**").permitAll()
+                .requestMatchers("/", "/member/join", "/member/login", "/market/list", "/market/detail/**", "/api/neighborhoods", "/browse/**").permitAll()
                 .requestMatchers("/admin/**").hasRole("ADMIN")
                 .anyRequest().authenticated());
         http.formLogin(login -> login
