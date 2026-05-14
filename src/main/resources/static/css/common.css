@@ -266,3 +266,163 @@ button,
 .location-map-legend .swatch.gps {
   background: #dc2626;
 }
+
+.nav-brand-group {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.region-chip {
+  border: 1px solid #ddd;
+  background: #fff;
+  border-radius: 999px;
+  padding: 8px 14px;
+  font-size: 14px;
+  font-weight: 700;
+  color: #333;
+  cursor: pointer;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.06);
+}
+.region-chip:hover {
+  border-color: #ff6f0f;
+  color: #ff6f0f;
+}
+
+.card.card--browse-focus {
+  border: 2px solid transparent;
+  background:
+    linear-gradient(#fff, #fff) padding-box,
+    linear-gradient(135deg, #ff6f0f, #ffb347) border-box;
+  box-shadow: 0 8px 24px rgba(255, 111, 15, 0.18);
+}
+.card.card--browse-focus small::before {
+  content: "우리 동네 · ";
+  font-weight: 700;
+  color: #ff6f0f;
+}
+
+.region-modal[hidden] {
+  display: none !important;
+}
+.region-modal:not([hidden]) {
+  display: block;
+}
+.region-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  overflow: visible;
+  pointer-events: auto;
+}
+.region-modal-open {
+  overflow: hidden;
+}
+.region-modal-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  z-index: 0;
+}
+.region-modal-dialog {
+  position: relative;
+  z-index: 1;
+  max-width: 440px;
+  margin: 8vh auto;
+  background: #fff;
+  border-radius: 16px;
+  padding: 20px 20px 16px;
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.2);
+  max-height: min(84vh, 640px);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.region-modal-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+}
+.region-modal-head h2 {
+  margin: 0;
+  font-size: 20px;
+}
+.region-modal-close {
+  border: 0;
+  background: transparent;
+  font-size: 26px;
+  line-height: 1;
+  cursor: pointer;
+  color: #666;
+  padding: 4px 8px;
+}
+.region-modal-hint {
+  margin: 0;
+  font-size: 13px;
+  color: #666;
+  line-height: 1.45;
+}
+.region-modal-search {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  font-size: 15px;
+}
+.region-modal-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+  /* flex: 1 은 부모 max-height 안에서 높이가 0에 가깝게 줄어 빈 영역처럼 보일 수 있음 */
+  flex: 0 1 auto;
+  min-height: 180px;
+  max-height: min(42vh, 320px);
+  border: 1px solid #eee;
+  border-radius: 12px;
+  color: #222;
+  background: #fff;
+}
+.region-modal-item {
+  display: block;
+  width: 100%;
+  text-align: left;
+  padding: 12px 14px;
+  border: 0;
+  border-bottom: 1px solid #f0f0f0;
+  background: #fff;
+  /* 전역 button { color: #fff } 와 겹치면 흰 배경에 흰 글자로 목록이 비어 보임 */
+  color: #222;
+  font-size: 14px;
+  font-weight: 400;
+  cursor: pointer;
+}
+.region-modal-item:hover {
+  background: #fff7f0;
+}
+.region-modal-list li:last-child .region-modal-item {
+  border-bottom: 0;
+}
+.region-modal-msg {
+  padding: 16px;
+  color: #777;
+  font-size: 14px;
+}
+.region-modal-msg--error {
+  color: #c0392b;
+}
+.region-modal-actions {
+  margin: 0;
+}
+.region-modal-wide {
+  width: 100%;
+}
+
+.browse-hint {
+  margin: -8px 0 16px;
+  font-size: 14px;
+  color: #555;
+  line-height: 1.45;
+}

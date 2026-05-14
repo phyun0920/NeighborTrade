@@ -2,19 +2,16 @@ package com.study.neighbortrade.controller;
 
 import com.study.neighbortrade.domain.member.Member;
 import com.study.neighbortrade.dto.location.LocationVerifyRequestDto;
-import com.study.neighbortrade.service.CurrentMemberService;
-import com.study.neighbortrade.service.LocationService;
+import com.study.neighbortrade.service.*;
+import com.study.neighbortrade.web.BrowseNeighborhoodCookieSupport;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-
+import org.springframework.web.bind.annotation.*;
+import jakarta.servlet.http.HttpServletResponse;
 import java.security.Principal;
 
 @Controller
@@ -30,20 +27,30 @@ public class LocationController {
     @GetMapping("/select")
     public String select(Model model, Principal principal) {
         model.addAttribute("currentMember", currentMemberService.require(principal));
-        model.addAttribute("neighborhoods", locationService.findAllNeighborhoodsForSelect());
-        model.addAttribute("locationVerifyRequestDto", new LocationVerifyRequestDto());    // PostGIS경계 안내문구 켜고 끄는 용도(20260512)
-        model.addAttribute("postgisEnabled", postgisEnabled);
+        model.addAttribute("neighborhoods", locationService.findAllNeighborhoodsForSelect());   // PostGIS경계 안내문구 켜고 끄는 용도(20260512)
+        model.addAttribute("locationVerifyRequestDto", new LocationVerifyRequestDto());
+        model.addAttribute("postgisEnabled", postgisEnabled);       // PostGIS경계 안내문구 켜고 끄는 용도(20260512)
         return "location/select";
     }
 
     @PostMapping("/verify")
-    public String verify(@Valid
+    public String verify(
+            @Valid @ModelAttribute LocationVerifyRequestDto dto,
+            BindingResult bindingResult,
+            Model model,
+            Principal principal,
+            HttpServletResponse response) {
 
-    @ModelAttribute
-    LocationVerifyRequestDto dto, BindingResult br, Model model, Principal principal) {
         Member member = currentMemberService.require(principal);
-        boolean ok = !br.hasErrors() && locationService.verify(member, dto);
-        model.addAttribute("verified", ok);
+
+        boolean inputOk = !bindingResult.hasErrors();
+        boolean neighborhoodMatches = inputOk && locationService.verify(member, dto);
+
+        if (neighborhoodMatches) {
+            BrowseNeighborhoodCookieSupport.writeBrowsingNeighborhoodCookie(response, dto.getNeighborhoodId());
+        }
+
+        model.addAttribute("verified", neighborhoodMatches);
         model.addAttribute("currentMember", member);
         return "location/result";
     }
