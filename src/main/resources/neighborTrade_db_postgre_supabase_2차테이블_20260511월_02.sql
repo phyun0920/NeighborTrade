@@ -238,22 +238,35 @@ CREATE INDEX IF NOT EXISTS idx_manner_history_member
 -- 9. INSERT: sample data
 -- ==========================================================
 
--- 판매글 이미지 샘플
+-- 판매글 이미지 샘플 (동일 DB에 2차 스크립트를 반복 실행할 때 중복을 피하려면 id 1~10 판매글의 이미지 행을 먼저 삭제합니다.)
+DELETE FROM product_image WHERE product_post_id BETWEEN 1 AND 10;
+
 INSERT INTO product_image
     (product_post_id, original_filename, stored_filename, image_url, content_type, file_size, sort_order, representative)
 VALUES
-    (1, 'desk-main.png', 'sample-desk-main.png', '/uploads/products/sample-desk-main.png', 'image/png', 128000, 0, TRUE),
-    (1, 'desk-side.png', 'sample-desk-side.png', '/uploads/products/sample-desk-side.png', 'image/png', 98000, 1, FALSE),
-    (2, 'monitor.png', 'sample-monitor.png', '/uploads/products/sample-monitor.png', 'image/png', 156000, 0, TRUE);
+    (1, 'desk-main.png', 'pp-01-main.png', 'https://picsum.photos/seed/ntpp1main/640/480', 'image/png', 128400, 0, TRUE),
+    (1, 'desk-detail.png', 'pp-01-detail.png', 'https://picsum.photos/seed/ntpp1detail/640/480', 'image/png', 98200, 1, FALSE),
+    (2, 'monitor-front.png', 'pp-02-main.png', 'https://picsum.photos/seed/ntpp2main/640/480', 'image/png', 156800, 0, TRUE),
+    (2, 'monitor-back.png', 'pp-02-back.png', 'https://picsum.photos/seed/ntpp2back/640/480', 'image/png', 142100, 1, FALSE),
+    (3, 'spring-book-cover.png', 'pp-03-main.png', 'https://picsum.photos/seed/ntpp3main/640/480', 'image/png', 89400, 0, TRUE),
+    (3, 'spring-book-spine.png', 'pp-03-spine.png', 'https://picsum.photos/seed/ntpp3spine/640/480', 'image/png', 72100, 1, FALSE),
+    (4, 'temp-listing.png', 'pp-04-main.png', 'https://picsum.photos/seed/ntpp4main/640/480', 'image/png', 21000, 0, TRUE),
+    (5, 'cuckoo-rice-cooker.png', 'pp-05-main.png', 'https://picsum.photos/seed/ntpp5main/640/480', 'image/png', 198300, 0, TRUE),
+    (5, 'cuckoo-inner-pot.png', 'pp-05-inner.png', 'https://picsum.photos/seed/ntpp5inner/640/480', 'image/png', 165400, 1, FALSE),
+    (6, 'lego-classic-box.png', 'pp-06-main.png', 'https://picsum.photos/seed/ntpp6main/640/480', 'image/png', 112500, 0, TRUE),
+    (7, 'nike-shoes-side.png', 'pp-07-main.png', 'https://picsum.photos/seed/ntpp7main/640/480', 'image/png', 134200, 0, TRUE),
+    (7, 'nike-shoes-sole.png', 'pp-07-sole.png', 'https://picsum.photos/seed/ntpp7sole/640/480', 'image/png', 108900, 1, FALSE),
+    (8, 'yoga-mat-roll.png', 'pp-08-main.png', 'https://picsum.photos/seed/ntpp8main/640/480', 'image/png', 87600, 0, TRUE),
+    (9, 'succulent-set.png', 'pp-09-main.png', 'https://picsum.photos/seed/ntpp9main/640/480', 'image/png', 99100, 0, TRUE),
+    (9, 'succulent-close.png', 'pp-09-close.png', 'https://picsum.photos/seed/ntpp9close/640/480', 'image/png', 104200, 1, FALSE),
+    (10, 'dog-food-bag.png', 'pp-10-main.png', 'https://picsum.photos/seed/ntpp10main/640/480', 'image/png', 123700, 0, TRUE);
 
--- product_post 대표 이미지 URL도 업로드 이미지 예시로 맞춘다.
-UPDATE product_post
-SET representative_image_url = '/uploads/products/sample-desk-main.png'
-WHERE id = 1;
-
-UPDATE product_post
-SET representative_image_url = '/uploads/products/sample-monitor.png'
-WHERE id = 2;
+UPDATE product_post p
+SET representative_image_url = i.image_url
+FROM product_image i
+WHERE i.product_post_id = p.id
+  AND i.representative = TRUE
+  AND p.id BETWEEN 1 AND 10;
 
 -- 동네생활 샘플 게시글
 INSERT INTO community_post
@@ -299,6 +312,7 @@ VALUES
     (2, 1, 38.5, 39.0, '거래 후기 별점 5점 반영');
 
 -- 수동 id 입력 이후 identity sequence 값을 보정한다.
+SELECT setval(pg_get_serial_sequence('product_image', 'id'), COALESCE((SELECT MAX(id) FROM product_image), 1));
 SELECT setval(pg_get_serial_sequence('community_post', 'id'), COALESCE((SELECT MAX(id) FROM community_post), 1));
 SELECT setval(pg_get_serial_sequence('chat_room', 'id'), COALESCE((SELECT MAX(id) FROM chat_room), 1));
 

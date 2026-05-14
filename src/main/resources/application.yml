@@ -10,10 +10,14 @@ spring:
       max-file-size: ${MAX_FILE_SIZE:5MB}
       max-request-size: ${MAX_REQUEST_SIZE:20MB}
   datasource:
-    url: ${DB_URL:jdbc:h2:mem:neighbortrade;MODE=PostgreSQL;DATABASE_TO_LOWER=TRUE;DEFAULT_NULL_ORDERING=HIGH}
-    username: ${DB_USERNAME:sa}
-    password: ${DB_PASSWORD:}
-    driver-class-name: ${DB_DRIVER:org.h2.Driver}
+    # url: ${DB_URL:jdbc:h2:mem:neighbortrade;MODE=PostgreSQL;DATABASE_TO_LOWER=TRUE;DEFAULT_NULL_ORDERING=HIGH}
+    # username: ${DB_USERNAME:sa}
+    # password: ${DB_PASSWORD:}
+    # driver-class-name: ${DB_DRIVER:org.h2.Driver}
+    url: jdbc:postgresql://aws-1-ap-southeast-2.pooler.supabase.com:6543/postgres?prepareThreshold=0&preferQueryMode=simple&tcpKeepAlive=true
+    username: postgres.vsqqwuzhhkphwtfomcfs
+    password: "kosmo123!@#"
+    driver-class-name: org.postgresql.Driver    
     hikari:
       connection-timeout: 30000
       maximum-pool-size: 10
