@@ -1,22 +1,18 @@
-<!doctype html>
-<html lang="ko" xmlns:th="http://www.thymeleaf.org">
-  <head>
-    <meta charset="UTF-8" />
-    <title>동네 관리</title>
-    <link rel="stylesheet" th:href="@{/css/common.css}" />
-  </head>
-  <body>
-    <div th:replace="~{fragments/header :: header}"></div>
-    <main class="container">
-      <h1>동네 관리</h1>
-      <div class="list">
-        <div class="row" th:each="n : ${neighborhoods}">
-          <span th:text="${n.displayName}"></span
-          ><small
-            th:text="${n.centerLatitude} + ', ' + ${n.centerLongitude}"
-          ></small>
-        </div>
-      </div>
-    </main>
-  </body>
+<!DOCTYPE html>
+<html
+        lang="ko"
+        xmlns:th="http://www.thymeleaf.org"
+        th:replace="~{fragments/admin-layout :: layout('동네 관리', ~{::admin-page-root})}"
+>
+<body>
+<div th:fragment="admin-page-root" class="admin-page-root container">
+  <h1>동네 관리</h1>
+  <div class="list">
+    <div class="row" th:each="n : ${neighborhoods}">
+      <span th:text="${n.displayName}"></span>
+      <small th:text="${n.centerLatitude} + ', ' + ${n.centerLongitude}"></small>
+    </div>
+  </div>
+</div>
+</body>
 </html>

@@ -1,20 +1,49 @@
-<!doctype html>
-<html lang="ko" xmlns:th="http://www.thymeleaf.org">
-  <head>
-    <meta charset="UTF-8" />
-    <title>회원 관리</title>
-    <link rel="stylesheet" th:href="@{/css/common.css}" />
-  </head>
-  <body>
-    <div th:replace="~{fragments/header :: header}"></div>
-    <main class="container">
-      <h1>회원 관리</h1>
-      <div class="list">
-        <div class="row" th:each="member : ${members}">
-          <span th:text="${member.username} + ' / ' + ${member.nickname}"></span
-          ><b th:text="${member.role}"></b>
-        </div>
-      </div>
-    </main>
-  </body>
+<!DOCTYPE html>
+<html
+        lang="ko"
+        xmlns:th="http://www.thymeleaf.org"
+        th:replace="~{fragments/admin-layout :: layout('회원 관리', ~{::admin-page-root})}"
+>
+<body>
+<div th:fragment="admin-page-root" class="admin-page-root container">
+  <h1>회원 관리</h1>
+  <p class="admin-privacy-note">
+    이메일은 식별 최소화를 위해 마스킹되어 표시됩니다. 원문은 로그에 남기지 마세요.
+  </p>
+  <div class="admin-table-wrap">
+    <table class="admin-table">
+      <thead>
+      <tr>
+        <th>ID</th>
+        <th>아이디</th>
+        <th>닉네임</th>
+        <th>이메일(마스킹)</th>
+        <th>권한</th>
+        <th>로그인</th>
+        <th>소셜</th>
+        <th>동네인증</th>
+        <th>인증 동네</th>
+        <th>매너</th>
+        <th>가입일</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr th:each="row : ${memberRows}">
+        <td th:text="${row.id}">1</td>
+        <td th:text="${row.username}">u</td>
+        <td th:text="${row.nickname}">n</td>
+        <td th:text="${row.emailMasked}">e</td>
+        <td th:text="${row.roleLabel}">r</td>
+        <td th:text="${row.loginTypeLabel}">l</td>
+        <td th:text="${row.providerSummary}">p</td>
+        <td th:text="${row.localVerified} ? 'Y' : 'N'">Y</td>
+        <td th:text="${row.verifiedNeighborhoodLabel}">-</td>
+        <td th:text="${#numbers.formatDecimal(row.mannerScore, 1, 1)}">36</td>
+        <td th:text="${#temporals.format(row.createdAt, 'yyyy-MM-dd HH:mm')}">-</td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+</body>
 </html>
