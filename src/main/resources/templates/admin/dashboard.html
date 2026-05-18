@@ -1,27 +1,19 @@
-<!doctype html>
-<html lang="ko" xmlns:th="http://www.thymeleaf.org">
-  <head>
-    <meta charset="UTF-8" />
-    <title>관리자</title>
-    <link rel="stylesheet" th:href="@{/css/common.css}" />
-  </head>
-  <body>
-    <div th:replace="~{fragments/header :: header}"></div>
-    <main class="container">
-      <h1>관리자 대시보드</h1>
-      <div class="stats">
-        <div>회원 <b th:text="${memberCount}"></b></div>
-        <div>판매글 <b th:text="${postCount}"></b></div>
-        <div>거래 <b th:text="${tradeCount}"></b></div>
-        <div>동네생활 <b th:text="${communityCount}"></b></div>
-        <div>신고 <b th:text="${reportCount}"></b></div>
-      </div>
-      <div class="actions">
-        <a class="btn" th:href="@{/admin/members}">회원 관리</a
-        ><a class="btn" th:href="@{/admin/posts}">판매글 관리</a
-        ><a class="btn" th:href="@{/admin/neighborhoods}">동네 관리</a
-        ><a class="btn" th:href="@{/admin/reports}">신고 관리</a>
-      </div>
-    </main>
-  </body>
+<!DOCTYPE html>
+<html
+        lang="ko"
+        xmlns:th="http://www.thymeleaf.org"
+        th:replace="~{fragments/admin-layout :: layout('관리자 대시보드', ~{::admin-page-root})}"
+>
+<body>
+<div th:fragment="admin-page-root" class="admin-page-root container">
+  <h1>관리자 대시보드</h1>
+  <div class="admin-stats">
+    <div class="admin-stat-card">회원 <b th:text="${memberCount}">0</b></div>
+    <div class="admin-stat-card">판매글 <b th:text="${postCount}">0</b></div>
+    <div class="admin-stat-card">거래 <b th:text="${tradeCount}">0</b></div>
+    <div class="admin-stat-card">동네생활 <b th:text="${communityCount}">0</b></div>
+    <div class="admin-stat-card">신고 <b th:text="${reportCount}">0</b></div>
+  </div>
+</div>
+</body>
 </html>
