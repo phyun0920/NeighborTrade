@@ -78,6 +78,8 @@ spring:
 
 server:
   port: ${PORT:8080}
+  # Railway 등 리버스 프록시 뒤에서 {baseUrl}·OAuth redirect-uri가 https로 잡히도록
+  forward-headers-strategy: framework
 
 logging:
   level:
