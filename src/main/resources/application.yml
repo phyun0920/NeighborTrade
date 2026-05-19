@@ -1,8 +1,9 @@
 spring:
   application:
     name: NeighborTrade
-  profiles:
-    include: secret
+  # 로컬: application-secret.yml(gitignore). Railway: Variables에 동일 키 등록
+  config:
+    import: optional:classpath:application-secret.yml
   thymeleaf:
     cache: false
   servlet:
