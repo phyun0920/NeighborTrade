@@ -1,29 +1,116 @@
 <!doctype html>
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
-  <head>
-    <meta charset="UTF-8" />
-    <title>채팅방</title>
-    <link rel="stylesheet" th:href="@{/css/common.css}" />
-  </head>
-  <body>
-    <div th:replace="~{fragments/header :: header}"></div>
-    <main class="container narrow">
-      <h1 th:text="${room.productPost.title}">채팅방</h1>
-      <p class="muted" th:text="'판매자 ' + ${room.seller.nickname} + ' · 구매자 ' + ${room.buyer.nickname}"></p>
-      <div id="chatBox" class="chat-box" th:data-room-id="${room.id}" th:data-current-member-id="${currentMember.id}">
-        <div class="chat-message" th:each="message : ${messages}" th:classappend="${message.sender.id == currentMember.id} ? ' mine'">
-          <b th:text="${message.sender.nickname}"></b>
-          <span th:text="${message.content}"></span>
-          <a class="muted" th:href="@{/reports/chat_message/{id}(id=${message.id})}">신고</a>
-        </div>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title th:text="${room.productPost.title} + ' · 채팅'">채팅방</title>
+  <link rel="stylesheet" th:href="@{/css/common.css}" />
+</head>
+<body class="chat-room-page">
+<div th:replace="~{fragments/header :: header}"></div>
+
+<div class="chat-room-stack">
+  <header class="chat-room-app-header chat-mobile-only">
+    <a class="chat-room-back" th:href="@{/chat/rooms}" aria-label="채팅 목록으로">←</a>
+    <div class="chat-room-peer">
+      <div class="chat-room-peer-top">
+        <span class="chat-room-peer-name" th:text="${chatCounterpart.nickname}">상대</span>
+        <span class="chat-room-peer-badge" th:text="${#numbers.formatDecimal(chatCounterpart.mannerScore, 1, 1)} + '℃'"
+        >36.5℃</span
+        >
       </div>
-      <form id="chatForm" class="filters">
-        <input id="chatInput" placeholder="메시지 입력" autocomplete="off" />
-        <button class="btn" type="submit">전송</button>
+      <span
+              class="chat-room-peer-meta muted"
+              th:text="${room.productPost.neighborhood.displayName}"
+      >동네</span
+      >
+    </div>
+  </header>
+
+  <div class="chat-room-shell">
+    <main class="chat-room-main container narrow">
+      <div class="chat-room-desktop-head chat-desktop-only">
+        <h1 th:text="${room.productPost.title}">채팅방</h1>
+        <p
+                class="muted"
+                th:text="'판매자 ' + ${room.seller.nickname} + ' · 구매자 ' + ${room.buyer.nickname}"
+        ></p>
+      </div>
+
+      <a
+              class="chat-room-product-bar"
+              th:href="@{/market/detail/{id}(id=${room.productPost.id})}"
+      >
+        <div class="chat-room-product-thumb">
+          <img
+                  th:if="${room.productPost.representativeImageUrl != null && !room.productPost.representativeImageUrl.isBlank()}"
+                  th:src="${room.productPost.representativeImageUrl}"
+                  alt=""
+          />
+        </div>
+        <div class="chat-room-product-text">
+          <div class="chat-room-product-status" th:text="${room.productPost.status.label}">판매중</div>
+          <div class="chat-room-product-title" th:text="${room.productPost.title}">제목</div>
+          <div
+                  class="chat-room-product-price"
+                  th:text="${room.productPost.giveaway ? '나눔' : #numbers.formatInteger(room.productPost.price, 0, 'COMMA') + '원'}"
+          >
+            0원
+          </div>
+        </div>
+        <span class="chat-room-product-chevron muted">›</span>
+      </a>
+
+      <div
+              id="chatBox"
+              class="chat-box chat-room-messages"
+              th:data-room-id="${room.id}"
+              th:data-current-member-id="${currentMember.id}"
+              th:data-report-prefix="@{/reports/chat_message/}"
+      >
+        <th:block th:each="item : ${chatTimeline}">
+          <div th:if="${item.message == null}" class="chat-date-divider">
+            <span th:text="${item.dateLabel}">2026년 5월 18일</span>
+          </div>
+          <div
+                  th:if="${item.message != null}"
+                  class="chat-message"
+                  th:classappend="${item.message.sender.id == currentMember.id} ? ' mine'"
+                  th:attr="data-message-date=${#temporals.format(item.message.createdAt, 'yyyy-MM-dd')}"
+          >
+            <div class="chat-message-inner">
+              <div class="chat-bubble">
+                    <span
+                            class="chat-sender"
+                            th:if="${item.message.sender.id != currentMember.id}"
+                            th:text="${item.message.sender.nickname}"
+                    >닉네임</span
+                    >
+                <span class="chat-text" th:text="${item.message.content}"></span>
+              </div>
+              <div class="chat-meta">
+                <time th:text="${#temporals.format(item.message.createdAt, 'HH:mm')}">12:00</time>
+                <a
+                        class="muted chat-report"
+                        th:href="@{/reports/chat_message/{id}(id=${item.message.id})}"
+                >신고</a
+                >
+              </div>
+            </div>
+          </div>
+        </th:block>
+      </div>
+
+      <form id="chatForm" class="chat-room-composer filters">
+        <input id="chatInput" type="text" placeholder="메시지 입력" autocomplete="off" />
+        <button class="btn chat-send-btn" type="submit">전송</button>
       </form>
     </main>
-    <script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/stompjs@2.3.3/lib/stomp.min.js"></script>
-    <script th:src="@{/js/chat.js}"></script>
-  </body>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/stompjs@2.3.3/lib/stomp.min.js"></script>
+<script th:src="@{/js/chat.js}"></script>
+</body>
 </html>

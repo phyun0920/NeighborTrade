@@ -1,23 +1,24 @@
 <!doctype html>
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
-  <head>
-    <meta charset="UTF-8" />
-    <title>채팅</title>
-    <link rel="stylesheet" th:href="@{/css/common.css}" />
-  </head>
-  <body>
-    <div th:replace="~{fragments/header :: header}"></div>
-    <main class="container">
-      <h1>채팅방</h1>
-      <div class="list">
-        <a class="row" th:each="room : ${rooms}" th:href="@{/chat/room/{id}(id=${room.id})}">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>채팅</title>
+  <link rel="stylesheet" th:href="@{/css/common.css}" />
+</head>
+<body>
+<div th:replace="~{fragments/header :: header}"></div>
+<main class="container">
+  <h1>채팅방</h1>
+  <div class="list">
+    <a class="row" th:each="room : ${rooms}" th:href="@{/chat/room/{id}(id=${room.id})}">
           <span>
             <b th:text="${room.productPost.title}"></b><br />
             <small th:text="'판매자 ' + ${room.seller.nickname} + ' · 구매자 ' + ${room.buyer.nickname}"></small>
           </span>
-          <small th:text="${#temporals.format(room.updatedAt, 'yyyy-MM-dd HH:mm')}"></small>
-        </a>
-      </div>
-    </main>
-  </body>
+      <small th:text="${#temporals.format(room.updatedAt, 'yyyy-MM-dd HH:mm')}"></small>
+    </a>
+  </div>
+</main>
+</body>
 </html>
