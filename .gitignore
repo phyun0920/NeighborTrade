@@ -32,7 +32,6 @@ out/
 .DS_Store
 
 ### 올리지 않는 파일 ###
-src/main/resources/application.yml
 src/main/resources/application-secret.yml
 src/main/resources/db.sql
 

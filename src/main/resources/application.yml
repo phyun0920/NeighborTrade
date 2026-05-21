@@ -1,8 +1,9 @@
 spring:
   application:
     name: NeighborTrade
-  profiles:
-    include: secret
+  # 로컬: application-secret.yml(gitignore). Railway: Variables에 동일 키 등록
+  config:
+    import: optional:classpath:application-secret.yml
   thymeleaf:
     cache: false
   servlet:
@@ -80,7 +81,9 @@ spring:
             user-name-attribute: response
 
 server:
-  port: 8082
+  port: ${PORT:8080}
+  # Railway 등 리버스 프록시 뒤에서 {baseUrl}·OAuth redirect-uri가 https로 잡히도록
+  forward-headers-strategy: framework
 
 logging:
   level:
