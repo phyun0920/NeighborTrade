@@ -19,22 +19,27 @@
         >
         </button>
       </div>
-      <a th:href="@{/market/list}">중고거래</a
-      ><a th:href="@{/community/list}" sec:authorize="isAuthenticated()">동네생활</a
-    ><a th:href="@{/chat/rooms}" sec:authorize="isAuthenticated()">채팅</a
-    ><a th:href="@{/location/my}" sec:authorize="isAuthenticated()">내 동네</a
-    ><a th:href="@{/mypage}" sec:authorize="isAuthenticated()">마이페이지</a
-    ><a th:href="@{/admin/dashboard}" sec:authorize="hasRole('ADMIN')">관리자</a
-    ><span class="spacer"></span
-    ><a th:href="@{/member/login}" sec:authorize="isAnonymous()">로그인</a
-    ><a th:href="@{/member/join}" sec:authorize="isAnonymous()">회원가입</a>
-      <form
-              th:action="@{/member/logout}"
-              method="post"
-              sec:authorize="isAuthenticated()"
-      >
-        <button type="submit">로그아웃</button>
-      </form>
+      <div class="nav-links nav-desktop-only">
+        <a th:href="@{/market/list}">중고거래</a>
+        <a th:href="@{/community/list}" sec:authorize="isAuthenticated()">동네생활</a>
+        <a th:href="@{/chat/rooms}" sec:authorize="isAuthenticated()">채팅</a>
+        <a th:href="@{/location/my}" sec:authorize="isAuthenticated()">내 동네</a>
+        <a th:href="@{/mypage}" sec:authorize="isAuthenticated()">마이페이지</a>
+        <a th:href="@{/admin/dashboard}" sec:authorize="hasRole('ADMIN')">관리자</a>
+      </div>
+      <span class="spacer nav-desktop-only" aria-hidden="true"></span>
+      <div class="nav-auth nav-desktop-only">
+        <a th:href="@{/member/login}" sec:authorize="isAnonymous()">로그인</a>
+        <a th:href="@{/member/join}" sec:authorize="isAnonymous()">회원가입</a>
+        <form
+                th:action="@{/member/logout}"
+                method="post"
+                sec:authorize="isAuthenticated()"
+                class="nav-logout-form"
+        >
+          <button type="submit">로그아웃</button>
+        </form>
+      </div>
     </div>
   </header>
 
@@ -79,4 +84,86 @@
     </div>
   </div>
   <script th:src="@{/js/region-modal.js}" defer></script>
+
+  <nav class="bottom-nav" aria-label="주요 메뉴">
+    <a
+            class="bottom-nav-item"
+            th:href="@{/market/list}"
+            th:classappend="${#httpServletRequest != null and (#httpServletRequest.requestURI == '/' or #strings.startsWith(#httpServletRequest.requestURI, '/market')) and !#strings.startsWith(#httpServletRequest.requestURI, '/market/form') and !#strings.startsWith(#httpServletRequest.requestURI, '/market/my')} ? ' is-active' : ''"
+    >
+      <span class="bottom-nav-icon" aria-hidden="true">⌕</span>
+      <span class="bottom-nav-label">검색</span>
+    </a>
+    <a
+            class="bottom-nav-item"
+            th:href="@{/market/form}"
+            th:classappend="${#httpServletRequest != null and (#strings.startsWith(#httpServletRequest.requestURI, '/market/form') or #strings.contains(#httpServletRequest.requestURI, '/market/edit'))} ? ' is-active' : ''"
+    >
+      <span class="bottom-nav-icon" aria-hidden="true">＋</span>
+      <span class="bottom-nav-label">판매</span>
+    </a>
+    <a
+            class="bottom-nav-item"
+            th:href="@{/chat/rooms}"
+            sec:authorize="isAuthenticated()"
+            th:classappend="${#httpServletRequest != null and #strings.startsWith(#httpServletRequest.requestURI, '/chat')} ? ' is-active' : ''"
+    >
+      <span class="bottom-nav-icon" aria-hidden="true">💬</span>
+      <span class="bottom-nav-label">채팅</span>
+    </a>
+    <a
+            class="bottom-nav-item"
+            th:href="@{/community/list}"
+            sec:authorize="isAuthenticated()"
+            th:classappend="${#httpServletRequest != null and #strings.startsWith(#httpServletRequest.requestURI, '/community')} ? ' is-active' : ''"
+            aria-label="동네생활"
+            title="동네생활"
+    >
+      <span class="bottom-nav-icon" aria-hidden="true">📋</span>
+      <span class="bottom-nav-label">생활</span>
+    </a>
+    <a
+            class="bottom-nav-item"
+            th:href="@{/member/login}"
+            sec:authorize="isAnonymous()"
+            th:classappend="${#httpServletRequest != null and (#httpServletRequest.requestURI == '/member/login' or #httpServletRequest.requestURI.endsWith('/member/login'))} ? ' is-active' : ''"
+    >
+      <span class="bottom-nav-icon" aria-hidden="true">👤</span>
+      <span class="bottom-nav-label">로그인</span>
+    </a>
+    <a
+            class="bottom-nav-item"
+            th:href="@{/location/my}"
+            sec:authorize="isAuthenticated()"
+            th:classappend="${#httpServletRequest != null and #strings.startsWith(#httpServletRequest.requestURI, '/location')} ? ' is-active' : ''"
+    >
+      <span class="bottom-nav-icon" aria-hidden="true">📍</span>
+      <span class="bottom-nav-label">동네</span>
+    </a>
+    <a
+            class="bottom-nav-item"
+            th:href="@{/mypage}"
+            sec:authorize="isAuthenticated()"
+            th:classappend="${#httpServletRequest != null and (
+        #httpServletRequest.requestURI == '/mypage'
+        or #strings.startsWith(#httpServletRequest.requestURI, '/market/my')
+        or #strings.startsWith(#httpServletRequest.requestURI, '/trade')
+        or #strings.startsWith(#httpServletRequest.requestURI, '/review')
+      )} ? ' is-active' : ''"
+            aria-label="마이페이지"
+            title="마이페이지"
+    >
+      <span class="bottom-nav-icon" aria-hidden="true">👤</span>
+      <span class="bottom-nav-label">마이</span>
+    </a>
+    <a
+            class="bottom-nav-item"
+            th:href="@{/member/join}"
+            sec:authorize="isAnonymous()"
+            th:classappend="${#httpServletRequest != null and #httpServletRequest.requestURI == '/member/join'} ? ' is-active' : ''"
+    >
+      <span class="bottom-nav-icon" aria-hidden="true">✎</span>
+      <span class="bottom-nav-label">가입</span>
+    </a>
+  </nav>
 </th:block>

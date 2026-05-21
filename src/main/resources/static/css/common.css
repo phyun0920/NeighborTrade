@@ -31,6 +31,19 @@ body {
 .spacer {
   flex: 1;
 }
+
+/* PC 헤더 링크 묶음 — span 기본 inline이라 링크가 붙어 보이는 문제 방지 */
+.nav-desktop-only {
+  display: inline-flex;
+  align-items: center;
+  gap: 18px;
+  flex-wrap: wrap;
+}
+
+.nav-logout-form {
+  display: inline-flex;
+  margin: 0;
+}
 a {
   color: inherit;
   text-decoration: none;
@@ -693,6 +706,189 @@ button,
   font-size: 14px;
   color: #555;
   line-height: 1.45;
+}
+
+/* C2: 마이페이지 로그아웃(PC·모바일 공통, 모바일 전폭은 @767px) */
+.mypage-logout-form {
+  margin: 24px 0 0;
+  padding-top: 20px;
+  border-top: 1px solid #eee;
+}
+
+/* ---------- 모바일 하단 탭 (≤767px) ---------- */
+.bottom-nav {
+  display: none;
+}
+
+@media (max-width: 767px) {
+  body:not(.chat-room-page):not(.admin-body) {
+    padding-bottom: calc(58px + env(safe-area-inset-bottom, 0px));
+  }
+
+  .nav-desktop-only {
+    display: none !important;
+  }
+
+  .nav {
+    gap: 10px;
+    padding: 10px 14px;
+  }
+
+  .bottom-nav {
+    display: flex;
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 88;
+    margin: 0;
+    padding: 6px 8px calc(6px + env(safe-area-inset-bottom, 0px));
+    background: #fff;
+    border-top: 1px solid #eee;
+    box-shadow: 0 -2px 12px rgba(0, 0, 0, 0.06);
+    justify-content: space-around;
+    align-items: stretch;
+  }
+
+  body.chat-room-page .bottom-nav,
+  body.admin-body .bottom-nav {
+    display: none !important;
+  }
+
+  body.chat-room-page,
+  body.admin-body {
+    padding-bottom: 0;
+  }
+
+  .bottom-nav-item {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 2px;
+    padding: 6px 4px;
+    min-height: 44px;
+    text-decoration: none;
+    color: #666;
+    font-size: 11px;
+    font-weight: 600;
+    border-radius: 10px;
+  }
+
+  .bottom-nav-item.is-active {
+    color: #ff6f0f;
+    background: #fff7f0;
+  }
+
+  .bottom-nav-icon {
+    font-size: 18px;
+    line-height: 1;
+  }
+
+  .bottom-nav-label {
+    line-height: 1.2;
+  }
+
+  /* C1·C2: 로그인 시 하단 5~6탭 — 라벨·아이콘 축소 */
+  .bottom-nav:has(.bottom-nav-item:nth-child(5)) .bottom-nav-item {
+    font-size: 10px;
+    padding: 6px 2px;
+    min-width: 0;
+  }
+
+  .bottom-nav:has(.bottom-nav-item:nth-child(5)) .bottom-nav-icon {
+    font-size: 16px;
+  }
+
+  .bottom-nav:has(.bottom-nav-item:nth-child(5)) .bottom-nav-label {
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .bottom-nav:has(.bottom-nav-item:nth-child(6)) .bottom-nav-item {
+    font-size: 9px;
+    padding: 5px 1px;
+    gap: 1px;
+  }
+
+  .bottom-nav:has(.bottom-nav-item:nth-child(6)) .bottom-nav-icon {
+    font-size: 15px;
+  }
+
+  .mypage-logout-btn {
+    width: 100%;
+    text-align: center;
+  }
+
+  .grid {
+    grid-template-columns: 1fr;
+  }
+
+  /* B2: 본문 container — 계획값 16px 12px (기존 좌우만 → 상하 포함) */
+  .container {
+    padding: 16px 12px;
+  }
+
+  .container.hero {
+    padding-top: 28px;
+  }
+
+  /* B3: 목록·관리 등 검색 폼 — 세로 스택 (채팅 입력창은 가로 유지) */
+  .filters:not(.chat-room-composer) {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+    margin: 16px 0;
+  }
+
+  .filters:not(.chat-room-composer) input:not([type="checkbox"]):not([type="hidden"]),
+  .filters:not(.chat-room-composer) select {
+    width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+  }
+
+  .filters:not(.chat-room-composer) label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+    font-weight: 400;
+    color: #333;
+  }
+
+  .filters:not(.chat-room-composer) .btn {
+    width: 100%;
+    text-align: center;
+  }
+
+  /* B4: 목록 상단 — 제목·글쓰기 버튼 줄바꿈 */
+  .page-head {
+    flex-wrap: wrap;
+    align-items: flex-start;
+    gap: 12px;
+    margin: 16px 0 12px;
+  }
+
+  .page-head h1 {
+    flex: 1 1 100%;
+    min-width: 0;
+    margin: 0;
+    font-size: 1.35rem;
+    line-height: 1.35;
+    word-break: keep-all;
+    overflow-wrap: anywhere;
+  }
+
+  .page-head .btn {
+    flex: 1 1 100%;
+    width: 100%;
+    text-align: center;
+    box-sizing: border-box;
+  }
 }
 
 /* ---------- 관리자 레이아웃 ---------- */
