@@ -1,36 +1,32 @@
 <!doctype html>
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
-  <head>
-    <meta charset="UTF-8" />
-    <title>로그인</title>
-    <link rel="stylesheet" th:href="@{/css/common.css}" />
-  </head>
-  <body>
-    <div th:replace="~{fragments/header :: header}"></div>
-    <main class="container narrow">
-      <h1>로그인</h1>
-      <p class="success" th:if="${param.joined}">회원가입이 완료되었습니다.</p>
-      <p class="error" th:if="${param.error}">
-        아이디 또는 비밀번호를 확인해주세요.
-      </p>
-      <form th:action="@{/member/login}" method="post" class="form">
-        <input name="username" placeholder="아이디" required /><input
+<head th:replace="~{fragments/head :: head('로그인')}"></head>
+<body class="member-auth-page">
+<div th:replace="~{fragments/header :: header}"></div>
+<main class="container narrow">
+  <h1>로그인</h1>
+  <p class="success" th:if="${param.joined}">회원가입이 완료되었습니다.</p>
+  <p class="error" th:if="${param.error}">
+    아이디 또는 비밀번호를 확인해주세요.
+  </p>
+  <form th:action="@{/member/login}" method="post" class="form">
+    <input name="username" placeholder="아이디" required /><input
           name="password"
           type="password"
           placeholder="비밀번호"
           required
-        /><button class="btn" type="submit">로그인</button>
-      </form>
-      <div class="divider">또는</div>
-      <div class="social-login">
-        <a class="btn kakao" th:href="@{/oauth2/authorization/kakao}">Kakao</a>
-        <a class="btn naver" th:href="@{/oauth2/authorization/naver}">Naver</a>
-      </div>
-      <p class="muted">
-        일반 회원가입 또는 소셜 로그인 중 하나로 가입하고 로그인할 수 있습니다.
+  /><button class="btn" type="submit">로그인</button>
+  </form>
+  <div class="divider">또는</div>
+  <div class="social-login">
+    <a class="btn kakao" th:href="@{/oauth2/authorization/kakao}">Kakao</a>
+    <a class="btn naver" th:href="@{/oauth2/authorization/naver}">Naver</a>
+  </div>
+  <p class="muted">
+    일반 회원가입 또는 소셜 로그인 중 하나로 가입하고 로그인할 수 있습니다.
 
-      </p>
-      <p>개발용 샘플은 `APP_SEED_ENABLED=true`일 때 생성됩니다.</p>
-    </main>
-  </body>
+  </p>
+  <p>개발용 샘플은 `APP_SEED_ENABLED=true`일 때 생성됩니다.</p>
+</main>
+</body>
 </html>

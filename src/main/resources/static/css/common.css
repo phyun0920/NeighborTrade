@@ -431,8 +431,10 @@ button,
   }
   body.chat-room-page {
     margin: 0;
-    min-height: 100vh;
+    height: 100dvh;
+    max-height: 100dvh;
     min-height: 100dvh;
+    overflow: hidden;
     display: flex;
     flex-direction: column;
   }
@@ -441,18 +443,21 @@ button,
     display: flex;
     flex-direction: column;
     min-height: 0;
+    overflow: hidden;
   }
   .chat-room-shell {
     flex: 1;
     display: flex;
     flex-direction: column;
     min-height: 0;
+    overflow: hidden;
   }
   .chat-room-main.container.narrow {
     flex: 1;
     display: flex;
     flex-direction: column;
     min-height: 0;
+    overflow: hidden;
     margin: 0;
     max-width: none;
     width: 100%;
@@ -466,16 +471,21 @@ button,
     flex-shrink: 0;
   }
   .chat-room-product-bar {
-    position: sticky;
-    top: 52px;
-    z-index: 35;
+    position: static;
+    flex-shrink: 0;
+    top: auto;
+    z-index: auto;
     margin-top: 0;
     margin-bottom: 8px;
   }
   .chat-room-page .chat-box.chat-room-messages {
     height: auto !important;
-    flex: 1;
+    flex: 1 1 auto;
     min-height: 0;
+    overflow-x: hidden;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior: contain;
     border-radius: 8px;
     background: #f3f3f3;
     border: 1px solid #e8e8e8;
@@ -720,6 +730,61 @@ button,
   display: none;
 }
 
+/* viewport 미적용·페이지별 HTML 캐시 시 폴백 (head 인라인 스크립트 → html.is-mobile) */
+html.is-mobile body:not(.chat-room-page):not(.admin-body) {
+  padding-bottom: calc(58px + env(safe-area-inset-bottom, 0px));
+}
+
+html.is-mobile .nav-desktop-only {
+  display: none !important;
+}
+
+html.is-mobile .bottom-nav {
+  display: flex;
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 88;
+  margin: 0;
+  padding: 6px 8px calc(6px + env(safe-area-inset-bottom, 0px));
+  background: #fff;
+  border-top: 1px solid #eee;
+  box-shadow: 0 -2px 12px rgba(0, 0, 0, 0.06);
+  justify-content: space-around;
+  align-items: stretch;
+}
+
+html.is-mobile body.chat-room-page .bottom-nav,
+html.is-mobile body.admin-body .bottom-nav {
+  display: none !important;
+}
+
+html.is-mobile body.chat-room-page,
+html.is-mobile body.admin-body {
+  padding-bottom: 0;
+}
+
+html.is-mobile .nav {
+  gap: 10px;
+  padding: 10px 14px;
+}
+
+html.is-mobile .container {
+  padding: 16px 12px;
+}
+
+html.is-mobile .container.hero {
+  padding-top: 28px;
+}
+
+html.is-mobile .member-auth-page .form input,
+html.is-mobile .member-auth-page .form button,
+html.is-mobile .member-auth-page .social-login .btn {
+  width: 100%;
+  box-sizing: border-box;
+}
+
 @media (max-width: 767px) {
   body:not(.chat-room-page):not(.admin-body) {
     padding-bottom: calc(58px + env(safe-area-inset-bottom, 0px));
@@ -821,6 +886,13 @@ button,
   .mypage-logout-btn {
     width: 100%;
     text-align: center;
+  }
+
+  .member-auth-page .form input,
+  .member-auth-page .form button,
+  .member-auth-page .social-login .btn {
+    width: 100%;
+    box-sizing: border-box;
   }
 
   .grid {

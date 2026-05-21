@@ -1,0 +1,24 @@
+<th:block th:fragment="head(title)" xmlns:th="http://www.thymeleaf.org">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <title th:text="${title}">NeighborTrade</title>
+    <script>
+        (function () {
+          function applyMobileRoot() {
+            var mobile =
+              window.matchMedia("(max-width: 767px)").matches ||
+              window.innerWidth <= 767;
+            document.documentElement.classList.toggle("is-mobile", mobile);
+          }
+          applyMobileRoot();
+          window.addEventListener("resize", applyMobileRoot);
+          window.addEventListener("orientationchange", applyMobileRoot);
+        })();
+    </script>
+    <link
+            rel="stylesheet"
+            th:href="@{/css/common.css(v=${@environment.getProperty('app.ui.asset-version', '1')})}"
+    />
+    <script th:src="@{/js/mobile-viewport.js(v=${@environment.getProperty('app.ui.asset-version', '1')})}" defer></script>
+</th:block>
