@@ -1,20 +1,21 @@
 <!doctype html>
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
-  <head>
-    <meta charset="UTF-8" />
-    <title>동네생활 작성</title>
-    <link rel="stylesheet" th:href="@{/css/common.css}" />
-  </head>
-  <body>
-    <div th:replace="~{fragments/header :: header}"></div>
-    <main class="container narrow">
-      <h1>동네생활 작성</h1>
-      <p th:unless="${currentMember.localVerified}" class="error">동네 인증 후 글을 작성할 수 있습니다.</p>
-      <form th:if="${currentMember.localVerified}" th:action="@{/community/form}" th:object="${communityPostRequestDto}" method="post" class="form">
-        <input th:field="*{title}" placeholder="제목" />
-        <textarea th:field="*{content}" placeholder="동네 이야기를 입력하세요"></textarea>
-        <button class="btn" type="submit">등록</button>
-      </form>
-    </main>
-  </body>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>동네생활 작성</title>
+  <link rel="stylesheet" th:href="@{/css/common.css}" />
+</head>
+<body>
+<div th:replace="~{fragments/header :: header}"></div>
+<main class="container narrow">
+  <h1>동네생활 작성</h1>
+  <p th:unless="${currentMember.localVerified}" class="error">동네 인증 후 글을 작성할 수 있습니다.</p>
+  <form th:if="${currentMember.localVerified}" th:action="@{/community/form}" th:object="${communityPostRequestDto}" method="post" class="form">
+    <input th:field="*{title}" placeholder="제목" />
+    <textarea th:field="*{content}" placeholder="동네 이야기를 입력하세요"></textarea>
+    <button class="btn" type="submit">등록</button>
+  </form>
+</main>
+</body>
 </html>

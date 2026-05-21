@@ -1,20 +1,21 @@
 <!doctype html>
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
-  <head>
-    <meta charset="UTF-8" />
-    <title>받은 후기</title>
-    <link rel="stylesheet" th:href="@{/css/common.css}" />
-  </head>
-  <body>
-    <div th:replace="~{fragments/header :: header}"></div>
-    <main class="container">
-      <h1>받은 후기</h1>
-      <div class="list">
-        <div class="row" th:each="review : ${reviews}">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>받은 후기</title>
+  <link rel="stylesheet" th:href="@{/css/common.css}" />
+</head>
+<body>
+<div th:replace="~{fragments/header :: header}"></div>
+<main class="container">
+  <h1>받은 후기</h1>
+  <div class="list">
+    <div class="row" th:each="review : ${reviews}">
           <span th:text="${review.content}"></span
           ><b th:text="${review.rating} + '점'"></b>
-        </div>
-      </div>
-    </main>
-  </body>
+    </div>
+  </div>
+</main>
+</body>
 </html>
