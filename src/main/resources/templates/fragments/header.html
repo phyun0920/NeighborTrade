@@ -5,7 +5,7 @@
   >
     <div class="nav">
       <div class="nav-brand-group">
-        <a class="brand" th:href="@{/}">NeighborTrade</a>
+        <a class="brand" th:href="@{/market/list}">NeighborTrade</a>
         <button
                 type="button"
                 id="region-chip-open"
@@ -89,7 +89,7 @@
     <a
             class="bottom-nav-item"
             th:href="@{/market/list}"
-            th:classappend="${#httpServletRequest != null and (#httpServletRequest.requestURI == '/' or #strings.startsWith(#httpServletRequest.requestURI, '/market')) and !#strings.startsWith(#httpServletRequest.requestURI, '/market/form') and !#strings.startsWith(#httpServletRequest.requestURI, '/market/my')} ? ' is-active' : ''"
+            th:classappend="${#httpServletRequest != null and #strings.startsWith(#httpServletRequest.requestURI, '/market') and !#strings.startsWith(#httpServletRequest.requestURI, '/market/form') and !#strings.startsWith(#httpServletRequest.requestURI, '/market/my')} ? ' is-active' : ''"
     >
       <span class="bottom-nav-icon" aria-hidden="true">⌕</span>
       <span class="bottom-nav-label">검색</span>

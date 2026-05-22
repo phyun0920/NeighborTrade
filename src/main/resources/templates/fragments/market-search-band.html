@@ -1,0 +1,52 @@
+<th:block th:fragment="market-search-band" xmlns:th="http://www.thymeleaf.org">
+    <form
+            id="market-search-band-form"
+            class="market-search-band"
+            method="get"
+            th:action="@{/market/list}"
+    >
+        <input type="hidden" name="size" value="8" />
+        <input type="hidden" name="onlyOnSale" value="true" th:if="${onlyOnSale}" />
+        <input
+                type="hidden"
+                name="neighborhoodId"
+                th:value="${neighborhoodId}"
+                th:if="${neighborhoodId != null}"
+        />
+
+        <button
+                type="button"
+                class="market-search-band__region js-region-chip-open"
+                aria-haspopup="dialog"
+                aria-controls="region-modal"
+        >
+      <span
+              th:text="${browsingNeighborhood != null ? browsingNeighborhood.emdName + ' ▼' : '지역 선택 ▼'}"
+      >지역 선택 ▼</span
+      >
+        </button>
+
+        <select name="category" class="market-search-band__category" aria-label="카테고리">
+            <option value="" th:selected="${selectedCategory == null}">중고거래 ▼</option>
+            <option
+                    th:each="cat : ${categories}"
+                    th:value="${cat.name()}"
+                    th:text="${cat.label}"
+                    th:selected="${selectedCategory == cat}"
+            ></option>
+        </select>
+
+        <input
+                type="search"
+                name="keyword"
+                class="market-search-band__keyword"
+                placeholder="검색어를 입력해주세요"
+                th:value="${keyword}"
+                autocomplete="off"
+        />
+
+        <button type="submit" class="market-search-band__submit btn" aria-label="검색">
+            검색
+        </button>
+    </form>
+</th:block>

@@ -718,6 +718,245 @@ button,
   line-height: 1.45;
 }
 
+/* ---------- market list v2 (Phase 1 Step 2) ---------- */
+body.market-list-page {
+  --market-max-width: 1280px;
+  --market-sidebar-width: 240px;
+}
+
+.market-v2-pc-only {
+  display: none;
+}
+
+.market-v2-mobile-only {
+  display: block;
+}
+
+@media (min-width: 768px) {
+  body.market-list-page {
+    background: #f5f5f5;
+  }
+
+  body.market-list-page .market-v2-pc-only {
+    display: block;
+  }
+
+  body.market-list-page .market-v2-mobile-only {
+    display: none !important;
+  }
+
+  body.market-list-page .market-v2-shell {
+    max-width: var(--market-max-width);
+    margin: 0 auto;
+    padding: 24px 20px 48px;
+    box-sizing: border-box;
+  }
+
+  body.market-list-page .market-search-band {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 16px;
+    padding: 12px 16px;
+    background: #fff;
+    border: 1px solid #eee;
+    border-radius: 12px;
+    box-sizing: border-box;
+  }
+
+  body.market-list-page .market-search-band__region {
+    flex-shrink: 0;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background: #fff;
+    padding: 10px 12px;
+    font-size: 14px;
+    font-weight: 600;
+    color: #333;
+    cursor: pointer;
+    white-space: nowrap;
+  }
+
+  body.market-list-page .market-search-band__region:hover {
+    border-color: #ff6f0f;
+    color: #ff6f0f;
+  }
+
+  body.market-list-page .market-search-band__category {
+    flex-shrink: 0;
+    min-width: 132px;
+    max-width: 160px;
+    padding: 10px 12px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background: #fff;
+    font-size: 14px;
+    color: #333;
+  }
+
+  body.market-list-page .market-search-band__keyword {
+    flex: 1;
+    min-width: 120px;
+    padding: 10px 14px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 14px;
+  }
+
+  body.market-list-page .market-search-band__submit {
+    flex-shrink: 0;
+    min-width: 72px;
+    padding: 10px 18px;
+    border-radius: 999px;
+  }
+
+  body.market-list-page .market-v2-layout {
+    display: flex;
+    align-items: flex-start;
+    gap: 24px;
+  }
+
+  body.market-list-page .market-sidebar {
+    flex: 0 0 var(--market-sidebar-width);
+    width: var(--market-sidebar-width);
+    background: #fff;
+    border: 1px solid #eee;
+    border-radius: 14px;
+    padding: 16px;
+    box-sizing: border-box;
+  }
+
+  body.market-list-page .market-sidebar__head {
+    margin-bottom: 16px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid #f0f0f0;
+  }
+
+  body.market-list-page .market-sidebar__reset {
+    font-size: 13px;
+    font-weight: 700;
+    color: #666;
+  }
+
+  body.market-list-page .market-sidebar__reset:hover {
+    color: #ff6f0f;
+  }
+
+  body.market-list-page .market-sidebar__section {
+    margin-bottom: 18px;
+  }
+
+  body.market-list-page .market-sidebar__section:last-child {
+    margin-bottom: 0;
+  }
+
+  body.market-list-page .market-sidebar__title {
+    margin: 0 0 8px;
+    font-size: 13px;
+    font-weight: 800;
+    color: #333;
+  }
+
+  body.market-list-page .market-sidebar__list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  body.market-list-page .market-sidebar__list--scroll {
+    max-height: 220px;
+    overflow-y: auto;
+  }
+
+  body.market-list-page .market-sidebar__list a {
+    display: block;
+    padding: 6px 8px;
+    border-radius: 6px;
+    font-size: 13px;
+    line-height: 1.4;
+    color: #444;
+  }
+
+  body.market-list-page .market-sidebar__list a:hover {
+    background: #fafafa;
+  }
+
+  body.market-list-page .market-sidebar__list a.is-active {
+    background: #fff7f0;
+    color: #ff6f0f;
+    font-weight: 700;
+  }
+
+  body.market-list-page .market-sidebar__location-hint {
+    margin: 0 0 8px;
+    font-size: 12px;
+    line-height: 1.45;
+    color: #666;
+  }
+
+  body.market-list-page .market-sidebar__region-btn {
+    width: 100%;
+    margin-top: 8px;
+    box-sizing: border-box;
+    text-align: center;
+  }
+
+  body.market-list-page .market-main {
+    flex: 1;
+    min-width: 0;
+    background: #fff;
+    border: 1px solid #eee;
+    border-radius: 14px;
+    padding: 20px 24px 28px;
+    box-sizing: border-box;
+  }
+
+  body.market-list-page .market-title-bar h1 {
+    margin: 0 0 12px;
+    font-size: 1.5rem;
+    font-weight: 800;
+    line-height: 1.35;
+    word-break: keep-all;
+  }
+
+  body.market-list-page .market-title-bar__pipe {
+    color: #ff6f0f;
+    margin-right: 8px;
+  }
+
+  body.market-list-page .market-toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 16px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid #f0f0f0;
+  }
+
+  body.market-list-page .market-toolbar__count {
+    font-size: 14px;
+    color: #666;
+    font-weight: 600;
+  }
+
+  body.market-list-page .market-grid-v2 {
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+  }
+
+  body.market-list-page .market-pagination--placeholder {
+    min-height: 40px;
+    margin-top: 24px;
+  }
+}
+
+@media (max-width: 767px) {
+  body.market-list-page .market-v2-pc-only {
+    display: none !important;
+  }
+}
+
 /* C2: 마이페이지 로그아웃(PC·모바일 공통, 모바일 전폭은 @767px) */
 .mypage-logout-form {
   margin: 24px 0 0;

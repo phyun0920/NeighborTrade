@@ -1,0 +1,84 @@
+<th:block th:fragment="market-sidebar" xmlns:th="http://www.thymeleaf.org">
+    <aside class="market-sidebar" aria-label="필터">
+        <div class="market-sidebar__head">
+            <a class="market-sidebar__reset" th:href="@{/market/list}">초기화</a>
+        </div>
+
+        <section class="market-sidebar__section">
+            <h2 class="market-sidebar__title">거래 상태</h2>
+            <ul class="market-sidebar__list">
+                <li>
+                    <a
+                            th:href="@{/market/list(keyword=${keyword}, size=8, category=${selectedCategory}, neighborhoodId=${neighborhoodId})}"
+                            th:classappend="${!onlyOnSale} ? ' is-active' : ''"
+                    >전체</a
+                    >
+                </li>
+                <li>
+                    <a
+                            th:href="@{/market/list(keyword=${keyword}, onlyOnSale=true, size=8, category=${selectedCategory}, neighborhoodId=${neighborhoodId})}"
+                            th:classappend="${onlyOnSale} ? ' is-active' : ''"
+                    >거래 가능만</a
+                    >
+                </li>
+            </ul>
+        </section>
+
+        <section class="market-sidebar__section">
+            <h2 class="market-sidebar__title">카테고리</h2>
+            <ul class="market-sidebar__list market-sidebar__list--scroll">
+                <li>
+                    <a
+                            th:href="@{/market/list(keyword=${keyword}, onlyOnSale=${onlyOnSale}, size=8, neighborhoodId=${neighborhoodId})}"
+                            th:classappend="${selectedCategory == null} ? ' is-active' : ''"
+                    >전체</a
+                    >
+                </li>
+                <li th:each="cat : ${categories}">
+                    <a
+                            th:href="@{/market/list(keyword=${keyword}, onlyOnSale=${onlyOnSale}, category=${cat}, size=8, neighborhoodId=${neighborhoodId})}"
+                            th:classappend="${selectedCategory == cat} ? ' is-active' : ''"
+                            th:text="${cat.label}"
+                    >카테고리</a
+                    >
+                </li>
+            </ul>
+        </section>
+
+        <section class="market-sidebar__section">
+            <h2 class="market-sidebar__title">위치</h2>
+            <p class="market-sidebar__location-hint" th:if="${browsingNeighborhood != null}">
+                열람 동네:
+                <strong th:text="${browsingNeighborhood.emdName}">동</strong>
+            </p>
+            <p class="market-sidebar__location-hint" th:if="${browsingNeighborhood == null}">
+                헤더·검색 밴드에서 동네를 선택할 수 있습니다.
+            </p>
+            <ul class="market-sidebar__list">
+                <li>
+                    <a
+                            th:href="@{/market/list(keyword=${keyword}, onlyOnSale=${onlyOnSale}, category=${selectedCategory}, size=8)}"
+                            th:classappend="${neighborhoodId == null} ? ' is-active' : ''"
+                    >전체 동네</a
+                    >
+                </li>
+                <li th:if="${browsingNeighborhood != null}">
+                    <a
+                            th:href="@{/market/list(keyword=${keyword}, onlyOnSale=${onlyOnSale}, category=${selectedCategory}, neighborhoodId=${browsingNeighborhood.id}, size=8)}"
+                            th:classappend="${neighborhoodId != null && neighborhoodId == browsingNeighborhood.id} ? ' is-active' : ''"
+                            th:text="${browsingNeighborhood.emdName} + '만 보기'"
+                    >동네만</a
+                    >
+                </li>
+            </ul>
+            <button
+                    type="button"
+                    class="btn secondary market-sidebar__region-btn js-region-chip-open"
+                    aria-haspopup="dialog"
+                    aria-controls="region-modal"
+            >
+                지역 변경
+            </button>
+        </section>
+    </aside>
+</th:block>
