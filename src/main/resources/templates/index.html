@@ -1,10 +1,6 @@
 <!doctype html>
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
-<head>
-  <meta charset="UTF-8" />
-  <title>NeighborTrade</title>
-  <link rel="stylesheet" th:href="@{/css/common.css}" />
-</head>
+<head th:replace="~{fragments/head :: head('NeighborTrade')}"></head>
 <body>
 <div th:replace="~{fragments/header :: header}"></div>
 <main class="container hero">

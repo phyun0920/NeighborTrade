@@ -1,0 +1,18 @@
+<th:block th:fragment="market-popular-keywords" xmlns:th="http://www.thymeleaf.org">
+    <div
+            class="market-popular-keywords"
+            th:if="${popularKeywords != null and !popularKeywords.isEmpty()}"
+    >
+        <span class="market-popular-keywords__label">인기검색어</span>
+        <div class="market-popular-keywords__chips">
+            <a
+                    class="market-popular-keywords__chip"
+                    th:each="popularKeyword : ${popularKeywords}"
+                    th:href="@{/market/list(page=0, keyword=${popularKeyword}, size=8, sort=${sort}, onlyOnSale=${onlyOnSale}, category=${selectedCategory}, neighborhoodId=${neighborhoodId})}"
+                    th:text="${popularKeyword}"
+                    th:classappend="${keyword != null and keyword == popularKeyword} ? ' is-active' : ''"
+            >키워드</a
+            >
+        </div>
+    </div>
+</th:block>

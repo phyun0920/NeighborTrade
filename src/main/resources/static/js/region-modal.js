@@ -1,5 +1,5 @@
 (function () {
-  var openBtn = document.getElementById("region-chip-open");
+  var openBtns = document.querySelectorAll("#region-chip-open, .js-region-chip-open");
   var modal = document.getElementById("region-modal");
   var closeBtn = document.getElementById("region-modal-close");
   var backdrop = document.getElementById("region-modal-backdrop");
@@ -12,7 +12,7 @@
     return modal ? modal.querySelector("#region-list") : null;
   }
 
-  if (!openBtn || !modal || !listRoot() || !form || !hiddenId) {
+  if (!modal || !listRoot() || !form || !hiddenId || openBtns.length === 0) {
     return;
   }
 
@@ -218,7 +218,9 @@
     document.body.classList.remove("region-modal-open");
   }
 
-  openBtn.addEventListener("click", openModal);
+  openBtns.forEach(function (btn) {
+    btn.addEventListener("click", openModal);
+  });
   if (closeBtn) closeBtn.addEventListener("click", closeModal);
   if (backdrop) backdrop.addEventListener("click", closeModal);
 

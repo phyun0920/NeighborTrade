@@ -18,6 +18,24 @@
   var stomp = Stomp.over(new SockJS("/ws"));
   stomp.debug = null;
 
+  function scrollToBottom() {
+    box.scrollTop = box.scrollHeight;
+  }
+
+  function scrollToBottomSoon() {
+    scrollToBottom();
+    requestAnimationFrame(function () {
+      scrollToBottom();
+      requestAnimationFrame(scrollToBottom);
+    });
+  }
+
+  scrollToBottomSoon();
+  window.addEventListener("load", scrollToBottomSoon);
+  if (document.fonts && document.fonts.ready) {
+    document.fonts.ready.then(scrollToBottom);
+  }
+
   stomp.connect({}, function () {
     stomp.subscribe("/topic/chat/" + roomId, function (frame) {
       var message = JSON.parse(frame.body);
@@ -113,6 +131,6 @@
     inner.appendChild(meta);
     row.appendChild(inner);
     box.appendChild(row);
-    box.scrollTop = box.scrollHeight;
+    scrollToBottom();
   }
 })();

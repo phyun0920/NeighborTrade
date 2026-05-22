@@ -1,26 +1,27 @@
 <!doctype html>
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
-  <head>
-    <meta charset="UTF-8" />
-    <title>동네생활</title>
-    <link rel="stylesheet" th:href="@{/css/common.css}" />
-  </head>
-  <body>
-    <div th:replace="~{fragments/header :: header}"></div>
-    <main class="container">
-      <div class="page-head">
-        <h1 th:text="${currentMember.verifiedNeighborhood.displayName} + ' 동네생활'">동네생활</h1>
-        <a class="btn" th:href="@{/community/form}">글쓰기</a>
-      </div>
-      <div class="list">
-        <a class="row" th:each="post : ${page.content}" th:href="@{/community/detail/{id}(id=${post.id})}">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>동네생활</title>
+  <link rel="stylesheet" th:href="@{/css/common.css}" />
+</head>
+<body>
+<div th:replace="~{fragments/header :: header}"></div>
+<main class="container">
+  <div class="page-head">
+    <h1 th:text="${currentMember.verifiedNeighborhood.displayName} + ' 동네생활'">동네생활</h1>
+    <a class="btn" th:href="@{/community/form}">글쓰기</a>
+  </div>
+  <div class="list">
+    <a class="row" th:each="post : ${page.content}" th:href="@{/community/detail/{id}(id=${post.id})}">
           <span>
             <b th:text="${post.title}"></b><br />
             <small th:text="${post.author.nickname} + ' · 조회 ' + ${post.viewCount}"></small>
           </span>
-          <small th:text="${#temporals.format(post.createdAt, 'yyyy-MM-dd HH:mm')}"></small>
-        </a>
-      </div>
-    </main>
-  </body>
+      <small th:text="${#temporals.format(post.createdAt, 'yyyy-MM-dd HH:mm')}"></small>
+    </a>
+  </div>
+</main>
+</body>
 </html>

@@ -1,5 +1,6 @@
 package com.study.neighbortrade.controller;
 
+import com.study.neighbortrade.config.MarketProperties;
 import com.study.neighbortrade.domain.member.Member;
 import com.study.neighbortrade.domain.product.*;
 import com.study.neighbortrade.dto.product.ProductPostRequestDto;
@@ -22,20 +23,35 @@ public class MarketController {
     private final ProductPostService productPostService;
     private final ProductImageService productImageService;
     private final CurrentMemberService currentMemberService;
+    private final MarketProperties marketProperties;
 
     @GetMapping("/list")
-    public String list(@RequestParam(defaultValue = "") String keyword,
-
-                       @RequestParam(defaultValue = "false")
-                       boolean onlyOnSale,
-
-                       @RequestParam(defaultValue = "0")
-                       int page, Model model, Principal principal) {
+    public String list(
+            @RequestParam(defaultValue = "") String keyword,
+            @RequestParam(defaultValue = "false") boolean onlyOnSale,
+            @RequestParam(required = false) ProductCategory category,
+            @RequestParam(required = false) Long neighborhoodId,
+            @RequestParam(defaultValue = "latest") String sort,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "8") int size,
+            Model model,
+            Principal principal
+    ) {
+        MarketSort marketSort = MarketSort.fromParam(sort);
         Member member = currentMemberService.get(principal);
         model.addAttribute("currentMember", member);
-        model.addAttribute("page", productPostService.list(keyword, onlyOnSale, page));
+        model.addAttribute(
+                "page",
+                productPostService.list(keyword, onlyOnSale, category, neighborhoodId, marketSort, page, size));
         model.addAttribute("keyword", keyword);
         model.addAttribute("onlyOnSale", onlyOnSale);
+        model.addAttribute("categories", ProductCategory.values());
+        model.addAttribute("selectedCategory", category);
+        model.addAttribute("neighborhoodId", neighborhoodId);
+        model.addAttribute("sort", marketSort.getParam());
+        model.addAttribute("sortOptions", MarketSort.values());
+        model.addAttribute("pageSize", size);
+        model.addAttribute("popularKeywords", marketProperties.popularKeywords());
         return "market/list";
     }
 

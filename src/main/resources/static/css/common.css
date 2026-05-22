@@ -31,6 +31,19 @@ body {
 .spacer {
   flex: 1;
 }
+
+/* PC 헤더 링크 묶음 — span 기본 inline이라 링크가 붙어 보이는 문제 방지 */
+.nav-desktop-only {
+  display: inline-flex;
+  align-items: center;
+  gap: 18px;
+  flex-wrap: wrap;
+}
+
+.nav-logout-form {
+  display: inline-flex;
+  margin: 0;
+}
 a {
   color: inherit;
   text-decoration: none;
@@ -418,8 +431,10 @@ button,
   }
   body.chat-room-page {
     margin: 0;
-    min-height: 100vh;
+    height: 100dvh;
+    max-height: 100dvh;
     min-height: 100dvh;
+    overflow: hidden;
     display: flex;
     flex-direction: column;
   }
@@ -428,18 +443,21 @@ button,
     display: flex;
     flex-direction: column;
     min-height: 0;
+    overflow: hidden;
   }
   .chat-room-shell {
     flex: 1;
     display: flex;
     flex-direction: column;
     min-height: 0;
+    overflow: hidden;
   }
   .chat-room-main.container.narrow {
     flex: 1;
     display: flex;
     flex-direction: column;
     min-height: 0;
+    overflow: hidden;
     margin: 0;
     max-width: none;
     width: 100%;
@@ -453,16 +471,21 @@ button,
     flex-shrink: 0;
   }
   .chat-room-product-bar {
-    position: sticky;
-    top: 52px;
-    z-index: 35;
+    position: static;
+    flex-shrink: 0;
+    top: auto;
+    z-index: auto;
     margin-top: 0;
     margin-bottom: 8px;
   }
   .chat-room-page .chat-box.chat-room-messages {
     height: auto !important;
-    flex: 1;
+    flex: 1 1 auto;
     min-height: 0;
+    overflow-x: hidden;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior: contain;
     border-radius: 8px;
     background: #f3f3f3;
     border: 1px solid #e8e8e8;
@@ -693,6 +716,666 @@ button,
   font-size: 14px;
   color: #555;
   line-height: 1.45;
+}
+
+/* ---------- market list v2 (Phase 1 Step 2) ---------- */
+body.market-list-page {
+  --market-max-width: 1280px;
+  --market-sidebar-width: 240px;
+}
+
+.market-v2-pc-only {
+  display: none;
+}
+
+.market-v2-mobile-only {
+  display: block;
+}
+
+@media (min-width: 768px) {
+  body.market-list-page {
+    background: #f5f5f5;
+  }
+
+  body.market-list-page .market-v2-pc-only {
+    display: block;
+  }
+
+  body.market-list-page .market-v2-mobile-only {
+    display: none !important;
+  }
+
+  body.market-list-page .market-v2-shell {
+    max-width: var(--market-max-width);
+    margin: 0 auto;
+    padding: 24px 20px 48px;
+    box-sizing: border-box;
+  }
+
+  body.market-list-page .market-search-band-block {
+    margin-bottom: 16px;
+  }
+
+  body.market-list-page
+    .market-search-band-block:not(.market-search-band-block--has-keywords)
+    .market-search-band {
+    border-radius: 12px;
+  }
+
+  body.market-list-page .market-search-band {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 0;
+    padding: 12px 16px;
+    background: #fff;
+    border: 1px solid #eee;
+    border-radius: 12px 12px 0 0;
+    box-sizing: border-box;
+  }
+
+  body.market-list-page .market-popular-keywords {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+    padding: 10px 16px 12px;
+    background: #fff;
+    border: 1px solid #eee;
+    border-top: none;
+    border-radius: 0 0 12px 12px;
+    box-sizing: border-box;
+  }
+
+  body.market-list-page .market-popular-keywords__label {
+    flex-shrink: 0;
+    font-size: 13px;
+    font-weight: 700;
+    color: #888;
+  }
+
+  body.market-list-page .market-popular-keywords__chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    min-width: 0;
+  }
+
+  body.market-list-page .market-popular-keywords__chip {
+    display: inline-flex;
+    align-items: center;
+    padding: 6px 12px;
+    border-radius: 999px;
+    border: 1px solid #eee;
+    background: #fafafa;
+    font-size: 13px;
+    color: #444;
+    text-decoration: none;
+    transition: border-color 0.15s ease, color 0.15s ease, background 0.15s ease;
+  }
+
+  body.market-list-page .market-popular-keywords__chip:hover {
+    border-color: #ffd4b8;
+    color: #ff6f0f;
+    background: #fff8f3;
+  }
+
+  body.market-list-page .market-popular-keywords__chip.is-active {
+    border-color: #ff6f0f;
+    background: #ff6f0f;
+    color: #fff;
+    font-weight: 600;
+  }
+
+  body.market-list-page .market-search-band__region {
+    flex-shrink: 0;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background: #fff;
+    padding: 10px 12px;
+    font-size: 14px;
+    font-weight: 600;
+    color: #333;
+    cursor: pointer;
+    white-space: nowrap;
+  }
+
+  body.market-list-page .market-search-band__region:hover {
+    border-color: #ff6f0f;
+    color: #ff6f0f;
+  }
+
+  body.market-list-page .market-search-band__category {
+    flex-shrink: 0;
+    min-width: 132px;
+    max-width: 160px;
+    padding: 10px 12px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background: #fff;
+    font-size: 14px;
+    color: #333;
+  }
+
+  body.market-list-page .market-search-band__keyword {
+    flex: 1;
+    min-width: 120px;
+    padding: 10px 14px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 14px;
+  }
+
+  body.market-list-page .market-search-band__submit {
+    flex-shrink: 0;
+    min-width: 72px;
+    padding: 10px 18px;
+    border-radius: 999px;
+  }
+
+  body.market-list-page .market-v2-layout {
+    display: flex;
+    align-items: flex-start;
+    gap: 24px;
+  }
+
+  body.market-list-page .market-sidebar {
+    flex: 0 0 var(--market-sidebar-width);
+    width: var(--market-sidebar-width);
+    background: #fff;
+    border: 1px solid #eee;
+    border-radius: 14px;
+    padding: 16px;
+    box-sizing: border-box;
+  }
+
+  body.market-list-page .market-sidebar__head {
+    margin-bottom: 16px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid #f0f0f0;
+  }
+
+  body.market-list-page .market-sidebar__reset {
+    font-size: 13px;
+    font-weight: 700;
+    color: #666;
+  }
+
+  body.market-list-page .market-sidebar__reset:hover {
+    color: #ff6f0f;
+  }
+
+  body.market-list-page .market-sidebar__section {
+    margin-bottom: 18px;
+  }
+
+  body.market-list-page .market-sidebar__section:last-child {
+    margin-bottom: 0;
+  }
+
+  body.market-list-page .market-sidebar__title {
+    margin: 0 0 8px;
+    font-size: 13px;
+    font-weight: 800;
+    color: #333;
+  }
+
+  body.market-list-page .market-sidebar__list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  body.market-list-page .market-sidebar__list--scroll {
+    max-height: 220px;
+    overflow-y: auto;
+  }
+
+  body.market-list-page .market-sidebar__list a {
+    display: block;
+    padding: 6px 8px;
+    border-radius: 6px;
+    font-size: 13px;
+    line-height: 1.4;
+    color: #444;
+  }
+
+  body.market-list-page .market-sidebar__list a:hover {
+    background: #fafafa;
+  }
+
+  body.market-list-page .market-sidebar__list a.is-active {
+    background: #fff7f0;
+    color: #ff6f0f;
+    font-weight: 700;
+  }
+
+  body.market-list-page .market-sidebar__location-hint {
+    margin: 0 0 8px;
+    font-size: 12px;
+    line-height: 1.45;
+    color: #666;
+  }
+
+  body.market-list-page .market-sidebar__region-btn {
+    width: 100%;
+    margin-top: 8px;
+    box-sizing: border-box;
+    text-align: center;
+  }
+
+  body.market-list-page .market-main {
+    flex: 1;
+    min-width: 0;
+    background: #fff;
+    border: 1px solid #eee;
+    border-radius: 14px;
+    padding: 20px 24px 28px;
+    box-sizing: border-box;
+  }
+
+  body.market-list-page .market-title-bar h1 {
+    margin: 0 0 12px;
+    font-size: 1.5rem;
+    font-weight: 800;
+    line-height: 1.35;
+    word-break: keep-all;
+  }
+
+  body.market-list-page .market-title-bar__pipe {
+    color: #ff6f0f;
+    margin-right: 8px;
+  }
+
+  body.market-list-page .market-toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 16px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid #f0f0f0;
+  }
+
+  body.market-list-page .market-toolbar__count {
+    font-size: 14px;
+    color: #666;
+    font-weight: 600;
+  }
+
+  body.market-list-page .market-toolbar__actions {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  body.market-list-page .market-toolbar__sort-form {
+    margin: 0;
+  }
+
+  body.market-list-page .market-toolbar__sort {
+    padding: 8px 32px 8px 12px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 14px;
+    color: #333;
+    background: #fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%23666' d='M1 1l5 5 5-5'/%3E%3C/svg%3E") no-repeat right 10px center;
+    appearance: none;
+    cursor: pointer;
+  }
+
+  body.market-list-page .market-toolbar__sort:focus {
+    outline: 2px solid #ffd4b8;
+    border-color: #ff6f0f;
+  }
+
+  body.market-list-page .market-grid-v2 {
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+  }
+
+  body.market-list-page .market-grid-v2 .card {
+    padding: 12px;
+    transition: box-shadow 0.15s ease, border-color 0.15s ease;
+  }
+
+  body.market-list-page .market-grid-v2 .card:hover {
+    border-color: #ffd4b8;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.07);
+  }
+
+  body.market-list-page .market-grid-v2 .card img {
+    height: 140px;
+  }
+
+  body.market-list-page .market-grid-v2 .card b {
+    font-size: 14px;
+    line-height: 1.35;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  body.market-list-page .market-grid-v2 .card span {
+    font-size: 15px;
+    font-weight: 800;
+    color: #222;
+  }
+
+  body.market-list-page .market-grid-v2 .card small {
+    font-size: 12px;
+    color: #888;
+  }
+
+  body.market-list-page .market-pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 28px;
+    padding-top: 8px;
+  }
+
+  body.market-list-page .market-pagination a {
+    min-width: 36px;
+    height: 36px;
+    padding: 0 10px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+    border: 1px solid #e8e8e8;
+    background: #fff;
+    font-size: 14px;
+    font-weight: 600;
+    color: #444;
+    box-sizing: border-box;
+  }
+
+  body.market-list-page .market-pagination a:hover {
+    border-color: #ff6f0f;
+    color: #ff6f0f;
+  }
+
+  body.market-list-page .market-pagination a.is-current {
+    border-color: #ff6f0f;
+    background: #ff6f0f;
+    color: #fff;
+    pointer-events: none;
+  }
+
+  body.market-list-page .market-pagination__edge {
+    min-width: auto;
+    padding: 0 14px;
+  }
+
+  /* U10: list PC — global bar (로고 + auth만) */
+  body.market-list-page .site-header .nav {
+    max-width: var(--market-max-width);
+  }
+
+  body.market-list-page .site-header .nav-links,
+  body.market-list-page .site-header .nav-brand-group .region-chip,
+  body.market-list-page .site-header .spacer.nav-desktop-only {
+    display: none !important;
+  }
+
+  body.market-list-page .site-header .nav-auth.nav-desktop-only {
+    margin-left: auto;
+  }
+}
+
+@media (max-width: 767px) {
+  body.market-list-page .market-v2-pc-only {
+    display: none !important;
+  }
+}
+
+/* C2: 마이페이지 로그아웃(PC·모바일 공통, 모바일 전폭은 @767px) */
+.mypage-logout-form {
+  margin: 24px 0 0;
+  padding-top: 20px;
+  border-top: 1px solid #eee;
+}
+
+/* ---------- 모바일 하단 탭 (≤767px) ---------- */
+.bottom-nav {
+  display: none;
+}
+
+/* viewport 미적용·페이지별 HTML 캐시 시 폴백 (head 인라인 스크립트 → html.is-mobile) */
+html.is-mobile body:not(.chat-room-page):not(.admin-body) {
+  padding-bottom: calc(58px + env(safe-area-inset-bottom, 0px));
+}
+
+html.is-mobile .nav-desktop-only {
+  display: none !important;
+}
+
+html.is-mobile .bottom-nav {
+  display: flex;
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 88;
+  margin: 0;
+  padding: 6px 8px calc(6px + env(safe-area-inset-bottom, 0px));
+  background: #fff;
+  border-top: 1px solid #eee;
+  box-shadow: 0 -2px 12px rgba(0, 0, 0, 0.06);
+  justify-content: space-around;
+  align-items: stretch;
+}
+
+html.is-mobile body.chat-room-page .bottom-nav,
+html.is-mobile body.admin-body .bottom-nav {
+  display: none !important;
+}
+
+html.is-mobile body.chat-room-page,
+html.is-mobile body.admin-body {
+  padding-bottom: 0;
+}
+
+html.is-mobile .nav {
+  gap: 10px;
+  padding: 10px 14px;
+}
+
+html.is-mobile .container {
+  padding: 16px 12px;
+}
+
+html.is-mobile .container.hero {
+  padding-top: 28px;
+}
+
+html.is-mobile .member-auth-page .form input,
+html.is-mobile .member-auth-page .form button,
+html.is-mobile .member-auth-page .social-login .btn {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+@media (max-width: 767px) {
+  body:not(.chat-room-page):not(.admin-body) {
+    padding-bottom: calc(58px + env(safe-area-inset-bottom, 0px));
+  }
+
+  .nav-desktop-only {
+    display: none !important;
+  }
+
+  .nav {
+    gap: 10px;
+    padding: 10px 14px;
+  }
+
+  .bottom-nav {
+    display: flex;
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 88;
+    margin: 0;
+    padding: 6px 8px calc(6px + env(safe-area-inset-bottom, 0px));
+    background: #fff;
+    border-top: 1px solid #eee;
+    box-shadow: 0 -2px 12px rgba(0, 0, 0, 0.06);
+    justify-content: space-around;
+    align-items: stretch;
+  }
+
+  body.chat-room-page .bottom-nav,
+  body.admin-body .bottom-nav {
+    display: none !important;
+  }
+
+  body.chat-room-page,
+  body.admin-body {
+    padding-bottom: 0;
+  }
+
+  .bottom-nav-item {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 2px;
+    padding: 6px 4px;
+    min-height: 44px;
+    text-decoration: none;
+    color: #666;
+    font-size: 11px;
+    font-weight: 600;
+    border-radius: 10px;
+  }
+
+  .bottom-nav-item.is-active {
+    color: #ff6f0f;
+    background: #fff7f0;
+  }
+
+  .bottom-nav-icon {
+    font-size: 18px;
+    line-height: 1;
+  }
+
+  .bottom-nav-label {
+    line-height: 1.2;
+  }
+
+  /* C1·C2: 로그인 시 하단 5~6탭 — 라벨·아이콘 축소 */
+  .bottom-nav:has(.bottom-nav-item:nth-child(5)) .bottom-nav-item {
+    font-size: 10px;
+    padding: 6px 2px;
+    min-width: 0;
+  }
+
+  .bottom-nav:has(.bottom-nav-item:nth-child(5)) .bottom-nav-icon {
+    font-size: 16px;
+  }
+
+  .bottom-nav:has(.bottom-nav-item:nth-child(5)) .bottom-nav-label {
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .bottom-nav:has(.bottom-nav-item:nth-child(6)) .bottom-nav-item {
+    font-size: 9px;
+    padding: 5px 1px;
+    gap: 1px;
+  }
+
+  .bottom-nav:has(.bottom-nav-item:nth-child(6)) .bottom-nav-icon {
+    font-size: 15px;
+  }
+
+  .mypage-logout-btn {
+    width: 100%;
+    text-align: center;
+  }
+
+  .member-auth-page .form input,
+  .member-auth-page .form button,
+  .member-auth-page .social-login .btn {
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  .grid {
+    grid-template-columns: 1fr;
+  }
+
+  /* B2: 본문 container — 계획값 16px 12px (기존 좌우만 → 상하 포함) */
+  .container {
+    padding: 16px 12px;
+  }
+
+  .container.hero {
+    padding-top: 28px;
+  }
+
+  /* B3: 목록·관리 등 검색 폼 — 세로 스택 (채팅 입력창은 가로 유지) */
+  .filters:not(.chat-room-composer) {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+    margin: 16px 0;
+  }
+
+  .filters:not(.chat-room-composer) input:not([type="checkbox"]):not([type="hidden"]),
+  .filters:not(.chat-room-composer) select {
+    width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+  }
+
+  .filters:not(.chat-room-composer) label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+    font-weight: 400;
+    color: #333;
+  }
+
+  .filters:not(.chat-room-composer) .btn {
+    width: 100%;
+    text-align: center;
+  }
+
+  /* B4: 목록 상단 — 제목·글쓰기 버튼 줄바꿈 */
+  .page-head {
+    flex-wrap: wrap;
+    align-items: flex-start;
+    gap: 12px;
+    margin: 16px 0 12px;
+  }
+
+  .page-head h1 {
+    flex: 1 1 100%;
+    min-width: 0;
+    margin: 0;
+    font-size: 1.35rem;
+    line-height: 1.35;
+    word-break: keep-all;
+    overflow-wrap: anywhere;
+  }
+
+  .page-head .btn {
+    flex: 1 1 100%;
+    width: 100%;
+    text-align: center;
+    box-sizing: border-box;
+  }
 }
 
 /* ---------- 관리자 레이아웃 ---------- */

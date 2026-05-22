@@ -1,23 +1,24 @@
 <!doctype html>
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
-  <head>
-    <meta charset="UTF-8" />
-    <title>내 판매글</title>
-    <link rel="stylesheet" th:href="@{/css/common.css}" />
-  </head>
-  <body>
-    <div th:replace="~{fragments/header :: header}"></div>
-    <main class="container">
-      <h1>내가 올린 판매글</h1>
-      <div class="list">
-        <a
-          th:each="post : ${page.content}"
-          th:href="@{/market/detail/{id}(id=${post.id})}"
-          class="row"
-          ><span th:text="${post.title}"></span
-          ><b th:text="${post.status.label}"></b
-        ></a>
-      </div>
-    </main>
-  </body>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>내 판매글</title>
+  <link rel="stylesheet" th:href="@{/css/common.css}" />
+</head>
+<body>
+<div th:replace="~{fragments/header :: header}"></div>
+<main class="container">
+  <h1>내가 올린 판매글</h1>
+  <div class="list">
+    <a
+            th:each="post : ${page.content}"
+            th:href="@{/market/detail/{id}(id=${post.id})}"
+            class="row"
+    ><span th:text="${post.title}"></span
+    ><b th:text="${post.status.label}"></b
+    ></a>
+  </div>
+</main>
+</body>
 </html>

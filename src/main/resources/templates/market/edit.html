@@ -1,40 +1,41 @@
 <!doctype html>
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
-  <head>
-    <meta charset="UTF-8" />
-    <title>판매글 수정</title>
-    <link rel="stylesheet" th:href="@{/css/common.css}" />
-  </head>
-  <body>
-    <div th:replace="~{fragments/header :: header}"></div>
-    <main class="container narrow">
-      <h1>판매글 수정</h1>
-      <form
-        th:action="@{/market/edit/{id}(id=${post.id})}"
-        th:object="${productPostRequestDto}"
-        method="post"
-        enctype="multipart/form-data"
-        class="form"
-      >
-        <input th:field="*{title}" /><select th:field="*{category}">
-          <option
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>판매글 수정</title>
+  <link rel="stylesheet" th:href="@{/css/common.css}" />
+</head>
+<body>
+<div th:replace="~{fragments/header :: header}"></div>
+<main class="container narrow">
+  <h1>판매글 수정</h1>
+  <form
+          th:action="@{/market/edit/{id}(id=${post.id})}"
+          th:object="${productPostRequestDto}"
+          method="post"
+          enctype="multipart/form-data"
+          class="form"
+  >
+    <input th:field="*{title}" /><select th:field="*{category}">
+    <option
             th:each="c : ${categories}"
             th:value="${c}"
             th:text="${c.label}"
-          ></option></select
-        ><input th:field="*{price}" type="number" /><label
-          ><input th:field="*{giveaway}" type="checkbox" /> 나눔</label
-        ><input th:field="*{representativeImageUrl}" placeholder="대표 이미지 URL(선택)" />
-        <div th:if="${!#lists.isEmpty(images)}" class="image-strip">
-          <img th:each="image : ${images}" th:src="${image.imageUrl}" alt="상품 이미지" />
-        </div>
-        <input name="imageFiles" type="file" accept="image/*" multiple />
-        <small class="muted">새 파일을 올리면 기존 업로드 이미지를 교체합니다.</small
-        ><input
+    ></option></select
+  ><input th:field="*{price}" type="number" /><label
+  ><input th:field="*{giveaway}" type="checkbox" /> 나눔</label
+  ><input th:field="*{representativeImageUrl}" placeholder="대표 이미지 URL(선택)" />
+    <div th:if="${!#lists.isEmpty(images)}" class="image-strip">
+      <img th:each="image : ${images}" th:src="${image.imageUrl}" alt="상품 이미지" />
+    </div>
+    <input name="imageFiles" type="file" accept="image/*" multiple />
+    <small class="muted">새 파일을 올리면 기존 업로드 이미지를 교체합니다.</small
+    ><input
           th:field="*{tradePlace}"
-        /><textarea th:field="*{content}"></textarea
-        ><button class="btn" type="submit">저장</button>
-      </form>
-    </main>
-  </body>
+  /><textarea th:field="*{content}"></textarea
+  ><button class="btn" type="submit">저장</button>
+  </form>
+</main>
+</body>
 </html>
