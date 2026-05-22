@@ -945,9 +945,96 @@ body.market-list-page {
     gap: 16px;
   }
 
-  body.market-list-page .market-pagination--placeholder {
-    min-height: 40px;
-    margin-top: 24px;
+  body.market-list-page .market-grid-v2 .card {
+    padding: 12px;
+    transition: box-shadow 0.15s ease, border-color 0.15s ease;
+  }
+
+  body.market-list-page .market-grid-v2 .card:hover {
+    border-color: #ffd4b8;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.07);
+  }
+
+  body.market-list-page .market-grid-v2 .card img {
+    height: 140px;
+  }
+
+  body.market-list-page .market-grid-v2 .card b {
+    font-size: 14px;
+    line-height: 1.35;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  body.market-list-page .market-grid-v2 .card span {
+    font-size: 15px;
+    font-weight: 800;
+    color: #222;
+  }
+
+  body.market-list-page .market-grid-v2 .card small {
+    font-size: 12px;
+    color: #888;
+  }
+
+  body.market-list-page .market-pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 28px;
+    padding-top: 8px;
+  }
+
+  body.market-list-page .market-pagination a {
+    min-width: 36px;
+    height: 36px;
+    padding: 0 10px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+    border: 1px solid #e8e8e8;
+    background: #fff;
+    font-size: 14px;
+    font-weight: 600;
+    color: #444;
+    box-sizing: border-box;
+  }
+
+  body.market-list-page .market-pagination a:hover {
+    border-color: #ff6f0f;
+    color: #ff6f0f;
+  }
+
+  body.market-list-page .market-pagination a.is-current {
+    border-color: #ff6f0f;
+    background: #ff6f0f;
+    color: #fff;
+    pointer-events: none;
+  }
+
+  body.market-list-page .market-pagination__edge {
+    min-width: auto;
+    padding: 0 14px;
+  }
+
+  /* U10: list PC — global bar (로고 + auth만) */
+  body.market-list-page .site-header .nav {
+    max-width: var(--market-max-width);
+  }
+
+  body.market-list-page .site-header .nav-links,
+  body.market-list-page .site-header .nav-brand-group .region-chip,
+  body.market-list-page .site-header .spacer.nav-desktop-only {
+    display: none !important;
+  }
+
+  body.market-list-page .site-header .nav-auth.nav-desktop-only {
+    margin-left: auto;
   }
 }
 
