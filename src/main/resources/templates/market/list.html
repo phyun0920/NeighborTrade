@@ -12,7 +12,13 @@
 <!-- PC v2 골격 (≥768px) — Step 2 -->
 <div class="market-v2-pc-only">
   <div class="market-v2-shell">
-    <div th:replace="~{fragments/market-search-band :: market-search-band}"></div>
+    <div
+            class="market-search-band-block"
+            th:classappend="${popularKeywords != null and !popularKeywords.isEmpty()} ? ' market-search-band-block--has-keywords' : ''"
+    >
+      <div th:replace="~{fragments/market-search-band :: market-search-band}"></div>
+      <div th:replace="~{fragments/market-popular-keywords :: market-popular-keywords}"></div>
+    </div>
     <div class="market-v2-layout">
       <div th:replace="~{fragments/market-sidebar :: market-sidebar}"></div>
       <div class="market-main">
@@ -29,7 +35,44 @@
               <span class="market-toolbar__count" th:text="${page.totalElements} + '건'"
               >0건</span
               >
-          <a class="btn" th:href="@{/market/form}">글쓰기</a>
+          <div class="market-toolbar__actions">
+            <form
+                    class="market-toolbar__sort-form"
+                    method="get"
+                    th:action="@{/market/list}"
+            >
+              <input type="hidden" name="page" value="0" />
+              <input type="hidden" name="size" value="8" />
+              <input type="hidden" name="keyword" th:value="${keyword}" />
+              <input type="hidden" name="onlyOnSale" value="true" th:if="${onlyOnSale}" />
+              <input
+                      type="hidden"
+                      name="category"
+                      th:value="${selectedCategory != null ? selectedCategory.name() : ''}"
+                      th:if="${selectedCategory != null}"
+              />
+              <input
+                      type="hidden"
+                      name="neighborhoodId"
+                      th:value="${neighborhoodId}"
+                      th:if="${neighborhoodId != null}"
+              />
+              <select
+                      name="sort"
+                      class="market-toolbar__sort"
+                      aria-label="정렬"
+                      onchange="this.form.submit()"
+              >
+                <option
+                        th:each="option : ${sortOptions}"
+                        th:value="${option.param}"
+                        th:text="${option.label}"
+                        th:selected="${sort == option.param}"
+                ></option>
+              </select>
+            </form>
+            <a class="btn" th:href="@{/market/form}">글쓰기</a>
+          </div>
         </div>
         <p class="browse-hint" th:if="${browsingNeighborhood != null}">
           선택한 동네 글은 테두리로 강조됩니다. 다른 동네 글도 함께 표시됩니다.
@@ -69,6 +112,7 @@
   </div>
   <form class="filters" th:action="@{/market/list}" method="get">
     <input type="hidden" name="size" value="12" />
+    <input type="hidden" name="sort" th:value="${sort}" />
     <input
             type="hidden"
             name="category"

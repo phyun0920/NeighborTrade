@@ -1,6 +1,7 @@
 package com.study.neighbortrade.service;
 
 import com.study.neighbortrade.domain.member.Member;
+import com.study.neighbortrade.domain.product.MarketSort;
 import com.study.neighbortrade.domain.product.ProductCategory;
 import com.study.neighbortrade.domain.product.ProductPost;
 import com.study.neighbortrade.domain.product.ProductStatus;
@@ -25,12 +26,14 @@ public class ProductPostService {
             boolean onlyOnSale,
             ProductCategory category,
             Long neighborhoodId,
+            MarketSort sort,
             int page,
             int size
     ) {
         int safePage = Math.max(page, 0);
         int safeSize = Math.min(Math.max(size, 1), 50);
-        Pageable pageable = PageRequest.of(safePage, safeSize, Sort.by("createdAt").descending());
+        MarketSort resolvedSort = sort != null ? sort : MarketSort.LATEST;
+        Pageable pageable = PageRequest.of(safePage, safeSize, resolvedSort.toSort());
         return productPostRepository.searchVisibleWithFilters(
                 keyword, category, neighborhoodId, onlyOnSale, pageable);
     }
