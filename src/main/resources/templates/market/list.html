@@ -36,6 +36,22 @@
               >0건</span
               >
           <div class="market-toolbar__actions">
+            <div class="market-toolbar__view-toggle" role="group" aria-label="보기 방식">
+              <a
+                      class="market-toolbar__view-btn"
+                      th:href="@{/market/list(page=0, keyword=${keyword}, onlyOnSale=${onlyOnSale}, category=${selectedCategory}, neighborhoodId=${neighborhoodId}, sort=${sort}, view='grid', size=${pageSize})}"
+                      th:classappend="${view == 'grid'} ? ' is-active' : ''"
+                      th:attr="aria-pressed=${view == 'grid'}"
+              >그리드</a
+              >
+              <a
+                      class="market-toolbar__view-btn"
+                      th:href="@{/market/list(page=0, keyword=${keyword}, onlyOnSale=${onlyOnSale}, category=${selectedCategory}, neighborhoodId=${neighborhoodId}, sort=${sort}, view='list', size=${pageSize})}"
+                      th:classappend="${view == 'list'} ? ' is-active' : ''"
+                      th:attr="aria-pressed=${view == 'list'}"
+              >리스트</a
+              >
+            </div>
             <form
                     class="market-toolbar__sort-form"
                     method="get"
@@ -43,6 +59,7 @@
             >
               <input type="hidden" name="page" value="0" />
               <input type="hidden" name="size" value="8" />
+              <input type="hidden" name="view" th:value="${view}" />
               <input type="hidden" name="keyword" th:value="${keyword}" />
               <input type="hidden" name="onlyOnSale" value="true" th:if="${onlyOnSale}" />
               <input
@@ -77,22 +94,14 @@
         <p class="browse-hint" th:if="${browsingNeighborhood != null}">
           선택한 동네 글은 테두리로 강조됩니다. 다른 동네 글도 함께 표시됩니다.
         </p>
-        <div class="grid market-grid-v2">
-          <a
-                  class="card"
-                  th:classappend="${browsingNeighborhoodId != null && browsingNeighborhoodId == post.neighborhood.id} ? ' card--browse-focus' : ''"
-                  th:each="post : ${page.content}"
-                  th:href="@{/market/detail/{id}(id=${post.id})}"
-          ><img th:src="${post.displayImageUrl}" alt="상품" /><b
-                  th:text="${post.title}"
-          ></b
-          ><span
-                  th:text="${post.giveaway ? '나눔' : #numbers.formatInteger(post.price, 0, 'COMMA') + '원'}"
-          ></span
-          ><small
-                  th:text="${post.neighborhood.emdName} + ' · ' + ${post.status.label}"
-          ></small
-          ></a>
+        <div
+                th:class="${view == 'list'} ? 'market-list-v2' : 'grid market-grid-v2'"
+        >
+          <th:block th:each="post : ${page.content}">
+            <div
+                    th:replace="~{fragments/market-card :: market-card(post=${post}, favoritedPostIds=${favoritedPostIds}, browsingNeighborhoodId=${browsingNeighborhoodId})}"
+            ></div>
+          </th:block>
         </div>
         <div th:replace="~{fragments/market-pagination :: market-pagination}"></div>
       </div>
@@ -143,21 +152,11 @@
     선택한 동네 글은 테두리로 강조됩니다. 다른 동네 글도 함께 표시됩니다.
   </p>
   <div class="grid">
-    <a
-            class="card"
-            th:classappend="${browsingNeighborhoodId != null && browsingNeighborhoodId == post.neighborhood.id} ? ' card--browse-focus' : ''"
-            th:each="post : ${page.content}"
-            th:href="@{/market/detail/{id}(id=${post.id})}"
-    ><img th:src="${post.displayImageUrl}" alt="상품" /><b
-            th:text="${post.title}"
-    ></b
-    ><span
-            th:text="${post.giveaway ? '나눔' : #numbers.formatInteger(post.price, 0, 'COMMA') + '원'}"
-    ></span
-    ><small
-            th:text="${post.neighborhood.emdName} + ' · ' + ${post.status.label}"
-    ></small
-    ></a>
+    <th:block th:each="post : ${page.content}">
+      <div
+              th:replace="~{fragments/market-card :: market-card(post=${post}, favoritedPostIds=${favoritedPostIds}, browsingNeighborhoodId=${browsingNeighborhoodId})}"
+      ></div>
+    </th:block>
   </div>
 </main>
 <script>

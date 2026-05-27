@@ -21,6 +21,7 @@
       </div>
       <div class="nav-links nav-desktop-only">
         <a th:href="@{/market/list}">중고거래</a>
+        <a th:href="@{/market/favorites}" sec:authorize="isAuthenticated()">관심목록</a>
         <a th:href="@{/community/list}" sec:authorize="isAuthenticated()">동네생활</a>
         <a th:href="@{/chat/rooms}" sec:authorize="isAuthenticated()">채팅</a>
         <a th:href="@{/location/my}" sec:authorize="isAuthenticated()">내 동네</a>

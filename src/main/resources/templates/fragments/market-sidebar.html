@@ -9,14 +9,14 @@
             <ul class="market-sidebar__list">
                 <li>
                     <a
-                            th:href="@{/market/list(page=0, keyword=${keyword}, size=8, sort=${sort}, category=${selectedCategory}, neighborhoodId=${neighborhoodId})}"
+                            th:href="@{/market/list(page=0, keyword=${keyword}, size=8, sort=${sort}, view=${view}, category=${selectedCategory}, neighborhoodId=${neighborhoodId})}"
                             th:classappend="${!onlyOnSale} ? ' is-active' : ''"
                     >전체</a
                     >
                 </li>
                 <li>
                     <a
-                            th:href="@{/market/list(page=0, keyword=${keyword}, onlyOnSale=true, size=8, sort=${sort}, category=${selectedCategory}, neighborhoodId=${neighborhoodId})}"
+                            th:href="@{/market/list(page=0, keyword=${keyword}, onlyOnSale=true, size=8, sort=${sort}, view=${view}, category=${selectedCategory}, neighborhoodId=${neighborhoodId})}"
                             th:classappend="${onlyOnSale} ? ' is-active' : ''"
                     >거래 가능만</a
                     >
@@ -29,14 +29,14 @@
             <ul class="market-sidebar__list market-sidebar__list--scroll">
                 <li>
                     <a
-                            th:href="@{/market/list(page=0, keyword=${keyword}, onlyOnSale=${onlyOnSale}, size=8, sort=${sort}, neighborhoodId=${neighborhoodId})}"
+                            th:href="@{/market/list(page=0, keyword=${keyword}, onlyOnSale=${onlyOnSale}, size=8, sort=${sort}, view=${view}, neighborhoodId=${neighborhoodId})}"
                             th:classappend="${selectedCategory == null} ? ' is-active' : ''"
                     >전체</a
                     >
                 </li>
                 <li th:each="cat : ${categories}">
                     <a
-                            th:href="@{/market/list(page=0, keyword=${keyword}, onlyOnSale=${onlyOnSale}, category=${cat}, size=8, sort=${sort}, neighborhoodId=${neighborhoodId})}"
+                            th:href="@{/market/list(page=0, keyword=${keyword}, onlyOnSale=${onlyOnSale}, category=${cat}, size=8, sort=${sort}, view=${view}, neighborhoodId=${neighborhoodId})}"
                             th:classappend="${selectedCategory == cat} ? ' is-active' : ''"
                             th:text="${cat.label}"
                     >카테고리</a
@@ -57,14 +57,14 @@
             <ul class="market-sidebar__list">
                 <li>
                     <a
-                            th:href="@{/market/list(page=0, keyword=${keyword}, onlyOnSale=${onlyOnSale}, category=${selectedCategory}, size=8, sort=${sort})}"
+                            th:href="@{/market/list(page=0, keyword=${keyword}, onlyOnSale=${onlyOnSale}, category=${selectedCategory}, size=8, sort=${sort}, view=${view})}"
                             th:classappend="${neighborhoodId == null} ? ' is-active' : ''"
                     >전체 동네</a
                     >
                 </li>
                 <li th:if="${browsingNeighborhood != null}">
                     <a
-                            th:href="@{/market/list(page=0, keyword=${keyword}, onlyOnSale=${onlyOnSale}, category=${selectedCategory}, neighborhoodId=${browsingNeighborhood.id}, size=8, sort=${sort})}"
+                            th:href="@{/market/list(page=0, keyword=${keyword}, onlyOnSale=${onlyOnSale}, category=${selectedCategory}, neighborhoodId=${browsingNeighborhood.id}, size=8, sort=${sort}, view=${view})}"
                             th:classappend="${neighborhoodId != null && neighborhoodId == browsingNeighborhood.id} ? ' is-active' : ''"
                             th:text="${browsingNeighborhood.emdName} + '만 보기'"
                     >동네만</a

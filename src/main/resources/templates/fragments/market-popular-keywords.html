@@ -8,7 +8,7 @@
             <a
                     class="market-popular-keywords__chip"
                     th:each="popularKeyword : ${popularKeywords}"
-                    th:href="@{/market/list(page=0, keyword=${popularKeyword}, size=8, sort=${sort}, onlyOnSale=${onlyOnSale}, category=${selectedCategory}, neighborhoodId=${neighborhoodId})}"
+                    th:href="@{/market/list(page=0, keyword=${popularKeyword}, size=8, sort=${sort}, view=${view}, onlyOnSale=${onlyOnSale}, category=${selectedCategory}, neighborhoodId=${neighborhoodId})}"
                     th:text="${popularKeyword}"
                     th:classappend="${keyword != null and keyword == popularKeyword} ? ' is-active' : ''"
             >키워드</a

@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>관심 목록</title>
+    <link rel="stylesheet" th:href="@{/css/common.css(v=${@environment.getProperty('app.ui.asset-version', '1')})}" />
+</head>
+<body class="market-favorites-page">
+<div th:replace="~{fragments/header :: header}"></div>
+
+<div class="market-v2-pc-only">
+    <div class="market-v2-shell">
+        <div class="market-main market-main--standalone">
+            <div class="market-title-bar">
+                <h1>
+                    <span class="market-title-bar__pipe">|</span>
+                    <span>관심 목록</span>
+                </h1>
+            </div>
+            <div class="market-toolbar">
+                <span class="market-toolbar__count" th:text="${page.totalElements} + '건'">0건</span>
+            </div>
+            <div class="market-favorites-empty" th:if="${page.totalElements == 0}">
+                <p>아직 찜한 상품이 없습니다.</p>
+                <a class="btn" th:href="@{/market/list}">중고거래 보러가기</a>
+            </div>
+            <div class="grid market-grid-v2" th:if="${page.totalElements > 0}">
+                <th:block th:each="post : ${page.content}">
+                    <div
+                            th:replace="~{fragments/market-card :: market-card(post=${post}, favoritedPostIds=${favoritedPostIds}, browsingNeighborhoodId=${null})}"
+                    ></div>
+                </th:block>
+            </div>
+            <div th:replace="~{fragments/market-pagination :: market-pagination}"></div>
+        </div>
+    </div>
+</div>
+
+<main class="container market-v2-mobile-only">
+    <div class="page-head">
+        <h1>관심 목록</h1>
+        <span class="market-toolbar__count" th:text="${page.totalElements} + '건'">0건</span>
+    </div>
+    <div class="market-favorites-empty" th:if="${page.totalElements == 0}">
+        <p>아직 찜한 상품이 없습니다.</p>
+        <a class="btn" th:href="@{/market/list}">중고거래 보러가기</a>
+    </div>
+    <div class="grid" th:if="${page.totalElements > 0}">
+        <th:block th:each="post : ${page.content}">
+            <div
+                    th:replace="~{fragments/market-card :: market-card(post=${post}, favoritedPostIds=${favoritedPostIds}, browsingNeighborhoodId=${null})}"
+            ></div>
+        </th:block>
+    </div>
+    <div th:replace="~{fragments/market-pagination :: market-pagination}"></div>
+</main>
+<script th:inline="javascript">
+    (function () {
+      if (!window.matchMedia("(max-width: 767px)").matches) return;
+      if (window.location.search.indexOf("size=") >= 0) return;
+      if (/*[[${pageSize}]]*/ 8 !== 8) return;
+      window.location.replace(/*[[@{/market/favorites(size=12)}]]*/ "/market/favorites?size=12");
+    })();
+</script>
+</body>
+</html>

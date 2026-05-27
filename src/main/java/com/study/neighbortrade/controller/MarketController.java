@@ -15,6 +15,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import java.security.Principal;
 import java.util.List;
+import java.util.Set;
 
 @Controller
 @RequiredArgsConstructor
@@ -24,6 +25,7 @@ public class MarketController {
     private final ProductImageService productImageService;
     private final CurrentMemberService currentMemberService;
     private final MarketProperties marketProperties;
+    private final ProductFavoriteService productFavoriteService;
 
     @GetMapping("/list")
     public String list(
@@ -32,17 +34,18 @@ public class MarketController {
             @RequestParam(required = false) ProductCategory category,
             @RequestParam(required = false) Long neighborhoodId,
             @RequestParam(defaultValue = "latest") String sort,
+            @RequestParam(defaultValue = "grid") String view,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "8") int size,
             Model model,
             Principal principal
     ) {
         MarketSort marketSort = MarketSort.fromParam(sort);
+        MarketView marketView = MarketView.fromParam(view);
         Member member = currentMemberService.get(principal);
+        var resultPage = productPostService.list(keyword, onlyOnSale, category, neighborhoodId, marketSort, page, size);
         model.addAttribute("currentMember", member);
-        model.addAttribute(
-                "page",
-                productPostService.list(keyword, onlyOnSale, category, neighborhoodId, marketSort, page, size));
+        model.addAttribute("page", resultPage);
         model.addAttribute("keyword", keyword);
         model.addAttribute("onlyOnSale", onlyOnSale);
         model.addAttribute("categories", ProductCategory.values());
@@ -50,8 +53,14 @@ public class MarketController {
         model.addAttribute("neighborhoodId", neighborhoodId);
         model.addAttribute("sort", marketSort.getParam());
         model.addAttribute("sortOptions", MarketSort.values());
+        model.addAttribute("view", marketView.getParam());
+        model.addAttribute("viewOptions", MarketView.values());
         model.addAttribute("pageSize", size);
         model.addAttribute("popularKeywords", marketProperties.popularKeywords());
+        model.addAttribute("paginationBase", "/market/list");
+        List<Long> postIds = resultPage.getContent().stream().map(ProductPost::getId).toList();
+        Set<Long> favoritedPostIds = productFavoriteService.findFavoritedPostIds(member, postIds);
+        model.addAttribute("favoritedPostIds", favoritedPostIds);
         return "market/list";
     }
 

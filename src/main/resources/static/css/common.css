@@ -593,6 +593,78 @@ button,
   color: #ff6f0f;
 }
 
+.market-card {
+  position: relative;
+}
+
+.market-card--browse-focus .card {
+  border: 2px solid transparent;
+  background:
+    linear-gradient(#fff, #fff) padding-box,
+    linear-gradient(135deg, #ff6f0f, #ffb347) border-box;
+  box-shadow: 0 8px 24px rgba(255, 111, 15, 0.18);
+}
+
+.market-card--browse-focus .card small::before {
+  content: "우리 동네 · ";
+  font-weight: 700;
+  color: #ff6f0f;
+}
+
+.market-card__link {
+  text-decoration: none;
+  color: inherit;
+}
+
+.card__favorite-form {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  z-index: 2;
+  margin: 0;
+}
+
+.card__favorite,
+.card__favorite--login {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  padding: 0;
+  border: none;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.92);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+  font-size: 18px;
+  line-height: 1;
+  color: #bbb;
+  cursor: pointer;
+  text-decoration: none;
+  transition: color 0.15s ease, transform 0.15s ease;
+}
+
+.card__favorite:hover,
+.card__favorite--login:hover {
+  color: #ff6f0f;
+  transform: scale(1.05);
+}
+
+.card__favorite.is-favorited {
+  color: #ff6f0f;
+}
+
+.market-favorites-empty {
+  text-align: center;
+  padding: 48px 16px;
+  color: #666;
+}
+
+.market-favorites-empty p {
+  margin: 0 0 16px;
+  font-size: 16px;
+}
+
 .region-modal[hidden] {
   display: none !important;
 }
@@ -733,19 +805,23 @@ body.market-list-page {
 }
 
 @media (min-width: 768px) {
-  body.market-list-page {
+  body.market-list-page,
+  body.market-favorites-page {
     background: #f5f5f5;
   }
 
-  body.market-list-page .market-v2-pc-only {
+  body.market-list-page .market-v2-pc-only,
+  body.market-favorites-page .market-v2-pc-only {
     display: block;
   }
 
-  body.market-list-page .market-v2-mobile-only {
+  body.market-list-page .market-v2-mobile-only,
+  body.market-favorites-page .market-v2-mobile-only {
     display: none !important;
   }
 
-  body.market-list-page .market-v2-shell {
+  body.market-list-page .market-v2-shell,
+  body.market-favorites-page .market-v2-shell {
     max-width: var(--market-max-width);
     margin: 0 auto;
     padding: 24px 20px 48px;
@@ -1029,26 +1105,117 @@ body.market-list-page {
     border-color: #ff6f0f;
   }
 
-  body.market-list-page .market-grid-v2 {
+  body.market-list-page .market-toolbar__view-toggle {
+    display: inline-flex;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    overflow: hidden;
+    background: #fff;
+  }
+
+  body.market-list-page .market-toolbar__view-btn {
+    padding: 8px 14px;
+    font-size: 13px;
+    font-weight: 600;
+    color: #666;
+    text-decoration: none;
+    border-right: 1px solid #ddd;
+    transition: background 0.15s ease, color 0.15s ease;
+  }
+
+  body.market-list-page .market-toolbar__view-btn:last-child {
+    border-right: none;
+  }
+
+  body.market-list-page .market-toolbar__view-btn:hover {
+    background: #fff8f3;
+    color: #ff6f0f;
+  }
+
+  body.market-list-page .market-toolbar__view-btn.is-active {
+    background: #ff6f0f;
+    color: #fff;
+  }
+
+  body.market-list-page .market-list-v2 {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  body.market-list-page .market-list-v2 .market-card__link.card {
+    display: grid;
+    grid-template-columns: 132px 1fr;
+    grid-template-rows: auto auto auto;
+    align-items: center;
+    column-gap: 16px;
+    row-gap: 4px;
+    padding: 12px 48px 12px 12px;
+  }
+
+  body.market-list-page .market-list-v2 .market-card__link.card img {
+    grid-row: 1 / -1;
+    grid-column: 1;
+    width: 132px;
+    height: 132px;
+    margin: 0;
+    border-radius: 10px;
+  }
+
+  body.market-list-page .market-list-v2 .market-card__link.card b {
+    grid-column: 2;
+    grid-row: 1;
+    -webkit-line-clamp: 1;
+    font-size: 15px;
+  }
+
+  body.market-list-page .market-list-v2 .market-card__link.card span {
+    grid-column: 2;
+    grid-row: 2;
+    font-size: 16px;
+  }
+
+  body.market-list-page .market-list-v2 .market-card__link.card small {
+    grid-column: 2;
+    grid-row: 3;
+  }
+
+  body.market-list-page .market-list-v2 .card__favorite-form,
+  body.market-list-page .market-list-v2 .card__favorite--login {
+    top: 50%;
+    right: 12px;
+    transform: translateY(-50%);
+  }
+
+  body.market-list-page .market-list-v2 .card__favorite:hover {
+    transform: translateY(-50%) scale(1.05);
+  }
+
+  body.market-list-page .market-grid-v2,
+  body.market-favorites-page .market-grid-v2 {
     grid-template-columns: repeat(4, 1fr);
     gap: 16px;
   }
 
-  body.market-list-page .market-grid-v2 .card {
+  body.market-list-page .market-grid-v2 .card,
+  body.market-favorites-page .market-grid-v2 .card {
     padding: 12px;
     transition: box-shadow 0.15s ease, border-color 0.15s ease;
   }
 
-  body.market-list-page .market-grid-v2 .card:hover {
+  body.market-list-page .market-grid-v2 .card:hover,
+  body.market-favorites-page .market-grid-v2 .card:hover {
     border-color: #ffd4b8;
     box-shadow: 0 4px 14px rgba(0, 0, 0, 0.07);
   }
 
-  body.market-list-page .market-grid-v2 .card img {
+  body.market-list-page .market-grid-v2 .card img,
+  body.market-favorites-page .market-grid-v2 .card img {
     height: 140px;
   }
 
-  body.market-list-page .market-grid-v2 .card b {
+  body.market-list-page .market-grid-v2 .card b,
+  body.market-favorites-page .market-grid-v2 .card b {
     font-size: 14px;
     line-height: 1.35;
     display: -webkit-box;
@@ -1057,13 +1224,15 @@ body.market-list-page {
     overflow: hidden;
   }
 
-  body.market-list-page .market-grid-v2 .card span {
+  body.market-list-page .market-grid-v2 .card span,
+  body.market-favorites-page .market-grid-v2 .card span {
     font-size: 15px;
     font-weight: 800;
     color: #222;
   }
 
-  body.market-list-page .market-grid-v2 .card small {
+  body.market-list-page .market-grid-v2 .card small,
+  body.market-favorites-page .market-grid-v2 .card small {
     font-size: 12px;
     color: #888;
   }
@@ -1128,7 +1297,8 @@ body.market-list-page {
 }
 
 @media (max-width: 767px) {
-  body.market-list-page .market-v2-pc-only {
+  body.market-list-page .market-v2-pc-only,
+  body.market-favorites-page .market-v2-pc-only {
     display: none !important;
   }
 }
