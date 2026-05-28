@@ -26,7 +26,7 @@
           <h1>
             <span class="market-title-bar__pipe">|</span>
             <span
-                    th:text="${browsingNeighborhood != null ? browsingNeighborhood.displayName + ' 중고거래' : '중고거래'}"
+                    th:text="${selectedNeighborhood != null ? selectedNeighborhood.displayName + ' 중고거래' : (browsingNeighborhood != null ? browsingNeighborhood.displayName + ' 중고거래' : '중고거래')}"
             >중고거래</span
             >
           </h1>
@@ -91,8 +91,12 @@
             <a class="btn" th:href="@{/market/form}">글쓰기</a>
           </div>
         </div>
-        <p class="browse-hint" th:if="${browsingNeighborhood != null}">
-          선택한 동네 글은 테두리로 강조됩니다. 다른 동네 글도 함께 표시됩니다.
+        <p class="market-filter-hint" th:if="${selectedNeighborhood != null}">
+          <strong th:text="${selectedNeighborhood.emdName}">동</strong> 글만 표시 중입니다.
+        </p>
+        <p class="browse-hint" th:if="${selectedNeighborhood == null and browsingNeighborhood != null}">
+          열람 동네(<strong th:text="${browsingNeighborhood.emdName}">동</strong>) 글은 테두리로
+          강조됩니다. 다른 동네 글도 함께 표시됩니다.
         </p>
         <div
                 th:class="${view == 'list'} ? 'market-list-v2' : 'grid market-grid-v2'"
@@ -113,7 +117,7 @@
 <main class="container market-v2-mobile-only">
   <div class="page-head">
     <h1
-            th:text="${browsingNeighborhood != null ? browsingNeighborhood.displayName + ' 중고거래' : '중고거래'}"
+            th:text="${selectedNeighborhood != null ? selectedNeighborhood.displayName + ' 중고거래' : (browsingNeighborhood != null ? browsingNeighborhood.displayName + ' 중고거래' : '중고거래')}"
     >
       중고거래
     </h1>
@@ -148,8 +152,12 @@
     거래 가능만 보기</label
   ><button class="btn secondary" type="submit">검색</button>
   </form>
-  <p class="browse-hint" th:if="${browsingNeighborhood != null}">
-    선택한 동네 글은 테두리로 강조됩니다. 다른 동네 글도 함께 표시됩니다.
+  <p class="market-filter-hint" th:if="${selectedNeighborhood != null}">
+    <strong th:text="${selectedNeighborhood.emdName}">동</strong> 글만 표시 중입니다.
+  </p>
+  <p class="browse-hint" th:if="${selectedNeighborhood == null and browsingNeighborhood != null}">
+    열람 동네(<strong th:text="${browsingNeighborhood.emdName}">동</strong>) 글은 테두리로
+    강조됩니다. 다른 동네 글도 함께 표시됩니다.
   </p>
   <div class="grid">
     <th:block th:each="post : ${page.content}">

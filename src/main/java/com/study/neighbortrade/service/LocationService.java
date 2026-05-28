@@ -4,6 +4,7 @@ import com.study.neighbortrade.domain.location.LocationVerification;
 import com.study.neighbortrade.domain.location.Neighborhood;
 import com.study.neighbortrade.domain.member.Member;
 import com.study.neighbortrade.dto.location.LocationVerifyRequestDto;
+import com.study.neighbortrade.dto.location.NeighborhoodFilterGroup;
 import com.study.neighbortrade.dto.location.NeighborhoodSelectDto;
 import com.study.neighbortrade.repository.LocationVerificationRepository;
 import com.study.neighbortrade.repository.MemberRepository;
@@ -12,11 +13,13 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -31,6 +34,26 @@ public class LocationService {
 
     public List<Neighborhood> findAllNeighborhoods() {
         return neighborhoodRepository.findAll();
+    }
+
+    public Optional<Neighborhood> findNeighborhoodById(Long id) {
+        if (id == null) {
+            return Optional.empty();
+        }
+        return neighborhoodRepository.findById(id);
+    }
+
+    /** `/api/neighborhoods`와 동일 데이터를 구(sigungu) 단위로 묶어 sidebar 필터에 사용 */
+    public List<NeighborhoodFilterGroup> findNeighborhoodFilterGroups() {
+        Map<String, List<Neighborhood>> grouped = neighborhoodRepository.findAll().stream()
+                .sorted(Comparator.comparing(Neighborhood::getSigungu).thenComparing(Neighborhood::getEmdName))
+                .collect(Collectors.groupingBy(
+                        n -> n.getSido() + " " + n.getSigungu(),
+                        LinkedHashMap::new,
+                        Collectors.toList()));
+        return grouped.entrySet().stream()
+                .map(entry -> new NeighborhoodFilterGroup(entry.getKey(), entry.getValue()))
+                .toList();
     }
 
     // 서버에서 동네별 경계여부 내려주기 : postgis 켜짐 그리고 선택 동네에 경계 있을 때만 문구 표시 추가(20260512)

@@ -26,6 +26,7 @@ public class MarketController {
     private final CurrentMemberService currentMemberService;
     private final MarketProperties marketProperties;
     private final ProductFavoriteService productFavoriteService;
+    private final LocationService locationService;
 
     @GetMapping("/list")
     public String list(
@@ -51,6 +52,8 @@ public class MarketController {
         model.addAttribute("categories", ProductCategory.values());
         model.addAttribute("selectedCategory", category);
         model.addAttribute("neighborhoodId", neighborhoodId);
+        model.addAttribute("selectedNeighborhood", locationService.findNeighborhoodById(neighborhoodId).orElse(null));
+        model.addAttribute("neighborhoodFilterGroups", locationService.findNeighborhoodFilterGroups());
         model.addAttribute("sort", marketSort.getParam());
         model.addAttribute("sortOptions", MarketSort.values());
         model.addAttribute("view", marketView.getParam());
@@ -64,17 +67,32 @@ public class MarketController {
         return "market/list";
     }
 
+    private void addMarketShellAttributes(Model model) {
+        model.addAttribute("keyword", "");
+        model.addAttribute("onlyOnSale", false);
+        model.addAttribute("categories", ProductCategory.values());
+        model.addAttribute("selectedCategory", null);
+        model.addAttribute("neighborhoodId", null);
+        model.addAttribute("sort", MarketSort.LATEST.getParam());
+        model.addAttribute("view", MarketView.GRID.getParam());
+    }
+
     @GetMapping("/detail/{id}")
     public String detail(@PathVariable Long id, Model model, Principal principal) {
         ProductPost post = productPostService.findDetail(id);
+        Member member = currentMemberService.get(principal);
+        addMarketShellAttributes(model);
         model.addAttribute("post", post);
         model.addAttribute("images", productImageService.findByPost(post));
-        model.addAttribute("currentMember", currentMemberService.get(principal));
+        model.addAttribute("currentMember", member);
+        model.addAttribute("isFavorited", member != null
+                && productFavoriteService.findFavoritedPostIds(member, List.of(id)).contains(id));
         return "market/detail";
     }
 
     @GetMapping("/form")
     public String form(Model model, Principal principal) {
+        addMarketShellAttributes(model);
         model.addAttribute("currentMember", currentMemberService.require(principal));
         model.addAttribute("productPostRequestDto", new ProductPostRequestDto());
         model.addAttribute("categories", ProductCategory.values());
@@ -87,7 +105,9 @@ public class MarketController {
                          @ModelAttribute
                          ProductPostRequestDto dto, BindingResult br, @RequestParam(name = "imageFiles", required = false) List<MultipartFile> imageFiles, Model model, Principal principal) {
         if (br.hasErrors()) {
+            addMarketShellAttributes(model);
             model.addAttribute("categories", ProductCategory.values());
+            model.addAttribute("currentMember", currentMemberService.require(principal));
             return "market/form";
         }
         productPostService.create(currentMemberService.require(principal), dto, imageFiles);
@@ -102,6 +122,7 @@ public class MarketController {
             ra.addFlashAttribute("errorMessage", "작성자만 수정할 수 있습니다.");
             return "redirect:/market/detail/" + id;
         }
+        addMarketShellAttributes(model);
         ProductPostRequestDto dto = new ProductPostRequestDto();
         dto.setTitle(post.getTitle());
         dto.setCategory(post.getCategory());
@@ -124,12 +145,16 @@ public class MarketController {
                        @Valid
 
                        @ModelAttribute
-                       ProductPostRequestDto dto, BindingResult br, @RequestParam(name = "imageFiles", required = false) List<MultipartFile> imageFiles, Model model, Principal principal) {
+                       ProductPostRequestDto dto, BindingResult br, @RequestParam(name = "imageFiles", required = false) List<MultipartFile> imageFiles, @RequestParam(name = "deleteImageIds", required = false) List<Long> deleteImageIds, Model model, Principal principal) {
         if (br.hasErrors()) {
+            addMarketShellAttributes(model);
+            model.addAttribute("post", productPostService.findById(id));
+            model.addAttribute("images", productImageService.findByPost(productPostService.findById(id)));
             model.addAttribute("categories", ProductCategory.values());
+            model.addAttribute("currentMember", currentMemberService.require(principal));
             return "market/edit";
         }
-        productPostService.update(id, currentMemberService.require(principal), dto, imageFiles);
+        productPostService.update(id, currentMemberService.require(principal), dto, imageFiles, deleteImageIds);
         return "redirect:/market/detail/" + id;
     }
 

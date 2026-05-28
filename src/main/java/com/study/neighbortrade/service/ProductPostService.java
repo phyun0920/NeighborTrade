@@ -58,11 +58,24 @@ public class ProductPostService {
     }
 
     @Transactional
-    public void update(Long id, Member seller, ProductPostRequestDto dto, List<MultipartFile> imageFiles) {
+    public void update(
+            Long id,
+            Member seller,
+            ProductPostRequestDto dto,
+            List<MultipartFile> imageFiles,
+            List<Long> deleteImageIds
+    ) {
         ProductPost post = findById(id);
         if (!post.isSeller(seller)) throw new IllegalArgumentException("작성자만 수정할 수 있습니다.");
-        String representativeUrl = productImageService.replaceImages(post, imageFiles);
-        if (imageFiles == null || imageFiles.stream().allMatch(MultipartFile::isEmpty)) {
+        String representativeUrl = post.getRepresentativeImageUrl();
+        if (deleteImageIds != null && !deleteImageIds.isEmpty()) {
+            representativeUrl = productImageService.deleteImages(post, deleteImageIds);
+        }
+        if (imageFiles != null && imageFiles.stream().anyMatch(file -> !file.isEmpty())) {
+            representativeUrl = productImageService.appendImages(post, imageFiles);
+        } else if ((deleteImageIds == null || deleteImageIds.isEmpty())
+                && dto.getRepresentativeImageUrl() != null
+                && !dto.getRepresentativeImageUrl().isBlank()) {
             representativeUrl = dto.getRepresentativeImageUrl();
         }
         post.update(dto.getTitle(), dto.getCategory(), dto.isGiveaway() ? 0 : dto.getPrice(), dto.isGiveaway(), dto.getContent(), representativeUrl, dto.getTradePlace());

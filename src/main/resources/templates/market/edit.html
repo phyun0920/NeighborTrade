@@ -4,11 +4,29 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>판매글 수정</title>
-  <link rel="stylesheet" th:href="@{/css/common.css}" />
+  <link rel="stylesheet" th:href="@{/css/common.css(v=${@environment.getProperty('app.ui.asset-version', '1')})}" />
 </head>
-<body>
+<body class="market-form-page">
 <div th:replace="~{fragments/header :: header}"></div>
-<main class="container narrow">
+
+<div class="market-v2-pc-only">
+  <div class="market-v2-shell">
+    <div th:replace="~{fragments/market-search-band :: market-search-band}"></div>
+    <div
+            th:replace="~{fragments/market-form-v2 :: market-form-v2(
+            formAction=@{/market/edit/{id}(id=${post.id})},
+            pageTitle='판매글 수정',
+            submitLabel='저장',
+            cancelHref=@{/market/detail/{id}(id=${post.id})},
+            post=${post},
+            images=${images},
+            requireVerified=false
+          )}"
+    ></div>
+  </div>
+</div>
+
+<main class="container narrow market-v2-mobile-only">
   <h1>판매글 수정</h1>
   <form
           th:action="@{/market/edit/{id}(id=${post.id})}"
@@ -30,12 +48,24 @@
       <img th:each="image : ${images}" th:src="${image.imageUrl}" alt="상품 이미지" />
     </div>
     <input name="imageFiles" type="file" accept="image/*" multiple />
-    <small class="muted">새 파일을 올리면 기존 업로드 이미지를 교체합니다.</small
-    ><input
-          th:field="*{tradePlace}"
-  /><textarea th:field="*{content}"></textarea
+    <small class="muted">새 사진을 올리면 기존 이미지에 추가됩니다. (최대 10장)</small
+    ><input th:field="*{tradePlace}" /><textarea th:field="*{content}"></textarea
   ><button class="btn" type="submit">저장</button>
   </form>
 </main>
+<script>
+  (function () {
+    var form = document.getElementById("market-search-band-form");
+    if (!form) return;
+    form.addEventListener("submit", function () {
+      var cat = form.querySelector('[name="category"]');
+      if (cat && !cat.value) cat.disabled = true;
+    });
+  })();
+</script>
+<script
+        th:src="@{/js/market-form-v2.js(v=${@environment.getProperty('app.ui.asset-version', '1')})}"
+        defer
+></script>
 </body>
 </html>
