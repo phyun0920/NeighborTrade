@@ -27,6 +27,7 @@ spring:
   jpa:
     hibernate:
       ddl-auto: ${DDL_AUTO:update}
+    # 로컬 기본 true — Railway·운영은 application-prod.yml(prod 프로필)에서 false
     show-sql: ${SHOW_SQL:true}
     database-platform: ${DB_DIALECT:org.hibernate.dialect.H2Dialect}
     properties:
@@ -84,6 +85,7 @@ server:
 logging:
   level:
     # 20260515금 관리자메뉴 구현에서 이메일 마스킹 보안 로그정책 로그에도 적용
+    # 로컬 기본 debug — Railway·운영은 application-prod.yml(prod)에서 warn/info
     # Hibernate SQL(debug): 쿼리 텍스트만. JDBC 바인드(trace)는 물음표에 들어가는 값(이메일 등)이 로그에 그대로 남을 수 있음.
     # 운영·공유 로그에서는 바인드를 trace로 두지 말 것. 로컬에서만 필요 시 환경변수로 상향: HIBERNATE_BIND_LOG=trace
     org.hibernate.SQL: ${HIBERNATE_SQL_LOG:debug}
@@ -91,6 +93,7 @@ logging:
     # org.hibernate.SQL: debug
     # org.hibernate.orm.jdbc.bind: trace
   pattern:
+    # prod 프로필: ANSI 제거·스택트레이스 축약(application-prod.yml)
     console: "%clr(%d{yyyy-MM-dd HH:mm:ss.SSS}){faint} %clr(%5p) %clr(${PID:- }){magenta} %clr(---){faint} %clr([%15.15t]){faint} %clr(%-40.40logger{39}){cyan} %clr(:){faint} %m%n${LOG_EXCEPTION_CONVERSION_WORD:-%wEx}"
 
 app:
