@@ -1632,25 +1632,35 @@ html.is-mobile .member-auth-page .social-login .btn {
   body.market-list-page .market-filters-mobile {
     display: flex;
     flex-direction: column;
-    gap: 8px;
+    gap: 0;
     margin: 0 0 8px;
-  }
-
-  body.market-list-page .market-filters-mobile__category {
-    width: 100%;
-    padding: 9px 12px;
-    border: 1px solid #e8e8e8;
-    border-radius: 8px;
-    font-size: 14px;
-    color: #333;
-    background: #fff;
-    box-sizing: border-box;
   }
 
   body.market-list-page .market-filters-mobile__search-row {
     display: flex;
     align-items: stretch;
     gap: 8px;
+  }
+
+  body.market-list-page .market-filters-mobile__category-btn {
+    flex-shrink: 0;
+    max-width: 88px;
+    padding: 0 12px;
+    height: 44px;
+    border: none;
+    border-radius: 10px;
+    background: #333;
+    color: #fff;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  body.market-list-page .market-filters-mobile__category-btn:active {
+    background: #222;
   }
 
   body.market-list-page .market-filters-mobile__keyword {
@@ -1684,16 +1694,6 @@ html.is-mobile .member-auth-page .social-login .btn {
 
   body.market-list-page .market-filters-mobile__search-icon {
     display: block;
-  }
-
-  body.market-list-page .market-filters-mobile__only-sale {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    margin: 0;
-    font-size: 13px;
-    font-weight: 400;
-    color: #666;
   }
 
   body.market-list-page .market-list-mobile__hint {
@@ -1849,6 +1849,108 @@ html.is-mobile .member-auth-page .social-login .btn {
   body.market-list-page .market-pagination-mobile__btn:hover {
     border-color: #ff6f0f;
     color: #ff6f0f;
+  }
+
+  /* mobile category bottom sheet */
+  body.market-list-page .market-category-modal {
+    position: fixed;
+    inset: 0;
+    z-index: 100;
+  }
+
+  body.market-list-page .market-category-modal[hidden] {
+    display: none;
+  }
+
+  body.market-category-modal-open {
+    overflow: hidden;
+  }
+
+  body.market-list-page .market-category-modal__backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.45);
+  }
+
+  body.market-list-page .market-category-modal__sheet {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    max-height: min(72vh, 520px);
+    padding: 16px 16px calc(16px + env(safe-area-inset-bottom, 0px));
+    background: #fff;
+    border-radius: 16px 16px 0 0;
+    box-shadow: 0 -8px 32px rgba(0, 0, 0, 0.12);
+    box-sizing: border-box;
+  }
+
+  body.market-list-page .market-category-modal__head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+  }
+
+  body.market-list-page .market-category-modal__head h2 {
+    margin: 0;
+    font-size: 18px;
+    font-weight: 800;
+  }
+
+  body.market-list-page .market-category-modal__close {
+    border: 0;
+    background: transparent;
+    font-size: 26px;
+    line-height: 1;
+    color: #666;
+    cursor: pointer;
+    padding: 4px 8px;
+  }
+
+  body.market-list-page .market-category-modal__list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    overflow-y: auto;
+    flex: 1 1 auto;
+    min-height: 0;
+    border: 1px solid #eee;
+    border-radius: 12px;
+  }
+
+  body.market-list-page .market-category-modal__option {
+    display: block;
+    width: 100%;
+    padding: 14px 16px;
+    border: 0;
+    border-bottom: 1px solid #f0f0f0;
+    background: #fff;
+    color: #222;
+    font-size: 15px;
+    font-weight: 400;
+    text-align: left;
+    cursor: pointer;
+    box-sizing: border-box;
+  }
+
+  body.market-list-page .market-category-modal__list li:last-child .market-category-modal__option {
+    border-bottom: 0;
+  }
+
+  body.market-list-page .market-category-modal__option.is-active {
+    color: #ff6f0f;
+    font-weight: 700;
+    background: #fff8f3;
+  }
+
+  body.market-list-page .market-category-modal__done {
+    width: 100%;
+    text-align: center;
+    box-sizing: border-box;
   }
 }
 

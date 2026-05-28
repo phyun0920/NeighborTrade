@@ -124,7 +124,12 @@
     </h1>
     <span class="market-list-mobile__count" th:text="${page.totalElements} + '건'">0건</span>
   </header>
-  <form class="market-filters-mobile" th:action="@{/market/list}" method="get">
+  <form
+          id="market-filters-mobile-form"
+          class="market-filters-mobile"
+          th:action="@{/market/list}"
+          method="get"
+  >
     <input type="hidden" name="size" value="12" />
     <input type="hidden" name="sort" th:value="${sort}" />
     <input
@@ -133,16 +138,26 @@
             th:value="${neighborhoodId}"
             th:if="${neighborhoodId != null}"
     />
-    <select name="category" class="market-filters-mobile__category" aria-label="카테고리">
-      <option value="" th:selected="${selectedCategory == null}">전체 카테고리</option>
-      <option
-              th:each="cat : ${categories}"
-              th:value="${cat.name()}"
-              th:text="${cat.label}"
-              th:selected="${selectedCategory == cat}"
-      ></option>
-    </select>
+    <input
+            type="hidden"
+            name="category"
+            id="market-mobile-category"
+            th:value="${selectedCategory != null ? selectedCategory.name() : ''}"
+    />
     <div class="market-filters-mobile__search-row">
+      <button
+              type="button"
+              class="market-filters-mobile__category-btn"
+              id="market-category-open"
+              aria-haspopup="dialog"
+              aria-controls="market-category-modal"
+      >
+            <span
+                    id="market-category-open-label"
+                    th:text="${selectedCategory != null ? selectedCategory.label : '전체'}"
+            >전체</span
+            >
+      </button>
       <input
               class="market-filters-mobile__keyword"
               name="keyword"
@@ -164,16 +179,59 @@
         </svg>
       </button>
     </div>
-    <label class="market-filters-mobile__only-sale">
-      <input
-              type="checkbox"
-              name="onlyOnSale"
-              value="true"
-              th:checked="${onlyOnSale}"
-      />
-      거래 가능만 보기
-    </label>
   </form>
+
+  <div
+          id="market-category-modal"
+          class="market-category-modal"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="market-category-modal-title"
+          hidden
+  >
+    <div class="market-category-modal__backdrop" id="market-category-modal-backdrop"></div>
+    <div class="market-category-modal__sheet">
+      <div class="market-category-modal__head">
+        <h2 id="market-category-modal-title">카테고리</h2>
+        <button
+                type="button"
+                class="market-category-modal__close"
+                id="market-category-modal-close"
+                aria-label="닫기"
+        >
+          ×
+        </button>
+      </div>
+      <ul class="market-category-modal__list" id="market-category-modal-list" role="listbox">
+        <li role="presentation">
+          <button
+                  type="button"
+                  class="market-category-modal__option"
+                  data-value=""
+                  data-label="전체"
+                  role="option"
+                  th:attr="aria-checked=${selectedCategory == null}"
+                  th:classappend="${selectedCategory == null} ? ' is-active' : ''"
+          >
+            전체 카테고리
+          </button>
+        </li>
+        <li th:each="cat : ${categories}" role="presentation">
+          <button
+                  type="button"
+                  class="market-category-modal__option"
+                  th:attr="data-value=${cat.name()}, data-label=${cat.label}, aria-checked=${selectedCategory == cat}"
+                  th:text="${cat.label}"
+                  th:classappend="${selectedCategory == cat} ? ' is-active' : ''"
+                  role="option"
+          ></button>
+        </li>
+      </ul>
+      <button type="button" class="market-category-modal__done btn" id="market-category-modal-done">
+        완료
+      </button>
+    </div>
+  </div>
   <p class="market-list-mobile__hint market-filter-hint" th:if="${selectedNeighborhood != null}">
     <strong th:text="${selectedNeighborhood.emdName}">동</strong> 글만 표시 중
   </p>
@@ -208,6 +266,10 @@
     );
   })();
 </script>
+<script
+        th:src="@{/js/market-category-modal.js(v=${@environment.getProperty('app.ui.asset-version', '1')})}"
+        defer
+></script>
 <script>
   (function () {
     var form = document.getElementById("market-search-band-form");
