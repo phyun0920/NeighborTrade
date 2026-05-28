@@ -113,7 +113,7 @@
   </div>
 </div>
 
-<!-- 모바일 v1 (≤767px) — 기존 UI 유지 -->
+<!-- 모바일 v1 (≤767px) — Step 7 M2 보강 -->
 <main class="container market-v2-mobile-only">
   <div class="page-head">
     <h1
@@ -121,27 +121,32 @@
     >
       중고거래
     </h1>
+    <span class="market-toolbar__count" th:text="${page.totalElements} + '건'">0건</span>
     <a class="btn" th:href="@{/market/form}">글쓰기</a>
   </div>
-  <form class="filters" th:action="@{/market/list}" method="get">
+  <form class="filters market-filters-mobile" th:action="@{/market/list}" method="get">
     <input type="hidden" name="size" value="12" />
     <input type="hidden" name="sort" th:value="${sort}" />
-    <input
-            type="hidden"
-            name="category"
-            th:value="${selectedCategory != null ? selectedCategory.name() : ''}"
-            th:if="${selectedCategory != null}"
-    />
     <input
             type="hidden"
             name="neighborhoodId"
             th:value="${neighborhoodId}"
             th:if="${neighborhoodId != null}"
     />
+    <select name="category" class="market-filters-mobile__category" aria-label="카테고리">
+      <option value="" th:selected="${selectedCategory == null}">전체 카테고리</option>
+      <option
+              th:each="cat : ${categories}"
+              th:value="${cat.name()}"
+              th:text="${cat.label}"
+              th:selected="${selectedCategory == cat}"
+      ></option>
+    </select>
     <input
             name="keyword"
             th:value="${keyword}"
             placeholder="검색어"
+            autocomplete="off"
     /><label
   ><input
           type="checkbox"
@@ -166,7 +171,20 @@
       ></div>
     </th:block>
   </div>
+  <div th:replace="~{fragments/market-pagination-mobile :: market-pagination-mobile}"></div>
 </main>
+<script th:inline="javascript">
+  (function () {
+    if (!window.matchMedia("(max-width: 767px)").matches) return;
+    if (window.location.search.indexOf("size=") >= 0) return;
+    if (/*[[${pageSize}]]*/ 8 !== 8) return;
+    var params = new URLSearchParams(window.location.search);
+    params.set("size", "12");
+    window.location.replace(
+      window.location.pathname + "?" + params.toString()
+    );
+  })();
+</script>
 <script>
   (function () {
     var form = document.getElementById("market-search-band-form");

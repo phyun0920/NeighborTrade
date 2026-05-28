@@ -1598,6 +1598,61 @@ html.is-mobile .member-auth-page .social-login .btn {
     text-align: center;
     box-sizing: border-box;
   }
+
+  /* Step 7 M2 — mobile list */
+  body.market-list-page .market-v2-mobile-only .page-head .market-toolbar__count {
+    flex: 1 1 100%;
+    font-size: 13px;
+    font-weight: 600;
+    color: #888;
+    margin: -4px 0 4px;
+  }
+
+  body.market-list-page .market-filters-mobile__category {
+    color: #333;
+    background: #fff;
+  }
+
+  body.market-list-page .market-pagination-mobile {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+    gap: 8px;
+    margin: 24px 0 8px;
+  }
+
+  body.market-list-page .market-pagination-mobile__status {
+    font-size: 14px;
+    font-weight: 600;
+    color: #666;
+    text-align: center;
+  }
+
+  body.market-list-page .market-pagination-mobile__btn {
+    padding: 12px 14px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background: #fff;
+    color: #333;
+    font-size: 14px;
+    font-weight: 600;
+    text-align: center;
+    text-decoration: none;
+    box-sizing: border-box;
+  }
+
+  body.market-list-page .market-pagination-mobile__btn:first-child {
+    justify-self: start;
+  }
+
+  body.market-list-page .market-pagination-mobile__btn:last-child {
+    justify-self: end;
+  }
+
+  body.market-list-page .market-pagination-mobile__btn:hover {
+    border-color: #ff6f0f;
+    color: #ff6f0f;
+  }
 }
 
 /* ---------- 관리자 레이아웃 ---------- */

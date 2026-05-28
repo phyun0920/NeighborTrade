@@ -1,0 +1,27 @@
+<th:block th:fragment="market-pagination-mobile" xmlns:th="http://www.thymeleaf.org">
+    <nav
+            class="market-pagination-mobile"
+            th:if="${page.totalPages > 1}"
+            aria-label="페이지"
+    >
+        <a
+                class="market-pagination-mobile__btn"
+                th:if="${page.hasPrevious()}"
+                th:href="@{/market/list(page=${page.number - 1}, keyword=${keyword}, onlyOnSale=${onlyOnSale}, category=${selectedCategory}, neighborhoodId=${neighborhoodId}, sort=${sort}, size=12)}"
+                rel="prev"
+        >이전</a
+        >
+        <span
+                class="market-pagination-mobile__status"
+                th:text="${page.number + 1} + ' / ' + ${page.totalPages}"
+        >1 / 3</span
+        >
+        <a
+                class="market-pagination-mobile__btn"
+                th:if="${page.hasNext()}"
+                th:href="@{/market/list(page=${page.number + 1}, keyword=${keyword}, onlyOnSale=${onlyOnSale}, category=${selectedCategory}, neighborhoodId=${neighborhoodId}, sort=${sort}, size=12)}"
+                rel="next"
+        >다음</a
+        >
+    </nav>
+</th:block>
