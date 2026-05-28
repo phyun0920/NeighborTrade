@@ -12,6 +12,7 @@
           method="post"
           class="form"
   >
+    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
     <input th:field="*{username}" placeholder="아이디" required /><input
           th:field="*{password}"
           type="password"

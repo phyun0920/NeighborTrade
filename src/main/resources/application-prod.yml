@@ -1,4 +1,12 @@
 # Railway·운영 — prod 프로필 (RAILWAY_ENVIRONMENT 감지 시 자동 활성화, 또는 SPRING_PROFILES_ACTIVE=prod)
+server:
+  forward-headers-strategy: framework
+  servlet:
+    session:
+      cookie:
+        same-site: lax
+        secure: true
+
 spring:
   jpa:
     show-sql: false
