@@ -113,18 +113,18 @@
   </div>
 </div>
 
-<!-- 모바일 v1 (≤767px) — Step 7 M2 보강 -->
-<main class="container market-v2-mobile-only">
-  <div class="page-head">
+<!-- 모바일 v1 (≤767px) — Step 7 M2 + 컴팩트 UI -->
+<main class="container market-v2-mobile-only market-list-mobile">
+  <header class="market-list-mobile__head">
     <h1
-            th:text="${selectedNeighborhood != null ? selectedNeighborhood.displayName + ' 중고거래' : (browsingNeighborhood != null ? browsingNeighborhood.displayName + ' 중고거래' : '중고거래')}"
+            class="market-list-mobile__title"
+            th:text="${selectedNeighborhood != null ? selectedNeighborhood.emdName + ' 중고거래' : (browsingNeighborhood != null ? browsingNeighborhood.emdName + ' 중고거래' : '중고거래')}"
     >
       중고거래
     </h1>
-    <span class="market-toolbar__count" th:text="${page.totalElements} + '건'">0건</span>
-    <a class="btn" th:href="@{/market/form}">글쓰기</a>
-  </div>
-  <form class="filters market-filters-mobile" th:action="@{/market/list}" method="get">
+    <span class="market-list-mobile__count" th:text="${page.totalElements} + '건'">0건</span>
+  </header>
+  <form class="market-filters-mobile" th:action="@{/market/list}" method="get">
     <input type="hidden" name="size" value="12" />
     <input type="hidden" name="sort" th:value="${sort}" />
     <input
@@ -142,29 +142,48 @@
               th:selected="${selectedCategory == cat}"
       ></option>
     </select>
-    <input
-            name="keyword"
-            th:value="${keyword}"
-            placeholder="검색어"
-            autocomplete="off"
-    /><label
-  ><input
-          type="checkbox"
-          name="onlyOnSale"
-          value="true"
-          th:checked="${onlyOnSale}"
-  />
-    거래 가능만 보기</label
-  ><button class="btn secondary" type="submit">검색</button>
+    <div class="market-filters-mobile__search-row">
+      <input
+              class="market-filters-mobile__keyword"
+              name="keyword"
+              th:value="${keyword}"
+              placeholder="검색어를 입력해주세요"
+              autocomplete="off"
+      />
+      <button type="submit" class="market-filters-mobile__search-btn" aria-label="검색">
+        <svg
+                class="market-filters-mobile__search-icon"
+                viewBox="0 0 24 24"
+                width="20"
+                height="20"
+                aria-hidden="true"
+                focusable="false"
+        >
+          <circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" stroke-width="2" />
+          <path d="M20 20l-4-4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+        </svg>
+      </button>
+    </div>
+    <label class="market-filters-mobile__only-sale">
+      <input
+              type="checkbox"
+              name="onlyOnSale"
+              value="true"
+              th:checked="${onlyOnSale}"
+      />
+      거래 가능만 보기
+    </label>
   </form>
-  <p class="market-filter-hint" th:if="${selectedNeighborhood != null}">
-    <strong th:text="${selectedNeighborhood.emdName}">동</strong> 글만 표시 중입니다.
+  <p class="market-list-mobile__hint market-filter-hint" th:if="${selectedNeighborhood != null}">
+    <strong th:text="${selectedNeighborhood.emdName}">동</strong> 글만 표시 중
   </p>
-  <p class="browse-hint" th:if="${selectedNeighborhood == null and browsingNeighborhood != null}">
-    열람 동네(<strong th:text="${browsingNeighborhood.emdName}">동</strong>) 글은 테두리로
-    강조됩니다. 다른 동네 글도 함께 표시됩니다.
+  <p
+          class="market-list-mobile__hint browse-hint"
+          th:if="${selectedNeighborhood == null and browsingNeighborhood != null}"
+  >
+    <strong th:text="${browsingNeighborhood.emdName}">동</strong> 글은 테두리로 강조
   </p>
-  <div class="grid">
+  <div class="grid market-list-mobile__feed">
     <th:block th:each="post : ${page.content}">
       <div
               th:replace="~{fragments/market-card :: market-card(post=${post}, favoritedPostIds=${favoritedPostIds}, browsingNeighborhoodId=${browsingNeighborhoodId})}"
@@ -172,6 +191,10 @@
     </th:block>
   </div>
   <div th:replace="~{fragments/market-pagination-mobile :: market-pagination-mobile}"></div>
+  <a class="market-list-mobile__fab" th:href="@{/market/form}">
+    <span class="market-list-mobile__fab-icon" aria-hidden="true">+</span>
+    <span class="market-list-mobile__fab-label">글쓰기</span>
+  </a>
 </main>
 <script th:inline="javascript">
   (function () {
