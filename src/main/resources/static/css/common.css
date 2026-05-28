@@ -1819,9 +1819,38 @@ html.is-mobile .member-auth-page .social-login .btn {
   }
 
   body.market-detail-page .market-search-band__region,
-  body.market-form-page .market-search-band__region,
+  body.market-form-page .market-search-band__region {
+    flex-shrink: 0;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background: #fff;
+    padding: 10px 12px;
+    font-size: 14px;
+    font-weight: 600;
+    color: #333;
+    cursor: pointer;
+    white-space: nowrap;
+  }
+
+  body.market-detail-page .market-search-band__region:hover,
+  body.market-form-page .market-search-band__region:hover {
+    border-color: #ff6f0f;
+    color: #ff6f0f;
+  }
+
   body.market-detail-page .market-search-band__category,
-  body.market-form-page .market-search-band__category,
+  body.market-form-page .market-search-band__category {
+    flex-shrink: 0;
+    min-width: 132px;
+    max-width: 160px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 10px 12px;
+    font-size: 14px;
+    background: #fff;
+    color: #333;
+  }
+
   body.market-detail-page .market-search-band__keyword,
   body.market-form-page .market-search-band__keyword {
     border: 1px solid #ddd;
@@ -1829,10 +1858,6 @@ html.is-mobile .member-auth-page .social-login .btn {
     padding: 10px 12px;
     font-size: 14px;
     background: #fff;
-  }
-
-  body.market-detail-page .market-search-band__keyword,
-  body.market-form-page .market-search-band__keyword {
     flex: 1;
     min-width: 0;
   }
