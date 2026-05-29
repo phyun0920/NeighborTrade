@@ -36,6 +36,7 @@ public class DataInitializer implements CommandLineRunner {
                         .verifyRadiusMeters(2500).build());
         List.of(
                 neighborhood("서울특별시", "금천구", "독산동", "서울특별시 금천구 독산동", 37.4696, 126.8974),
+                neighborhood("서울특별시", "금천구", "구로5동", "서울특별시 금천구 구로5동", 37.5031, 126.8810),
                 neighborhood("서울특별시", "금천구", "시흥동", "서울특별시 금천구 시흥동", 37.4550, 126.9000),
                 neighborhood("서울특별시", "금천구", "독산제1동", "서울특별시 금천구 독산제1동", 37.4706, 126.8896),
                 neighborhood("서울특별시", "금천구", "시흥제1동", "서울특별시 금천구 시흥제1동", 37.4536, 126.9032)
@@ -56,6 +57,7 @@ public class DataInitializer implements CommandLineRunner {
 
         if (productPostRepository.count() == 0) {
             Neighborhood docksan = ensureNeighborhood("서울특별시 금천구 독산동", () -> neighborhood("서울특별시", "금천구", "독산동", "서울특별시 금천구 독산동", 37.4696, 126.8974));
+            Neighborhood guro5 = ensureNeighborhood("서울특별시 금천구 구로5동", () -> neighborhood("서울특별시", "금천구", "구로5동", "서울특별시 금천구 구로5동", 37.5031, 126.8810));
             Neighborhood siheung = ensureNeighborhood("서울특별시 금천구 시흥동", () -> neighborhood("서울특별시", "금천구", "시흥동", "서울특별시 금천구 시흥동", 37.4550, 126.9000));
             Neighborhood docksan1 = ensureNeighborhood("서울특별시 금천구 독산제1동", () -> neighborhood("서울특별시", "금천구", "독산제1동", "서울특별시 금천구 독산제1동", 37.4706, 126.8896));
             Neighborhood siheung1 = ensureNeighborhood("서울특별시 금천구 시흥제1동", () -> neighborhood("서울특별시", "금천구", "시흥제1동", "서울특별시 금천구 시흥제1동", 37.4536, 126.9032));
@@ -64,6 +66,8 @@ public class DataInitializer implements CommandLineRunner {
                     "가산동에서 직거래 가능한 책상입니다. 사용감은 적습니다.", "가산디지털단지역 근처");
             savePost(seller, gasan, "모니터 나눔", ProductCategory.DIGITAL, 0, true,
                     "작동 확인했습니다. 직접 가져가실 분께 나눔합니다.", "가산동 주민센터 근처");
+            savePost(seller, gasan, "개발 서적 판매", ProductCategory.BOOK, 10000, false,
+                    "Spring Boot 입문서입니다.", "가산동");
             savePost(seller, docksan, "독산동 에어컨", ProductCategory.APPLIANCE, 150000, false,
                     "여름 대비 창문형 에어컨입니다. 1년 사용.", "독산역 근처");
             savePost(seller, docksan, "유모차 판매", ProductCategory.KIDS, 80000, false,
@@ -80,6 +84,12 @@ public class DataInitializer implements CommandLineRunner {
                     "컴퓨터공학 전공 서적입니다.", "시흥제1동 도서관 근처");
             savePost(seller, siheung1, "강아지 하네스", ProductCategory.PET, 10000, false,
                     "소형견용 하네스입니다.", "시흥제1동 공원");
+            savePost(seller, guro5, "구로5동 노트북", ProductCategory.DIGITAL, 450000, false,
+                    "업무용 노트북입니다. 배터리 양호.", "구로디지털단지역 근처");
+            savePost(seller, guro5, "구로5동 기계식 키보드", ProductCategory.DIGITAL, 35000, false,
+                    "청축 키보드입니다.", "구로5동");
+            savePost(seller, guro5, "요가매트", ProductCategory.SPORTS, 15000, false,
+                    "10mm 두께 요가매트입니다.", "구로5동 체육관 앞");
         }
 
         if (productFavoriteRepository.count() == 0) {
