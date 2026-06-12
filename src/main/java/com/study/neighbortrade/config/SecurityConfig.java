@@ -28,6 +28,7 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.authorizeHttpRequests(auth -> auth
                 .requestMatchers("/css/**", "/js/**", "/images/**", "/uploads/**", "/h2-console/**").permitAll()
+                .requestMatchers("/error").permitAll()
                 .requestMatchers("/ws/**").authenticated()
                 .requestMatchers("/oauth2/**", "/login/oauth2/**").permitAll()
                 .requestMatchers("/", "/member/join", "/member/login", "/market/list", "/market/detail/**", "/api/neighborhoods", "/browse/**").permitAll()
@@ -38,20 +39,28 @@ public class SecurityConfig {
                 .loginProcessingUrl("/member/login")
                 .usernameParameter("username")
                 .passwordParameter("password")
-                .defaultSuccessUrl("/", true)
+                .defaultSuccessUrl("/market/list", true)
                 .failureUrl("/member/login?error=true"));
         http.logout(logout -> logout
                 .logoutUrl("/member/logout")
-                .logoutSuccessUrl("/")
+                .logoutSuccessUrl("/market/list")
                 .invalidateHttpSession(true)
                 .deleteCookies("JSESSIONID"));
         if (clientRegistrationRepository.getIfAvailable() != null) {
             http.oauth2Login(oauth -> oauth
                     .loginPage("/member/login")
                     .userInfoEndpoint(userInfo -> userInfo.userService(customOAuth2UserService.getObject()))
-                    .defaultSuccessUrl("/", true)
+                    .defaultSuccessUrl("/market/list", true)
                     .failureUrl("/member/login?error=true"));
         }
+        http.exceptionHandling(ex -> ex
+                .accessDeniedHandler((request, response, accessDeniedException) -> {
+                    if (request.getUserPrincipal() != null) {
+                        response.sendRedirect(request.getContextPath() + "/market/list");
+                        return;
+                    }
+                    response.sendRedirect(request.getContextPath() + "/member/login?denied");
+                }));
         http.csrf(csrf -> csrf.ignoringRequestMatchers("/h2-console/**", "/ws/**"));
         http.headers(headers -> headers.frameOptions(frame -> frame.sameOrigin()));
         return http.build();

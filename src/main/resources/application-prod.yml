@@ -1,0 +1,32 @@
+# Railway·운영 — prod 프로필 (RAILWAY_ENVIRONMENT 감지 시 자동 활성화, 또는 SPRING_PROFILES_ACTIVE=prod)
+server:
+  forward-headers-strategy: framework
+  servlet:
+    session:
+      cookie:
+        same-site: lax
+        secure: true
+
+spring:
+  jpa:
+    show-sql: false
+    properties:
+      hibernate:
+        format_sql: false
+        use_sql_comments: false
+  output:
+    ansi:
+      enabled: never
+
+logging:
+  level:
+    root: info
+    org.hibernate.SQL: warn
+    org.hibernate.orm.jdbc.bind: warn
+    org.hibernate.orm.jdbc.extract: warn
+    org.springframework.web: warn
+    org.springframework.security: warn
+    com.study.neighbortrade: info
+  pattern:
+    # ANSI·색상 코드 제거, 스택트레이스 축약 — Railway 500 logs/sec 제한 완화
+    console: "%d{yyyy-MM-dd HH:mm:ss.SSS} %5p --- [%t] %-40.40logger{39} : %m%n${LOG_EXCEPTION_CONVERSION_WORD:%xEx}"

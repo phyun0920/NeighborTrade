@@ -1,0 +1,32 @@
+# Phase 2 Step 8(8-2) — 테스트 전용 Spring 프로필
+# 작성일: 2026-05-29
+# 목적: 향후 @SpringBootTest 등 통합 테스트용 H2 in-memory·seed 비활성 설정
+#       (현재 MarketControllerTest @WebMvcTest 는 본 파일을 로드하지 않음)
+# 근거: doc/20260528목_05리뉴얼_버전2_분석02_Phase2_03설명_08Step8.md §4.2
+
+spring:
+  datasource:
+    url: jdbc:h2:mem:neighbortrade-test;MODE=PostgreSQL;DATABASE_TO_LOWER=TRUE;DEFAULT_NULL_ORDERING=HIGH
+    username: sa
+    password:
+    driver-class-name: org.h2.Driver
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    show-sql: false
+    database-platform: org.hibernate.dialect.H2Dialect
+  h2:
+    console:
+      enabled: false
+
+app:
+  seed:
+    enabled: false
+  postgis:
+    enabled: false
+  db:
+    postgres-sequence-sync: false
+
+logging:
+  level:
+    root: warn

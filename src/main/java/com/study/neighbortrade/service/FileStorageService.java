@@ -7,8 +7,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
 import java.util.Locale;
 import java.util.Set;
 import java.util.UUID;
@@ -22,18 +24,39 @@ public class FileStorageService {
 
     public StoredFile storeProductImage(MultipartFile file) {
         validate(file);
-        String original = file.getOriginalFilename() == null ? "image" : Path.of(file.getOriginalFilename()).getFileName().toString();
+        String original = extractOriginalFilename(file.getOriginalFilename());
         String extension = extension(original);
         String stored = UUID.randomUUID() + extension;
         Path dir = Path.of(uploadDir, "products").toAbsolutePath().normalize();
         Path target = dir.resolve(stored);
         try {
             Files.createDirectories(dir);
-            file.transferTo(target);
+            try (InputStream input = file.getInputStream()) {
+                Files.copy(input, target, StandardCopyOption.REPLACE_EXISTING);
+            }
         } catch (IOException e) {
             throw new IllegalStateException("이미지 저장 중 오류가 발생했습니다.", e);
         }
         return new StoredFile(original, stored, "/uploads/products/" + stored, file.getContentType(), file.getSize());
+    }
+
+    /** Path.of()는 Railway 등 ASCII 기본 로케일 환경에서 한글 파일명을 처리하지 못함 */
+    private String extractOriginalFilename(String raw) {
+        if (raw == null || raw.isBlank()) {
+            return "image";
+        }
+        String name = raw.replace('\\', '/');
+        int lastSlash = name.lastIndexOf('/');
+        if (lastSlash >= 0) {
+            name = name.substring(lastSlash + 1);
+        }
+        if (name.isBlank()) {
+            return "image";
+        }
+        if (name.length() > 255) {
+            return name.substring(0, 255);
+        }
+        return name;
     }
 
     private void validate(MultipartFile file) {

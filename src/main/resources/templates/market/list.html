@@ -26,7 +26,7 @@
           <h1>
             <span class="market-title-bar__pipe">|</span>
             <span
-                    th:text="${browsingNeighborhood != null ? browsingNeighborhood.displayName + ' 중고거래' : '중고거래'}"
+                    th:text="${selectedNeighborhood != null ? selectedNeighborhood.displayName + ' 중고거래' : (browsingNeighborhood != null ? browsingNeighborhood.displayName + ' 중고거래' : '중고거래')}"
             >중고거래</span
             >
           </h1>
@@ -36,6 +36,22 @@
               >0건</span
               >
           <div class="market-toolbar__actions">
+            <div class="market-toolbar__view-toggle" role="group" aria-label="보기 방식">
+              <a
+                      class="market-toolbar__view-btn"
+                      th:href="@{/market/list(page=0, keyword=${keyword}, onlyOnSale=${onlyOnSale}, category=${selectedCategory}, neighborhoodId=${neighborhoodId}, sort=${sort}, view='grid', size=${pageSize})}"
+                      th:classappend="${view == 'grid'} ? ' is-active' : ''"
+                      th:attr="aria-pressed=${view == 'grid'}"
+              >그리드</a
+              >
+              <a
+                      class="market-toolbar__view-btn"
+                      th:href="@{/market/list(page=0, keyword=${keyword}, onlyOnSale=${onlyOnSale}, category=${selectedCategory}, neighborhoodId=${neighborhoodId}, sort=${sort}, view='list', size=${pageSize})}"
+                      th:classappend="${view == 'list'} ? ' is-active' : ''"
+                      th:attr="aria-pressed=${view == 'list'}"
+              >리스트</a
+              >
+            </div>
             <form
                     class="market-toolbar__sort-form"
                     method="get"
@@ -43,6 +59,7 @@
             >
               <input type="hidden" name="page" value="0" />
               <input type="hidden" name="size" value="8" />
+              <input type="hidden" name="view" th:value="${view}" />
               <input type="hidden" name="keyword" th:value="${keyword}" />
               <input type="hidden" name="onlyOnSale" value="true" th:if="${onlyOnSale}" />
               <input
@@ -74,25 +91,21 @@
             <a class="btn" th:href="@{/market/form}">글쓰기</a>
           </div>
         </div>
-        <p class="browse-hint" th:if="${browsingNeighborhood != null}">
-          선택한 동네 글은 테두리로 강조됩니다. 다른 동네 글도 함께 표시됩니다.
+        <p class="market-filter-hint" th:if="${selectedNeighborhood != null}">
+          <strong th:text="${selectedNeighborhood.emdName}">동</strong> 글만 표시 중입니다.
         </p>
-        <div class="grid market-grid-v2">
-          <a
-                  class="card"
-                  th:classappend="${browsingNeighborhoodId != null && browsingNeighborhoodId == post.neighborhood.id} ? ' card--browse-focus' : ''"
-                  th:each="post : ${page.content}"
-                  th:href="@{/market/detail/{id}(id=${post.id})}"
-          ><img th:src="${post.displayImageUrl}" alt="상품" /><b
-                  th:text="${post.title}"
-          ></b
-          ><span
-                  th:text="${post.giveaway ? '나눔' : #numbers.formatInteger(post.price, 0, 'COMMA') + '원'}"
-          ></span
-          ><small
-                  th:text="${post.neighborhood.emdName} + ' · ' + ${post.status.label}"
-          ></small
-          ></a>
+        <p class="browse-hint" th:if="${selectedNeighborhood == null and browsingNeighborhood != null}">
+          열람 동네(<strong th:text="${browsingNeighborhood.emdName}">동</strong>) 글은 테두리로
+          강조됩니다. 다른 동네 글도 함께 표시됩니다.
+        </p>
+        <div
+                th:class="${view == 'list'} ? 'market-list-v2' : 'grid market-grid-v2'"
+        >
+          <th:block th:each="post : ${page.content}">
+            <div
+                    th:replace="~{fragments/market-card :: market-card(post=${post}, favoritedPostIds=${favoritedPostIds}, browsingNeighborhoodId=${browsingNeighborhoodId})}"
+            ></div>
+          </th:block>
         </div>
         <div th:replace="~{fragments/market-pagination :: market-pagination}"></div>
       </div>
@@ -100,25 +113,25 @@
   </div>
 </div>
 
-<!-- 모바일 v1 (≤767px) — 기존 UI 유지 -->
-<main class="container market-v2-mobile-only">
-  <div class="page-head">
+<!-- 모바일 v1 (≤767px) — Step 7 M2 + 컴팩트 UI -->
+<main class="container market-v2-mobile-only market-list-mobile">
+  <header class="market-list-mobile__head">
     <h1
-            th:text="${browsingNeighborhood != null ? browsingNeighborhood.displayName + ' 중고거래' : '중고거래'}"
+            class="market-list-mobile__title"
+            th:text="${selectedNeighborhood != null ? selectedNeighborhood.emdName + ' 중고거래' : (browsingNeighborhood != null ? browsingNeighborhood.emdName + ' 중고거래' : '중고거래')}"
     >
       중고거래
     </h1>
-    <a class="btn" th:href="@{/market/form}">글쓰기</a>
-  </div>
-  <form class="filters" th:action="@{/market/list}" method="get">
+    <span class="market-list-mobile__count" th:text="${page.totalElements} + '건'">0건</span>
+  </header>
+  <form
+          id="market-filters-mobile-form"
+          class="market-filters-mobile"
+          th:action="@{/market/list}"
+          method="get"
+  >
     <input type="hidden" name="size" value="12" />
     <input type="hidden" name="sort" th:value="${sort}" />
-    <input
-            type="hidden"
-            name="category"
-            th:value="${selectedCategory != null ? selectedCategory.name() : ''}"
-            th:if="${selectedCategory != null}"
-    />
     <input
             type="hidden"
             name="neighborhoodId"
@@ -126,40 +139,137 @@
             th:if="${neighborhoodId != null}"
     />
     <input
-            name="keyword"
-            th:value="${keyword}"
-            placeholder="검색어"
-    /><label
-  ><input
-          type="checkbox"
-          name="onlyOnSale"
-          value="true"
-          th:checked="${onlyOnSale}"
-  />
-    거래 가능만 보기</label
-  ><button class="btn secondary" type="submit">검색</button>
+            type="hidden"
+            name="category"
+            id="market-mobile-category"
+            th:value="${selectedCategory != null ? selectedCategory.name() : ''}"
+    />
+    <div class="market-filters-mobile__search-row">
+      <button
+              type="button"
+              class="market-filters-mobile__category-btn"
+              id="market-category-open"
+              aria-haspopup="dialog"
+              aria-controls="market-category-modal"
+      >
+            <span
+                    id="market-category-open-label"
+                    th:text="${selectedCategory != null ? selectedCategory.label : '전체'}"
+            >전체</span
+            >
+      </button>
+      <input
+              class="market-filters-mobile__keyword"
+              name="keyword"
+              th:value="${keyword}"
+              placeholder="검색어를 입력해주세요"
+              autocomplete="off"
+      />
+      <button type="submit" class="market-filters-mobile__search-btn" aria-label="검색">
+        <svg
+                class="market-filters-mobile__search-icon"
+                viewBox="0 0 24 24"
+                width="20"
+                height="20"
+                aria-hidden="true"
+                focusable="false"
+        >
+          <circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" stroke-width="2" />
+          <path d="M20 20l-4-4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+        </svg>
+      </button>
+    </div>
   </form>
-  <p class="browse-hint" th:if="${browsingNeighborhood != null}">
-    선택한 동네 글은 테두리로 강조됩니다. 다른 동네 글도 함께 표시됩니다.
-  </p>
-  <div class="grid">
-    <a
-            class="card"
-            th:classappend="${browsingNeighborhoodId != null && browsingNeighborhoodId == post.neighborhood.id} ? ' card--browse-focus' : ''"
-            th:each="post : ${page.content}"
-            th:href="@{/market/detail/{id}(id=${post.id})}"
-    ><img th:src="${post.displayImageUrl}" alt="상품" /><b
-            th:text="${post.title}"
-    ></b
-    ><span
-            th:text="${post.giveaway ? '나눔' : #numbers.formatInteger(post.price, 0, 'COMMA') + '원'}"
-    ></span
-    ><small
-            th:text="${post.neighborhood.emdName} + ' · ' + ${post.status.label}"
-    ></small
-    ></a>
+
+  <div
+          id="market-category-modal"
+          class="market-category-modal"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="market-category-modal-title"
+          hidden
+  >
+    <div class="market-category-modal__backdrop" id="market-category-modal-backdrop"></div>
+    <div class="market-category-modal__sheet">
+      <div class="market-category-modal__head">
+        <h2 id="market-category-modal-title">카테고리</h2>
+        <button
+                type="button"
+                class="market-category-modal__close"
+                id="market-category-modal-close"
+                aria-label="닫기"
+        >
+          ×
+        </button>
+      </div>
+      <ul class="market-category-modal__list" id="market-category-modal-list" role="listbox">
+        <li role="presentation">
+          <button
+                  type="button"
+                  class="market-category-modal__option"
+                  data-value=""
+                  data-label="전체"
+                  role="option"
+                  th:attr="aria-checked=${selectedCategory == null}"
+                  th:classappend="${selectedCategory == null} ? ' is-active' : ''"
+          >
+            전체 카테고리
+          </button>
+        </li>
+        <li th:each="cat : ${categories}" role="presentation">
+          <button
+                  type="button"
+                  class="market-category-modal__option"
+                  th:attr="data-value=${cat.name()}, data-label=${cat.label}, aria-checked=${selectedCategory == cat}"
+                  th:text="${cat.label}"
+                  th:classappend="${selectedCategory == cat} ? ' is-active' : ''"
+                  role="option"
+          ></button>
+        </li>
+      </ul>
+      <button type="button" class="market-category-modal__done btn" id="market-category-modal-done">
+        완료
+      </button>
+    </div>
   </div>
+  <p class="market-list-mobile__hint market-filter-hint" th:if="${selectedNeighborhood != null}">
+    <strong th:text="${selectedNeighborhood.emdName}">동</strong> 글만 표시 중
+  </p>
+  <p
+          class="market-list-mobile__hint browse-hint"
+          th:if="${selectedNeighborhood == null and browsingNeighborhood != null}"
+  >
+    <strong th:text="${browsingNeighborhood.emdName}">동</strong> 글은 테두리로 강조
+  </p>
+  <div class="grid market-list-mobile__feed">
+    <th:block th:each="post : ${page.content}">
+      <div
+              th:replace="~{fragments/market-card :: market-card(post=${post}, favoritedPostIds=${favoritedPostIds}, browsingNeighborhoodId=${browsingNeighborhoodId})}"
+      ></div>
+    </th:block>
+  </div>
+  <div th:replace="~{fragments/market-pagination-mobile :: market-pagination-mobile}"></div>
+  <a class="market-list-mobile__fab" th:href="@{/market/form}">
+    <span class="market-list-mobile__fab-icon" aria-hidden="true">+</span>
+    <span class="market-list-mobile__fab-label">글쓰기</span>
+  </a>
 </main>
+<script th:inline="javascript">
+  (function () {
+    if (!window.matchMedia("(max-width: 767px)").matches) return;
+    if (window.location.search.indexOf("size=") >= 0) return;
+    if (/*[[${pageSize}]]*/ 8 !== 8) return;
+    var params = new URLSearchParams(window.location.search);
+    params.set("size", "12");
+    window.location.replace(
+      window.location.pathname + "?" + params.toString()
+    );
+  })();
+</script>
+<script
+        th:src="@{/js/market-category-modal.js(v=${@environment.getProperty('app.ui.asset-version', '1')})}"
+        defer
+></script>
 <script>
   (function () {
     var form = document.getElementById("market-search-band-form");

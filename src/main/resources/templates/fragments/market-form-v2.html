@@ -1,0 +1,148 @@
+<th:block
+        th:fragment="market-form-v2(formAction, pageTitle, submitLabel, cancelHref, post, images, requireVerified)"
+        xmlns:th="http://www.thymeleaf.org"
+>
+    <div class="market-form-v2">
+        <div class="market-form-v2__head">
+            <h1 class="market-form-v2__title" th:text="${pageTitle}">중고거래 상품 등록</h1>
+        </div>
+
+        <p th:if="${requireVerified and !currentMember.localVerified}" class="error market-form-v2__error">
+            동네 인증 후 글을 작성할 수 있습니다.
+        </p>
+
+        <form
+                th:if="${!requireVerified or currentMember.localVerified}"
+                th:action="${formAction}"
+                th:object="${productPostRequestDto}"
+                method="post"
+                enctype="multipart/form-data"
+                class="market-form-v2__form"
+                th:attr="data-existing-image-count=${images != null ? #lists.size(images) : 0}"
+        >
+            <section class="market-form-v2__section">
+                <h2 class="market-form-v2__label">상품 이미지</h2>
+                <p class="market-form-v2__hint" th:if="${post == null}">최대 10장 · 첫 번째 사진이 대표 이미지입니다. × 로 선택 취소 가능</p>
+                <p class="market-form-v2__hint" th:if="${post != null}">최대 10장 · 새 사진은 기존 이미지에 추가됩니다. × 로 삭제 가능</p>
+                <div th:if="${images != null and !#lists.isEmpty(images)}" class="market-form-v2__existing" id="market-form-v2-existing">
+                    <p class="market-form-v2__existing-label">등록된 사진 · × 클릭 시 삭제</p>
+                    <div class="market-form-v2__existing-row">
+                        <div
+                                th:each="image : ${images}"
+                                class="market-form-v2__existing-item"
+                                th:attr="data-image-id=${image.id}"
+                        >
+                            <img
+                                    th:src="${image.imageUrl}"
+                                    alt="기존 상품 이미지"
+                                    class="market-form-v2__existing-thumb"
+                            />
+                            <button
+                                    type="button"
+                                    class="market-form-v2__remove-btn js-remove-existing-image"
+                                    th:attr="data-image-id=${image.id}"
+                                    aria-label="등록된 사진 삭제"
+                            >
+                                ×
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="market-form-v2__upload-row">
+                    <div
+                            class="market-form-v2__previews"
+                            id="market-form-v2-previews"
+                            aria-live="polite"
+                    ></div>
+                    <label class="market-form-v2__file-zone" id="market-form-v2-file-zone">
+                        <span class="market-form-v2__file-btn">+ 사진 추가</span>
+                        <input
+                                id="market-form-v2-file-input"
+                                name="imageFiles"
+                                type="file"
+                                accept="image/jpeg,image/png,image/gif,image/webp"
+                                multiple
+                                class="market-form-v2__file-input"
+                        />
+                    </label>
+                </div>
+                <p class="market-form-v2__file-status" id="market-form-v2-file-status" hidden></p>
+                <p class="market-form-v2__hint muted">jpg, png, gif, webp</p>
+                <input
+                        id="market-form-v2-rep-url"
+                        class="market-form-v2__text-input market-form-v2__text-input--optional"
+                        th:field="*{representativeImageUrl}"
+                        placeholder="대표 이미지 URL (선택, 파일 업로드 우선)"
+                />
+            </section>
+
+            <section class="market-form-v2__section">
+                <label class="market-form-v2__label" for="market-form-title">제목</label>
+                <input
+                        id="market-form-title"
+                        class="market-form-v2__text-input"
+                        th:field="*{title}"
+                        placeholder="제목을 입력해주세요"
+                        required
+                />
+            </section>
+
+            <section class="market-form-v2__section">
+                <span class="market-form-v2__label">카테고리</span>
+                <div class="market-form-v2__category-grid">
+                    <label th:each="c : ${categories}" class="market-form-v2__category-option">
+                        <input type="radio" th:field="*{category}" th:value="${c}" />
+                        <span th:text="${c.label}">카테고리</span>
+                    </label>
+                </div>
+            </section>
+
+            <section class="market-form-v2__section market-form-v2__section--inline">
+                <label class="market-form-v2__label" for="market-form-price">가격</label>
+                <div class="market-form-v2__price-row">
+                    <input
+                            id="market-form-price"
+                            class="market-form-v2__text-input"
+                            th:field="*{price}"
+                            type="number"
+                            min="0"
+                            placeholder="가격을 입력해주세요"
+                    />
+                    <label class="market-form-v2__checkbox">
+                        <input th:field="*{giveaway}" type="checkbox" />
+                        <span>나눔</span>
+                    </label>
+                </div>
+            </section>
+
+            <section class="market-form-v2__section">
+                <label class="market-form-v2__label" for="market-form-trade-place">거래 희망 장소</label>
+                <input
+                        id="market-form-trade-place"
+                        class="market-form-v2__text-input"
+                        th:field="*{tradePlace}"
+                        placeholder="예) 가산동 주민센터 근처"
+                />
+            </section>
+
+            <section class="market-form-v2__section">
+                <label class="market-form-v2__label" for="market-form-content">상품 설명</label>
+                <textarea
+                        id="market-form-content"
+                        class="market-form-v2__textarea"
+                        th:field="*{content}"
+                        placeholder="상품 상태, 사용 기간, 직거래 가능 시간 등을 적어주세요."
+                        required
+                ></textarea>
+                <p class="market-form-v2__notice muted">
+                    부적절한 게시글은 관리자에 의해 삭제될 수 있습니다.
+                </p>
+            </section>
+
+            <div class="market-form-v2__actions">
+                <a class="btn secondary" th:href="${cancelHref}">취소</a>
+                <button class="btn" type="submit" th:text="${submitLabel}">등록하기</button>
+            </div>
+        </form>
+    </div>
+</th:block>
