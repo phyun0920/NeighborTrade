@@ -61,10 +61,21 @@
                     th:classappend="${adminActiveMenu == 'reports'} ? ' is-active'"
             >신고관리</a
             >
+            <a
+                    th:href="@{/admin/popular-keywords}"
+                    th:classappend="${adminActiveMenu == 'popular-keywords'} ? ' is-active'"
+            >인기검색어관리</a
+            >
+            <a
+                    th:href="@{/admin/search-logs}"
+                    th:classappend="${adminActiveMenu == 'search-logs'} ? ' is-active'"
+            >검색 로그</a
+            >
         </nav>
     </aside>
 
     <div class="admin-main">
+        <p class="success admin-flash" th:if="${adminMessage}" th:text="${adminMessage}"></p>
         <th:block th:replace="${content}" />
     </div>
 </div>

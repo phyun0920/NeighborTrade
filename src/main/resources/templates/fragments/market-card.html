@@ -14,7 +14,9 @@
             <span
                     th:text="${post.giveaway ? '나눔' : #numbers.formatInteger(post.price, 0, 'COMMA') + '원'}"
             ></span>
-            <small th:text="${post.neighborhood.emdName} + ' · ' + ${post.status.label}"></small>
+            <small
+                    th:text="${post.neighborhood.emdName} + ' · ' + ${@relativeTime.productMeta(post)}"
+            ></small>
         </a>
         <form
                 sec:authorize="isAuthenticated()"

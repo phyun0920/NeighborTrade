@@ -1,4 +1,5 @@
 <th:block th:fragment="header" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+  <!-- Phase 3 Step 1(U10·R1): PC header nav 통일, market v2 PC region-chip CSS 숨김 (20260605) -->
   <header
           class="site-header"
           th:attr="data-context-path=${requestContextPath},data-neighborhoods-api=@{/api/neighborhoods}"
@@ -6,10 +7,12 @@
     <div class="nav">
       <div class="nav-brand-group">
         <a class="brand" th:href="@{/market/list}">NeighborTrade</a>
+        <!-- 로그인 후 + market v2 PC 제외(common.css) — search band·sidebar·mobile chip 으로 browsing -->
         <button
                 type="button"
                 id="region-chip-open"
                 class="region-chip"
+                sec:authorize="isAuthenticated()"
                 aria-haspopup="dialog"
                 aria-controls="region-modal"
         >
@@ -22,7 +25,8 @@
       <div class="nav-links nav-desktop-only">
         <a th:href="@{/market/list}">중고거래</a>
         <a th:href="@{/market/favorites}" sec:authorize="isAuthenticated()">관심목록</a>
-        <a th:href="@{/community/list}" sec:authorize="isAuthenticated()">동네생활</a>
+        <!-- Phase 3 Step 1: 비로그인 nav 노출 (열람 permitAll 은 Step 2 C1) -->
+        <a th:href="@{/community/list}">동네생활</a>
         <a th:href="@{/chat/rooms}" sec:authorize="isAuthenticated()">채팅</a>
         <a th:href="@{/location/my}" sec:authorize="isAuthenticated()">내 동네</a>
         <a th:href="@{/mypage}" sec:authorize="isAuthenticated()">마이페이지</a>
@@ -115,7 +119,6 @@
     <a
             class="bottom-nav-item"
             th:href="@{/community/list}"
-            sec:authorize="isAuthenticated()"
             th:classappend="${#httpServletRequest != null and #strings.startsWith(#httpServletRequest.requestURI, '/community')} ? ' is-active' : ''"
             aria-label="동네생활"
             title="동네생활"

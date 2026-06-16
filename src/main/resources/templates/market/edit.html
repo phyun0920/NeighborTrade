@@ -26,32 +26,18 @@
   </div>
 </div>
 
-<main class="container narrow market-v2-mobile-only">
-  <h1>판매글 수정</h1>
-  <form
-          th:action="@{/market/edit/{id}(id=${post.id})}"
-          th:object="${productPostRequestDto}"
-          method="post"
-          enctype="multipart/form-data"
-          class="form"
-  >
-    <input th:field="*{title}" /><select th:field="*{category}">
-    <option
-            th:each="c : ${categories}"
-            th:value="${c}"
-            th:text="${c.label}"
-    ></option></select
-  ><input th:field="*{price}" type="number" /><label
-  ><input th:field="*{giveaway}" type="checkbox" /> 나눔</label
-  ><input th:field="*{representativeImageUrl}" placeholder="대표 이미지 URL(선택)" />
-    <div th:if="${!#lists.isEmpty(images)}" class="image-strip">
-      <img th:each="image : ${images}" th:src="${image.imageUrl}" alt="상품 이미지" />
-    </div>
-    <input name="imageFiles" type="file" accept="image/*" multiple />
-    <small class="muted">새 사진을 올리면 기존 이미지에 추가됩니다. (최대 10장)</small
-    ><input th:field="*{tradePlace}" /><textarea th:field="*{content}"></textarea
-  ><button class="btn" type="submit">저장</button>
-  </form>
+<main class="market-v2-mobile-only market-form-mobile">
+  <div
+          th:replace="~{fragments/market-form-v2 :: market-form-v2(
+          formAction=@{/market/edit/{id}(id=${post.id})},
+          pageTitle='판매글 수정',
+          submitLabel='저장',
+          cancelHref=@{/market/detail/{id}(id=${post.id})},
+          post=${post},
+          images=${images},
+          requireVerified=false
+        )}"
+  ></div>
 </main>
 <script>
   (function () {

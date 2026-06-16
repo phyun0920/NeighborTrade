@@ -1,0 +1,35 @@
+<!--
+  Phase 3 Step 6(COM): 동네생활 목록 pagination (20260611)
+  - market-pagination 스타일 재사용 (community-list-page 스코프)
+  - page·keyword만 유지 — browsing은 쿠키로 별도 유지
+-->
+<th:block th:fragment="community-pagination" xmlns:th="http://www.thymeleaf.org">
+  <nav
+          class="market-pagination"
+          th:if="${page.totalPages > 1}"
+          aria-label="페이지"
+  >
+    <a
+            class="market-pagination__edge"
+            th:if="${page.hasPrevious()}"
+            th:href="@{/community/list(page=${page.number - 1}, keyword=${keyword})}"
+    >이전</a
+    >
+
+    <a
+            th:each="i : ${#numbers.sequence(0, page.totalPages - 1)}"
+            th:href="@{/community/list(page=${i}, keyword=${keyword})}"
+            th:text="${i + 1}"
+            th:classappend="${i == page.number} ? ' is-current' : ''"
+            th:attr="aria-current=${i == page.number} ? 'page' : null"
+    >1</a
+    >
+
+    <a
+            class="market-pagination__edge"
+            th:if="${page.hasNext()}"
+            th:href="@{/community/list(page=${page.number + 1}, keyword=${keyword})}"
+    >다음</a
+    >
+  </nav>
+</th:block>

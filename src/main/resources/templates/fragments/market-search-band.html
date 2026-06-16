@@ -28,8 +28,14 @@
       >
         </button>
 
-        <select name="category" class="market-search-band__category" aria-label="카테고리">
-            <option value="" th:selected="${selectedCategory == null}">중고거래 ▼</option>
+        <select
+                name="category"
+                class="market-search-band__category"
+                aria-label="카테고리"
+        >
+            <option value="" th:selected="${selectedCategory == null}">
+                중고거래 ▼
+            </option>
             <option
                     th:each="cat : ${categories}"
                     th:value="${cat.name()}"
@@ -47,8 +53,13 @@
                 autocomplete="off"
         />
 
-        <button type="submit" class="market-search-band__submit btn" aria-label="검색">
+        <button
+                type="submit"
+                class="market-search-band__submit btn"
+                aria-label="검색"
+        >
             검색
         </button>
     </form>
+</th:block>
 </th:block>

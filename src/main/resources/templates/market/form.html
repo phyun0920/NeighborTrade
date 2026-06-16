@@ -26,38 +26,18 @@
   </div>
 </div>
 
-<main class="container narrow market-v2-mobile-only">
-  <h1>판매글 작성</h1>
-  <p th:unless="${currentMember.localVerified}" class="error">
-    동네 인증 후 글을 작성할 수 있습니다.
-  </p>
-  <form
-          th:if="${currentMember.localVerified}"
-          th:action="@{/market/form}"
-          th:object="${productPostRequestDto}"
-          method="post"
-          enctype="multipart/form-data"
-          class="form"
-  >
-    <input th:field="*{title}" placeholder="제목" /><select th:field="*{category}">
-    <option
-            th:each="c : ${categories}"
-            th:value="${c}"
-            th:text="${c.label}"
-    ></option></select
-  ><input th:field="*{price}" type="number" placeholder="가격" /><label
-  ><input th:field="*{giveaway}" type="checkbox" /> 나눔</label
-  ><input
-          th:field="*{representativeImageUrl}"
-          placeholder="대표 이미지 URL(선택, 파일 업로드 우선)"
-  /><input name="imageFiles" type="file" accept="image/*" multiple /><small class="muted"
-  >jpg, png, gif, webp 이미지를 여러 장 업로드할 수 있습니다.</small
-  ><input th:field="*{tradePlace}" placeholder="거래 희망 장소" /><textarea
-          th:field="*{content}"
-          placeholder="상품 설명"
-  ></textarea
-  ><button class="btn" type="submit">등록</button>
-  </form>
+<main class="market-v2-mobile-only market-form-mobile">
+  <div
+          th:replace="~{fragments/market-form-v2 :: market-form-v2(
+          formAction=@{/market/form},
+          pageTitle='중고거래 상품 등록',
+          submitLabel='등록하기',
+          cancelHref=@{/market/list},
+          post=null,
+          images=null,
+          requireVerified=true
+        )}"
+  ></div>
 </main>
 <script>
   (function () {

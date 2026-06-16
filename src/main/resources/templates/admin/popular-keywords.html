@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html
+        lang="ko"
+        xmlns:th="http://www.thymeleaf.org"
+        th:replace="~{fragments/admin-layout :: layout('인기검색어 관리', ~{::admin-page-root})}"
+>
+<body>
+<div th:fragment="admin-page-root" class="admin-page-root container">
+  <h1>인기검색어 관리</h1>
+  <p class="admin-dashboard-intro muted">
+    search_v2_log 주간 집계 · /market/list 인기검색어 칩 연동 (Phase 3 B7-2)
+  </p>
+
+  <div class="admin-summary-grid">
+    <div class="admin-summary-card">
+      <span class="admin-summary-card__label">집계 주간</span>
+      <b class="admin-summary-card__value" th:text="${periodLabel}">집계 없음</b>
+      <small class="admin-summary-card__hint muted" th:text="${nextScheduledRun}">매주 월요일 00:00</small>
+    </div>
+    <div class="admin-summary-card">
+      <span class="admin-summary-card__label">등록 키워드</span>
+      <b class="admin-summary-card__value" th:text="${popularKeywordCount} + '건'">0건</b>
+    </div>
+    <div class="admin-summary-card">
+      <span class="admin-summary-card__label">7일 검색</span>
+      <b class="admin-summary-card__value" th:text="${searchLogCount7d} + '건'">0건</b>
+    </div>
+    <div class="admin-summary-card">
+      <span class="admin-summary-card__label">사용자 노출</span>
+      <b
+              class="admin-summary-card__value"
+              th:text="${usingFallback} ? 'YAML 폴백' : 'DB'"
+      >DB</b
+      >
+    </div>
+  </div>
+
+  <div class="admin-section">
+    <h2>배치 관리</h2>
+    <form
+            class="admin-inline-form"
+            method="post"
+            th:action="@{/admin/popular-keywords/aggregate}"
+    >
+      <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+      <button type="submit" class="btn">배치 수동 실행 (주간 집계)</button>
+    </form>
+    <p class="admin-section__note muted">
+      매주 월요일 00:00 자동 실행됩니다. 필요 시 여기서 수동 실행할 수 있습니다.
+    </p>
+  </div>
+
+  <div class="admin-section">
+    <h2>현재 주간 인기검색어</h2>
+    <div class="admin-table-wrap" th:if="${keywords != null and !keywords.isEmpty()}">
+      <table class="admin-table">
+        <thead>
+        <tr>
+          <th>순위</th>
+          <th>키워드</th>
+          <th>검색 횟수</th>
+          <th>기간</th>
+          <th>작업</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="kw : ${keywords}">
+          <td th:text="${kw.rank}">1</td>
+          <td>
+            <form
+                    class="admin-inline-form"
+                    method="post"
+                    th:action="@{/admin/popular-keywords/{id}(id=${kw.id})}"
+            >
+              <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+              <input
+                      type="text"
+                      name="keyword"
+                      class="admin-keyword-input"
+                      th:value="${kw.keyword}"
+                      required
+              />
+              <button type="submit" class="btn secondary admin-btn-compact">수정</button>
+            </form>
+          </td>
+          <td th:text="${kw.searchCount}">0</td>
+          <td th:text="${#temporals.format(kw.period, 'yyyy-MM-dd')}">-</td>
+          <td>
+            <form
+                    class="admin-inline-form"
+                    method="post"
+                    th:action="@{/admin/popular-keywords/{id}/delete(id=${kw.id})}"
+                    onsubmit="return confirm('삭제하시겠습니까?');"
+            >
+              <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+              <button type="submit" class="btn danger admin-btn-compact">삭제</button>
+            </form>
+          </td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+    <p
+            th:if="${keywords == null or keywords.isEmpty()}"
+            class="admin-empty muted"
+    >
+      데이터가 없습니다. 배치를 실행하거나 검색이 집계될 때까지 대기하세요.
+    </p>
+  </div>
+
+  <div class="admin-section">
+    <h2>인기검색어 집계 정책</h2>
+    <ul class="admin-policy-list">
+      <li>
+        <strong>수집:</strong> 사용자가 검색어를 입력하여 /market/list를 조회할 때마다
+        search_v2_log에 기록됩니다.
+      </li>
+      <li>
+        <strong>집계:</strong> 매주 월요일 00:00 자동으로 지난주(월~일) 검색 기록을 분석하여 top
+        10을 popular_search_keyword에 저장합니다.
+      </li>
+      <li>
+        <strong>폴백:</strong> DB에 데이터가 없을 때는 application.yml의 popular-keywords 값을
+        사용합니다.
+      </li>
+      <li>
+        <strong>표시:</strong> 검색 밴드 아래 「인기검색어」 칩으로 사용자에게 노출됩니다.
+      </li>
+      <li>
+        <strong>유지:</strong> 검색 로그는 90일간 보관 후 자동 삭제됩니다.
+      </li>
+    </ul>
+  </div>
+</div>
+</body>
+</html>
