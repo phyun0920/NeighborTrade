@@ -1,0 +1,123 @@
+================================================================================
+README.md 검토 결과 (채팅 내용 정리)
+================================================================================
+작성일: 2026년 6월 18일 (목)
+대상: README.md vs 실제 코드·설정 대조
+※ README.md 파일은 수정하지 않음
+
+--------------------------------------------------------------------------------
+[사용자 질문]
+--------------------------------------------------------------------------------
+Frontend에 Tailwind CSS는 제외되어야 되지 않나요?
+그리고, Build & DevOps에서 Docker도 사용한 기술이 아니지 않나요?
+잘못된 부분이 없는지 확인해주세요.
+README.md파일은 일단 수정하지 마세요.
+
+--------------------------------------------------------------------------------
+[검토 요약]
+--------------------------------------------------------------------------------
+README.md를 실제 코드·설정과 대조해 검토했습니다. 수정은 하지 않았습니다.
+
+================================================================================
+1. 사용자 지적 — 맞습니다
+================================================================================
+
+■ 1. Tailwind CSS (Frontend 배지)
+  → 제외하는 것이 맞습니다.
+
+  - 프로젝트 전체에서 "tailwind" 문자열은 README에만 존재
+  - head.html은 /css/common.css만 로드
+  - package.json, tailwind.config.*, Tailwind CDN 링크 없음
+  - 스타일은 common.css 커스텀 CSS(약 3,700줄)로 구현
+
+  결론: Frontend 배지에서 Tailwind CSS는 실제 사용 기술이 아님
+
+■ 2. Docker (Build & DevOps 배지)
+  → 배지에서 빼는 것이 맞습니다.
+
+  - Dockerfile, docker-compose.yml, build.gradle의 jib 등 Docker 관련 파일·설정 없음
+  - 배포는 Railway + bootJar (railway.toml)
+  - README 본문의 "docker run ... postgres:15"는 로컬 DB 옵션 예시일 뿐,
+    프로젝트가 Docker로 빌드·배포한 것은 아님
+
+  결론: Build & DevOps 배지의 Docker는 과장
+        (본문 예시 명령은 "선택 사항" 설명으로는 가능)
+
+================================================================================
+2. 추가로 확인된 부정확·과장 항목
+================================================================================
+
+■ 3. PostGIS (Database & GIS 배지)
+  - PostGIS 관련 코드는 있음 (ST_Contains, boundary 등)
+  - application.yml에서 app.postgis.enabled: false가 기본값
+  - 실제 운영 DB에서 PostGIS 확장·경계 데이터를 쓰지 않는다면,
+    현재 활성 기술이라기보다 선택/미활성 기능에 가깝음
+
+  → 배지 유지 여부는 "PostGIS를 실제로 켜서 쓰는지"에 따라 결정
+
+■ 4. H2 (로컬) 배지
+  - build.gradle에 H2 의존성 있음
+  - application-test.yml에서 테스트용 H2 설정 있음
+  - 커밋된 application.yml 기본값은 PostgreSQL(Supabase)
+  - H2는 application-secret.yml 예시·테스트 프로필 수준
+
+  → "로컬 기본 DB"로 H2를 표기하기엔 부정확할 수 있음
+    (테스트/대체 설정으로는 맞음)
+
+■ 5. 신고 API 경로 오류
+
+  README 표기          실제 (ReportController)
+  ----------------     -------------------------
+  /report/{type}/{id}  /reports/{type}/{id}
+
+  @RequestMapping("/reports")이므로 경로 표기가 틀림
+
+■ 6. application-secret.yml 설명 vs .gitignore
+  - README: application-secret.yml이 gitignore 대상 → 맞음
+  - .gitignore에는 application-secret.yml, db.sql만 있고 application.yml은 없음
+  - 로컬 application.yml에 DB·OAuth 값이 들어 있을 수 있어,
+    "민감 정보는 secret 분리" 설명과 실제 운영 방식이 어긋날 수 있음
+
+■ 7. 로컬 개발 "PostgreSQL 또는 H2"
+  - H2 로컬 실행은 가능하지만, 기본 application.yml은 PostgreSQL 고정
+  - H2로 로컬 개발하려면 application-secret.yml 등으로 datasource를 덮어써야 함
+
+  → "둘 다 기본 지원"처럼 읽히면 다소 과장
+
+================================================================================
+3. 대체로 맞는 항목
+================================================================================
+
+항목                              판단
+----                              ----
+Java 21, Spring Boot 3.4          build.gradle 3.4.1
+Spring Security, JPA, OAuth2      의존성·코드 일치
+WebSocket(STOMP)                  WebSocketConfig, chat.js
+Thymeleaf, HTML, CSS, JS          실제 사용
+PostgreSQL, Supabase              application.yml datasource
+Gradle, Railway                   build.gradle, railway.toml
+Hibernate ddl-auto: update        application.yml
+Phase 3 완료, 인기검색어 수동 집계  코드와 일치
+Market/Trade/Chat/Admin 주요 경로   대부분 일치 (신고 경로 제외)
+search_v2_log 테이블명             SearchLog 엔티티 @Table(name = "search_v2_log")
+
+================================================================================
+4. 정리 (수정 시 권장 방향)
+================================================================================
+
+구분          권장
+----          ----
+제거          Frontend — Tailwind CSS
+제거          Build & DevOps — Docker 배지
+검토          PostGIS (기본 비활성), H2(로컬) 배지
+수정          신고 API /report/... → /reports/...
+보완          스타일은 커스텀 CSS 명시,
+              Docker는 배지가 아닌 "로컬 DB 선택 예시"로만 유지
+
+================================================================================
+[결론]
+================================================================================
+지적하신 Tailwind CSS, Docker 배지 두 가지는 실제 사용과 맞지 않아
+README에서 빼는 것이 맞습니다.
+
+================================================================================
