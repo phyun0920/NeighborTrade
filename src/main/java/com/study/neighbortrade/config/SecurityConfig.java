@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -32,6 +33,8 @@ public class SecurityConfig {
                 .requestMatchers("/ws/**").authenticated()
                 .requestMatchers("/oauth2/**", "/login/oauth2/**").permitAll()
                 .requestMatchers("/", "/member/join", "/member/login", "/market/list", "/market/detail/**", "/api/neighborhoods", "/browse/**").permitAll()
+                // Phase 3 Step 2(C1): 동네생활 list·detail GET 공개 열람 (20260609)
+                .requestMatchers(HttpMethod.GET, "/community/list", "/community/detail/**").permitAll()
                 .requestMatchers("/admin/**").hasRole("ADMIN")
                 .anyRequest().authenticated());
         http.formLogin(login -> login

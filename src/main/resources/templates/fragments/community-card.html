@@ -1,0 +1,34 @@
+<!--
+  Phase 3 Step 6(COM): 동네생활 목록 카드 v2 (20260611)
+  - PC community-list-v2 / mobile community-list-v2--mobile 공통
+  - browsingNeighborhoodId 일치 시 community-card--browse-focus (market-card 패턴)
+  - 시간: @relativeTime.communityMeta(post) — createdAt 기준
+-->
+<th:block
+        th:fragment="community-card(post, browsingNeighborhoodId)"
+        xmlns:th="http://www.thymeleaf.org"
+>
+  <article
+          class="community-card"
+          th:classappend="${browsingNeighborhoodId != null and post.neighborhood != null and browsingNeighborhoodId == post.neighborhood.id} ? ' community-card--browse-focus' : ''"
+  >
+    <a class="community-card__link" th:href="@{/community/detail/{id}(id=${post.id})}">
+      <h2 class="community-card__title" th:text="${post.title}">제목</h2>
+      <p
+              class="community-card__excerpt"
+              th:text="${#strings.abbreviate(post.content, 100)}"
+      >
+        내용 미리보기
+      </p>
+      <p class="community-card__meta">
+        <span th:text="${post.neighborhood.emdName}">동네</span>
+        ·
+        <span th:text="${post.author.nickname}">작성자</span>
+        ·
+        <time th:text="${@relativeTime.communityMeta(post)}">시간</time>
+        · 조회
+        <span th:text="${post.viewCount}">0</span>
+      </p>
+    </a>
+  </article>
+</th:block>

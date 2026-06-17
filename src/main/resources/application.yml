@@ -102,9 +102,11 @@ logging:
 
 app:
   ui:
-    # CSS/JS 쿼리 버전 — 배포 후 모바일 브라우저 캐시 갱신용
-    asset-version: ${APP_UI_ASSET_VERSION:20260529-s8-qa}
+    # CSS/JS 쿼리 버전 — Phase 3 Step 6 COM·ADM v2 (20260611)
+    asset-version: ${APP_UI_ASSET_VERSION:20260616-admin-c}
   market:
+    # Phase 3 Step 3(U9): 끌올 재사용 대기 시간(시간)
+    bump-cooldown-hours: ${MARKET_BUMP_COOLDOWN_HOURS:24}
     popular-keywords:
       - 에어컨
       - 자전거

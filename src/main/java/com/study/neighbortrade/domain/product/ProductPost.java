@@ -66,6 +66,9 @@ public class ProductPost {
     @Column(nullable = false)
     private LocalDateTime updatedAt;
 
+    /** Phase 3 Step 3(U9): 끌올 시각 — null 이면 미끌올 (20260609) */
+    private LocalDateTime bumpedAt;
+
     @PrePersist
     void onCreate() {
         LocalDateTime now = LocalDateTime.now();
@@ -95,6 +98,19 @@ public class ProductPost {
     }
     public void increaseViewCount() {
         this.viewCount++;
+    }
+
+    /** 목록 최신순·상대시간 기준 시각 */
+    public LocalDateTime getActiveAt() {
+        return bumpedAt != null ? bumpedAt : createdAt;
+    }
+
+    public boolean isBumped() {
+        return bumpedAt != null;
+    }
+
+    public void bump() {
+        this.bumpedAt = LocalDateTime.now();
     }
     public boolean isSeller(Member member) {
         return member != null && seller.getId().equals(member.getId());

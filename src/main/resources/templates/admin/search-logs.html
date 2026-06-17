@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html
+        lang="ko"
+        xmlns:th="http://www.thymeleaf.org"
+        th:replace="~{fragments/admin-layout :: layout('검색 로그', ~{::admin-page-root})}"
+>
+<body>
+<div th:fragment="admin-page-root" class="admin-page-root container">
+  <h1>검색 로그</h1>
+  <p class="admin-dashboard-intro muted">
+    search_v2_log 원본 조회 (read-only) · 최근 7일
+    <strong th:text="${searchLogCount7d}">0</strong>건 · 페이지당 50건
+  </p>
+
+  <div class="admin-section">
+    <div class="admin-table-wrap" th:if="${page != null and !page.empty}">
+      <table class="admin-table">
+        <thead>
+        <tr>
+          <th>검색 시각</th>
+          <th>키워드</th>
+          <th>열람 동네</th>
+          <th>회원</th>
+          <th>결과 건수</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="log : ${page.content}">
+          <td th:text="${#temporals.format(log.searchedAt, 'yyyy-MM-dd HH:mm')}">-</td>
+          <td th:text="${log.keyword}">-</td>
+          <td
+                  th:text="${log.browsingNeighborhood != null ? log.browsingNeighborhood.emdName : '-'}"
+          >
+            -
+          </td>
+          <td th:text="${log.member != null ? log.member.nickname : '익명'}">익명</td>
+          <td th:text="${log.productCount}">0</td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+    <p th:if="${page == null or page.empty}" class="admin-empty muted">
+      search_v2_log에 기록된 검색이 없습니다. /market/list에서 키워드 검색 후 다시 확인하세요.
+    </p>
+
+    <nav class="admin-pagination" th:if="${page != null and page.totalPages > 1}">
+      <a
+              class="btn secondary admin-btn-compact"
+              th:if="${page.hasPrevious()}"
+              th:href="@{/admin/search-logs(page=${page.number - 1})}"
+      >이전</a
+      >
+      <span
+              class="admin-pagination__info muted"
+              th:text="${page.number + 1} + ' / ' + ${page.totalPages} + ' · 총 ' + ${page.totalElements} + '건'"
+      >1 / 1</span
+      >
+      <a
+              class="btn secondary admin-btn-compact"
+              th:if="${page.hasNext()}"
+              th:href="@{/admin/search-logs(page=${page.number + 1})}"
+      >다음</a
+      >
+    </nav>
+  </div>
+
+  <div class="admin-section">
+    <h2>안내</h2>
+    <ul class="admin-policy-list">
+      <li>
+        <strong>수집:</strong> /market/list에서 keyword 검색 시 search_v2_log에 1건 기록됩니다.
+      </li>
+      <li>
+        <strong>집계:</strong> 인기검색어관리에서 주간 집계 시 본 로그를 분석합니다.
+      </li>
+      <li><strong>보관:</strong> 90일 후 자동 삭제됩니다.</li>
+      <li><strong>본 화면:</strong> 조회 전용 — 수정·삭제는 제공하지 않습니다.</li>
+    </ul>
+  </div>
+</div>
+</body>
+</html>

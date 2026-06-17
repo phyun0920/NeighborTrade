@@ -5,14 +5,46 @@
         th:replace="~{fragments/admin-layout :: layout('관리자 대시보드', ~{::admin-page-root})}"
 >
 <body>
+<!-- Phase 3 Step 6(ADM): admin dashboard 카드 v2 — grid·링크·accent (20260611) -->
 <div th:fragment="admin-page-root" class="admin-page-root container">
   <h1>관리자 대시보드</h1>
-  <div class="admin-stats">
-    <div class="admin-stat-card">회원 <b th:text="${memberCount}">0</b></div>
-    <div class="admin-stat-card">판매글 <b th:text="${postCount}">0</b></div>
-    <div class="admin-stat-card">거래 <b th:text="${tradeCount}">0</b></div>
-    <div class="admin-stat-card">동네생활 <b th:text="${communityCount}">0</b></div>
-    <div class="admin-stat-card">신고 <b th:text="${reportCount}">0</b></div>
+  <p class="admin-dashboard-intro muted">서비스 현황을 한눈에 확인하고 각 관리 메뉴로 이동할 수 있습니다.</p>
+  <div class="admin-stats admin-stats-v2">
+    <a class="admin-stat-card admin-stat-card--link" th:href="@{/admin/members}">
+      <span class="admin-stat-card__label">회원</span>
+      <b class="admin-stat-card__value" th:text="${memberCount}">0</b>
+    </a>
+    <a class="admin-stat-card admin-stat-card--link" th:href="@{/admin/posts}">
+      <span class="admin-stat-card__label">판매글</span>
+      <b class="admin-stat-card__value" th:text="${postCount}">0</b>
+    </a>
+    <!-- 거래·동네생활: 전용 admin 목록 없음 — 통계만 (Step 6 20260611) -->
+    <div class="admin-stat-card">
+      <span class="admin-stat-card__label">거래</span>
+      <b class="admin-stat-card__value" th:text="${tradeCount}">0</b>
+    </div>
+    <div class="admin-stat-card">
+      <span class="admin-stat-card__label">동네생활</span>
+      <b class="admin-stat-card__value" th:text="${communityCount}">0</b>
+    </div>
+    <a class="admin-stat-card admin-stat-card--link admin-stat-card--accent" th:href="@{/admin/reports}">
+      <span class="admin-stat-card__label">신고</span>
+      <b class="admin-stat-card__value" th:text="${reportCount}">0</b>
+    </a>
+    <a class="admin-stat-card admin-stat-card--link" th:href="@{/admin/popular-keywords}">
+      <span class="admin-stat-card__label">인기검색어</span>
+      <b class="admin-stat-card__value" th:text="${popularKeywordCount}">0</b>
+      <small
+              class="admin-stat-card__hint muted"
+              th:if="${topPopularKeyword != null}"
+              th:text="'1위 ' + ${topPopularKeyword}"
+      >1위 —</small
+      >
+    </a>
+    <a class="admin-stat-card admin-stat-card--link" th:href="@{/admin/search-logs}">
+      <span class="admin-stat-card__label">검색 로그 (7일)</span>
+      <b class="admin-stat-card__value" th:text="${searchLogCount7d}">0</b>
+    </a>
   </div>
 </div>
 </body>

@@ -1,27 +1,127 @@
 <!doctype html>
-<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<html lang="ko" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>동네생활</title>
-  <link rel="stylesheet" th:href="@{/css/common.css}" />
+  <link rel="stylesheet" th:href="@{/css/common.css(v=${@environment.getProperty('app.ui.asset-version')})}" />
 </head>
-<body>
+<body class="community-list-page">
+<!-- body.community-list-page — Phase 3 Step 6(COM) v2 shell (20260611) -->
 <div th:replace="~{fragments/header :: header}"></div>
-<main class="container">
-  <div class="page-head">
-    <h1 th:text="${currentMember.verifiedNeighborhood.displayName} + ' 동네생활'">동네생활</h1>
-    <a class="btn" th:href="@{/community/form}">글쓰기</a>
+
+<!-- PC v2 (≥768px) — Phase 3 Step 6(COM): market-v2-shell + search band + 카드 (20260611) -->
+<div class="market-v2-pc-only">
+  <div class="market-v2-shell">
+    <div th:replace="~{fragments/community-search-band :: community-search-band}"></div>
+
+    <div class="community-v2-main">
+      <div class="market-title-bar">
+        <h1>
+          <span class="market-title-bar__pipe">|</span>
+          <span
+                  th:text="${listNeighborhood != null ? listNeighborhood.displayName + ' 동네생활' : '동네생활'}"
+          >동네생활</span
+          >
+        </h1>
+      </div>
+
+      <div class="market-toolbar community-toolbar">
+        <span class="market-toolbar__count" th:text="${page.totalElements} + '건'">0건</span>
+        <div class="market-toolbar__actions">
+          <a class="btn" sec:authorize="isAuthenticated()" th:href="@{/community/form}">글쓰기</a>
+          <a class="btn secondary" sec:authorize="isAnonymous()" th:href="@{/member/login}">로그인 후 글쓰기</a>
+        </div>
+      </div>
+
+      <!-- Step 2(C1) empty copy + Step 6 keyword empty (20260609, 20260611) -->
+      <p class="muted community-empty-hint" th:if="${listNeighborhood == null and page.empty and (keyword == null or keyword.isEmpty())}">
+        상단에서 지역을 선택하면 동네별 글을 볼 수 있습니다. 현재는 전체 공개 글이 없습니다.
+      </p>
+      <p class="muted community-empty-hint" th:if="${listNeighborhood != null and page.empty and (keyword == null or keyword.isEmpty())}">
+        이 동네에 등록된 동네생활 글이 없습니다.
+      </p>
+      <p class="muted community-empty-hint" th:if="${page.empty and keyword != null and !keyword.isEmpty()}">
+        「<strong th:text="${keyword}">검색어</strong>」에 해당하는 글이 없습니다.
+      </p>
+      <p
+              class="browse-hint"
+              th:if="${listNeighborhood == null and browsingNeighborhood != null and !page.empty}"
+      >
+        열람 동네(<strong th:text="${browsingNeighborhood.emdName}">동</strong>) 글은 테두리로 강조됩니다.
+      </p>
+
+      <div class="community-list-v2">
+        <th:block th:each="post : ${page.content}">
+          <div
+                  th:replace="~{fragments/community-card :: community-card(post=${post}, browsingNeighborhoodId=${browsingNeighborhoodId})}"
+          ></div>
+        </th:block>
+      </div>
+
+      <div th:replace="~{fragments/community-pagination :: community-pagination}"></div>
+    </div>
   </div>
-  <div class="list">
-    <a class="row" th:each="post : ${page.content}" th:href="@{/community/detail/{id}(id=${post.id})}">
-          <span>
-            <b th:text="${post.title}"></b><br />
-            <small th:text="${post.author.nickname} + ' · 조회 ' + ${post.viewCount}"></small>
-          </span>
-      <small th:text="${#temporals.format(post.createdAt, 'yyyy-MM-dd HH:mm')}"></small>
-    </a>
+</div>
+
+<!-- mobile (≤767px) — Step 6(COM): header region-chip + 검색·카드 (20260611) -->
+<!-- 지역 UX: Step 5(5-3) market-list-mobile__region-hint 패턴 재사용 -->
+<main class="container market-v2-mobile-only community-list-mobile">
+  <header class="community-list-mobile__head">
+    <h1
+            class="community-list-mobile__title"
+            th:text="${listNeighborhood != null ? listNeighborhood.displayName + ' 동네생활' : '동네생활'}"
+    >
+      동네생활
+    </h1>
+    <span class="community-list-mobile__count" th:text="${page.totalElements} + '건'">0건</span>
+  </header>
+
+  <p
+          class="community-list-mobile__region-hint muted"
+          sec:authorize="isAuthenticated()"
+          th:if="${listNeighborhood == null}"
+  >
+    지역 변경은 상단
+    <strong th:text="${browsingNeighborhood != null ? browsingNeighborhood.emdName : '지역 선택'}">동</strong>
+    버튼
+  </p>
+
+  <form class="community-list-mobile__search" method="get" th:action="@{/community/list}">
+    <input
+            type="search"
+            name="keyword"
+            placeholder="검색어를 입력해주세요"
+            th:value="${keyword}"
+            autocomplete="off"
+    />
+    <button class="btn" type="submit">검색</button>
+  </form>
+
+  <div class="community-list-mobile__actions">
+    <a class="btn" sec:authorize="isAuthenticated()" th:href="@{/community/form}">글쓰기</a>
+    <a class="btn secondary" sec:authorize="isAnonymous()" th:href="@{/member/login}">로그인 후 글쓰기</a>
   </div>
+
+  <p class="muted" th:if="${listNeighborhood == null and page.empty and (keyword == null or keyword.isEmpty())}">
+    상단에서 지역을 선택하면 동네별 글을 볼 수 있습니다.
+  </p>
+  <p class="muted" th:if="${listNeighborhood != null and page.empty and (keyword == null or keyword.isEmpty())}">
+    이 동네에 등록된 동네생활 글이 없습니다.
+  </p>
+  <p class="muted" th:if="${page.empty and keyword != null and !keyword.isEmpty()}">
+    「<strong th:text="${keyword}">검색어</strong>」에 해당하는 글이 없습니다.
+  </p>
+
+  <div class="community-list-v2 community-list-v2--mobile">
+    <th:block th:each="post : ${page.content}">
+      <div
+              th:replace="~{fragments/community-card :: community-card(post=${post}, browsingNeighborhoodId=${browsingNeighborhoodId})}"
+      ></div>
+    </th:block>
+  </div>
+
+  <div th:replace="~{fragments/community-pagination :: community-pagination}"></div>
 </main>
 </body>
 </html>

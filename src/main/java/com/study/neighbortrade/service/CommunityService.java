@@ -3,6 +3,7 @@ package com.study.neighbortrade.service;
 import com.study.neighbortrade.domain.community.CommunityComment;
 import com.study.neighbortrade.domain.community.CommunityPost;
 import com.study.neighbortrade.domain.community.CommunityPostStatus;
+import com.study.neighbortrade.domain.location.Neighborhood;
 import com.study.neighbortrade.domain.member.Member;
 import com.study.neighbortrade.dto.community.CommunityCommentRequestDto;
 import com.study.neighbortrade.dto.community.CommunityPostRequestDto;
@@ -24,10 +25,44 @@ public class CommunityService {
     private final CommunityPostRepository communityPostRepository;
     private final CommunityCommentRepository communityCommentRepository;
 
-    public Page<CommunityPost> list(Member viewer, int page) {
-        requireLocalVerified(viewer);
+    /**
+     * 동네생활 목록 — browsing·인증 동네·전체 공개 순, 선택적 제목 키워드.
+     * <p>
+     * Phase 3 Step 2(C1): browsing·인증 동네·전체 공개 순 조회 (20260609).<br>
+     * Phase 3 Step 6(COM): keyword 파라미터 — 제목 {@code ContainingIgnoreCase} (20260611).<br>
+     * 페이지 크기 15건 — Step 2 이전 v1 list와 동일.
+     */
+    public Page<CommunityPost> list(Neighborhood browsingNeighborhood, Member member, String keyword, int page) {
         Pageable pageable = PageRequest.of(Math.max(page, 0), 15);
-        return communityPostRepository.findByNeighborhoodAndStatusOrderByCreatedAtDesc(viewer.getVerifiedNeighborhood(), CommunityPostStatus.VISIBLE, pageable);
+        Neighborhood target = resolveListNeighborhood(browsingNeighborhood, member);
+        String q = keyword != null ? keyword.trim() : "";
+        boolean hasKeyword = !q.isEmpty();
+        if (target != null) {
+            if (hasKeyword) {
+                // Step 6(COM): 동네 필터 + 제목 검색 (20260611)
+                return communityPostRepository.findByNeighborhoodAndStatusAndTitleContainingIgnoreCaseOrderByCreatedAtDesc(
+                        target, CommunityPostStatus.VISIBLE, q, pageable);
+            }
+            return communityPostRepository.findByNeighborhoodAndStatusOrderByCreatedAtDesc(
+                    target, CommunityPostStatus.VISIBLE, pageable);
+        }
+        if (hasKeyword) {
+            // Step 6(COM): 전체 공개 + 제목 검색 (20260611)
+            return communityPostRepository.findByStatusAndTitleContainingIgnoreCaseOrderByCreatedAtDesc(
+                    CommunityPostStatus.VISIBLE, q, pageable);
+        }
+        return communityPostRepository.findByStatusOrderByCreatedAtDesc(CommunityPostStatus.VISIBLE, pageable);
+    }
+
+    /** list 필터에 사용된 동네 — null 이면 전체 공개 글 (Step 2 C1, 20260609) */
+    public Neighborhood resolveListNeighborhood(Neighborhood browsingNeighborhood, Member member) {
+        if (browsingNeighborhood != null) {
+            return browsingNeighborhood;
+        }
+        if (member != null && member.isLocalVerified() && member.getVerifiedNeighborhood() != null) {
+            return member.getVerifiedNeighborhood();
+        }
+        return null;
     }
 
     @Transactional

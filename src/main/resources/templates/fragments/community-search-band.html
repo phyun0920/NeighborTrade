@@ -1,0 +1,46 @@
+<!--
+  Phase 3 Step 6(COM): 동네생활 PC·상세 search band (20260611)
+  - market-search-band 클래스 재사용 — common.css community-list/detail-page 스코프
+  - 지역: js-region-chip-open → header region-modal (browsing 쿠키, Step 2 C1)
+  - 카테고리: market과 달리 select 없음 — "동네생활" 고정 라벨
+  - keyword: GET /community/list?page&keyword 유지 (community-pagination 연동)
+-->
+<th:block th:fragment="community-search-band" xmlns:th="http://www.thymeleaf.org">
+  <form
+          id="community-search-band-form"
+          class="market-search-band"
+          method="get"
+          th:action="@{/community/list}"
+  >
+    <button
+            type="button"
+            class="market-search-band__region js-region-chip-open"
+            aria-haspopup="dialog"
+            aria-controls="region-modal"
+    >
+      <span
+              th:text="${browsingNeighborhood != null ? browsingNeighborhood.emdName + ' ▼' : '지역 선택 ▼'}"
+      >지역 선택 ▼</span
+      >
+    </button>
+
+    <span class="market-search-band__category-label" aria-hidden="true">동네생활</span>
+
+    <input
+            type="search"
+            name="keyword"
+            class="market-search-band__keyword"
+            placeholder="검색어를 입력해주세요"
+            th:value="${keyword}"
+            autocomplete="off"
+    />
+
+    <button
+            type="submit"
+            class="market-search-band__submit btn"
+            aria-label="검색"
+    >
+      검색
+    </button>
+  </form>
+</th:block>

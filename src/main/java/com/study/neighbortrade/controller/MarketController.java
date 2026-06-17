@@ -4,6 +4,8 @@ import com.study.neighbortrade.config.MarketProperties;
 import com.study.neighbortrade.domain.member.Member;
 import com.study.neighbortrade.domain.product.*;
 import com.study.neighbortrade.dto.product.ProductPostRequestDto;
+import com.study.neighbortrade.service.PopularSearchKeywordService;
+import com.study.neighbortrade.service.SearchLogService;
 import com.study.neighbortrade.service.*;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -27,6 +29,8 @@ public class MarketController {
     private final MarketProperties marketProperties;
     private final ProductFavoriteService productFavoriteService;
     private final LocationService locationService;
+    private final SearchLogService searchLogService;
+    private final PopularSearchKeywordService popularSearchKeywordService;
 
     @GetMapping("/list")
     public String list(
@@ -45,6 +49,13 @@ public class MarketController {
         MarketView marketView = MarketView.fromParam(view);
         Member member = currentMemberService.get(principal);
         var resultPage = productPostService.list(keyword, onlyOnSale, category, neighborhoodId, marketSort, page, size);
+
+        // Phase 3 Step 4(B7-2): 검색 로깅
+        if (!keyword.isBlank()) {
+            var browsingNeighborhood = neighborhoodId != null ? locationService.findNeighborhoodById(neighborhoodId).orElse(null) : null;
+            searchLogService.logSearch(keyword, browsingNeighborhood, member, (int) resultPage.getTotalElements());
+        }
+
         model.addAttribute("currentMember", member);
         model.addAttribute("page", resultPage);
         model.addAttribute("keyword", keyword);
@@ -59,7 +70,12 @@ public class MarketController {
         model.addAttribute("view", marketView.getParam());
         model.addAttribute("viewOptions", MarketView.values());
         model.addAttribute("pageSize", size);
-        model.addAttribute("popularKeywords", marketProperties.popularKeywords());
+        // Phase 3 Step 4(B7-2): 인기검색어 추가 (DB 비어있을 경우 YAML 폴백 보장)
+        var popular = popularSearchKeywordService.getPopularKeywords();
+        if (popular == null || popular.isEmpty()) {
+            popular = marketProperties.popularKeywords();
+        }
+        model.addAttribute("popularKeywords", popular);
         model.addAttribute("paginationBase", "/market/list");
         List<Long> postIds = resultPage.getContent().stream().map(ProductPost::getId).toList();
         Set<Long> favoritedPostIds = productFavoriteService.findFavoritedPostIds(member, postIds);
@@ -87,6 +103,8 @@ public class MarketController {
         model.addAttribute("currentMember", member);
         model.addAttribute("isFavorited", member != null
                 && productFavoriteService.findFavoritedPostIds(member, List.of(id)).contains(id));
+        model.addAttribute("canBump", member != null && post.isSeller(member) && productPostService.canBump(post));
+        model.addAttribute("bumpCooldownHours", marketProperties.bumpCooldownHours());
         return "market/detail";
     }
 
@@ -167,11 +185,32 @@ public class MarketController {
         return "redirect:/market/detail/" + id;
     }
 
+    // Phase 3 Step 3(U9): 판매글 끌올 (20260609)
+    @PostMapping("/bump/{id}")
+    public String bump(
+            @PathVariable Long id,
+            @RequestParam(required = false) String redirect,
+            Principal principal,
+            RedirectAttributes ra
+    ) {
+        try {
+            productPostService.bump(id, currentMemberService.require(principal));
+            ra.addFlashAttribute("successMessage", "끌올되었습니다. 목록 상단에 노출됩니다.");
+        } catch (IllegalArgumentException ex) {
+            ra.addFlashAttribute("errorMessage", ex.getMessage());
+        }
+        if (redirect != null && !redirect.isBlank()) {
+            return "redirect:" + redirect;
+        }
+        return "redirect:/market/detail/" + id;
+    }
+
     @GetMapping("/my")
     public String my(@RequestParam(defaultValue = "0") int page, Model model, Principal principal) {
         Member member = currentMemberService.require(principal);
         model.addAttribute("currentMember", member);
         model.addAttribute("page", productPostService.findMyPosts(member, page));
+        model.addAttribute("bumpCooldownHours", marketProperties.bumpCooldownHours());
         return "market/my";
     }
 }
