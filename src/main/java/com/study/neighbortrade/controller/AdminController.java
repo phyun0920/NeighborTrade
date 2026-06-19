@@ -210,7 +210,7 @@ public class AdminController {
         model.addAttribute(
                 "page",
                 searchLogRepository.findAllByOrderBySearchedAtDesc(
-                        PageRequest.of(Math.max(page, 0), 50, Sort.by("searchedAt").descending())));
+                        PageRequest.of(Math.max(page, 0), 10, Sort.by("searchedAt").descending())));
         model.addAttribute("searchLogCount7d", searchLogCountLast7Days());
         model.addAttribute("adminActiveMenu", "search-logs");
         return "admin/search-logs";

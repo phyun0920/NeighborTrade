@@ -3632,9 +3632,37 @@ body.community-detail-page .market-search-band__submit {
 .admin-pagination {
   display: flex;
   align-items: center;
-  gap: 12px;
+  justify-content: center;
+  gap: 8px;
   margin-top: 16px;
   flex-wrap: wrap;
+}
+
+.admin-pagination__num {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 32px;
+  height: 32px;
+  padding: 0 8px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  background: #fff;
+  color: #333;
+  font-size: 13px;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.admin-pagination__num:hover {
+  border-color: var(--primary, #ff6f0f);
+  color: var(--primary, #ff6f0f);
+}
+
+.admin-pagination__num.is-current {
+  border-color: var(--primary, #ff6f0f);
+  background: var(--primary, #ff6f0f);
+  color: #fff;
 }
 
 .admin-pagination__info {

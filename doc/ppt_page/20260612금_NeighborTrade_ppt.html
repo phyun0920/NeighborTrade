@@ -1,0 +1,1062 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>NeighborTrade · 발표자료 · 2026-06-12</title>
+    <style>
+      :root {
+        --red: #c0392b;
+        --orange: #ff6f0f;
+        --dark: #111;
+        --muted: #666;
+        --slide-w: 1280px;
+        --slide-h: 720px;
+      }
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+      html,
+      body {
+        height: 100%;
+        overflow: hidden;
+        font-family: "Malgun Gothic", "Apple SD Gothic Neo", "Segoe UI", sans-serif;
+        background: #1a1a1a;
+        color: var(--dark);
+      }
+      .deck {
+        width: 100vw;
+        height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .slide {
+        display: none;
+        width: min(96vw, var(--slide-w));
+        height: min(calc(96vw * 9 / 16), calc(96vh), var(--slide-h));
+        background: #fff;
+        border-radius: 4px;
+        box-shadow: 0 12px 48px rgba(0, 0, 0, 0.45);
+        padding: 48px 56px 56px;
+        position: relative;
+        overflow: hidden;
+        flex-direction: column;
+      }
+      .slide.is-active {
+        display: flex;
+      }
+      .slide::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 6px;
+        background: linear-gradient(90deg, var(--red), var(--orange));
+      }
+      .slide__tag {
+        position: absolute;
+        top: 20px;
+        right: 24px;
+        background: var(--red);
+        color: #fff;
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: 0.15em;
+        padding: 5px 14px;
+      }
+      .slide__footer {
+        position: absolute;
+        bottom: 16px;
+        left: 56px;
+        right: 56px;
+        display: flex;
+        justify-content: space-between;
+        font-size: 10px;
+        color: #999;
+      }
+      h1 {
+        font-size: 42px;
+        font-weight: 800;
+        line-height: 1.2;
+        margin-bottom: 16px;
+      }
+      h1 em {
+        font-style: normal;
+        color: var(--red);
+      }
+      h2 {
+        font-size: 28px;
+        font-weight: 800;
+        color: var(--red);
+        margin-bottom: 24px;
+        padding-bottom: 10px;
+        border-bottom: 3px solid var(--red);
+      }
+      h3 {
+        font-size: 16px;
+        font-weight: 700;
+        color: var(--orange);
+        margin: 16px 0 8px;
+      }
+      .subtitle {
+        font-size: 18px;
+        color: var(--muted);
+        line-height: 1.6;
+      }
+      .lead {
+        font-size: 15px;
+        line-height: 1.75;
+        color: #333;
+      }
+      .cols {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 28px;
+        flex: 1;
+        align-content: start;
+      }
+      .cols-3 {
+        grid-template-columns: repeat(3, 1fr);
+      }
+      ul {
+        padding-left: 20px;
+        font-size: 14px;
+        line-height: 1.75;
+      }
+      ul li {
+        margin-bottom: 4px;
+      }
+      .card {
+        border: 2px solid #eee;
+        border-radius: 10px;
+        padding: 16px 18px;
+        background: #fafafa;
+      }
+      .card strong {
+        display: block;
+        font-size: 15px;
+        color: var(--red);
+        margin-bottom: 8px;
+      }
+      .card p,
+      .card ul {
+        font-size: 12px;
+        color: #444;
+      }
+      .card ul {
+        padding-left: 16px;
+      }
+      .badge-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin-top: 12px;
+      }
+      .badge {
+        background: #f3f4f6;
+        border: 1px solid #ddd;
+        padding: 5px 12px;
+        border-radius: 6px;
+        font-size: 11px;
+        font-weight: 600;
+      }
+      .flow {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 6px;
+        font-size: 11px;
+        margin-top: 12px;
+      }
+      .flow span {
+        border: 1.5px solid var(--red);
+        padding: 6px 10px;
+        border-radius: 6px;
+        background: #fff5f5;
+        font-weight: 600;
+      }
+      .flow em {
+        color: var(--orange);
+        font-style: normal;
+        font-weight: 800;
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 11px;
+        margin-top: 8px;
+      }
+      th,
+      td {
+        border: 1px solid var(--red);
+        padding: 7px 8px;
+        text-align: left;
+      }
+      th {
+        background: #fff5f5;
+        font-weight: 700;
+        width: 18%;
+      }
+      .feat-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 10px;
+        flex: 1;
+      }
+      .feat {
+        border: 2px solid var(--red);
+        border-radius: 8px;
+        padding: 12px;
+        text-align: center;
+      }
+      .feat__num {
+        font-size: 22px;
+        font-weight: 800;
+        color: var(--orange);
+      }
+      .feat__title {
+        font-size: 12px;
+        font-weight: 700;
+        margin-top: 6px;
+        line-height: 1.35;
+      }
+      .vcrg {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 12px;
+        margin-top: 16px;
+      }
+      .vcrg div {
+        border: 2px solid var(--red);
+        border-radius: 10px;
+        padding: 16px;
+        text-align: center;
+        font-weight: 800;
+        font-size: 16px;
+        background: #fff5f5;
+      }
+      .vcrg small {
+        display: block;
+        font-size: 11px;
+        font-weight: 500;
+        color: var(--muted);
+        margin-top: 6px;
+      }
+      .title-slide {
+        justify-content: center;
+        text-align: center;
+      }
+      .title-slide h1 {
+        font-size: 52px;
+        margin-bottom: 12px;
+      }
+      .title-slide .meta {
+        margin-top: 32px;
+        font-size: 14px;
+        color: var(--muted);
+        line-height: 2;
+      }
+      .toc-list {
+        list-style: none;
+        padding: 0;
+        columns: 2;
+        column-gap: 40px;
+        font-size: 15px;
+        line-height: 2.2;
+      }
+      .toc-list li::before {
+        content: "▸ ";
+        color: var(--orange);
+        font-weight: 700;
+      }
+      .arch {
+        font-family: Consolas, monospace;
+        font-size: 10px;
+        line-height: 1.5;
+        background: #1e1e1e;
+        color: #d4d4d4;
+        padding: 16px 18px;
+        border-radius: 8px;
+        white-space: pre;
+        overflow: auto;
+        flex: 1;
+      }
+      .compare td:first-child {
+        background: #f9f9f9;
+        font-weight: 600;
+        width: 28%;
+      }
+      .end-slide {
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+      }
+      .end-slide h1 {
+        font-size: 48px;
+      }
+      .nav-hint {
+        position: fixed;
+        bottom: 12px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: rgba(0, 0, 0, 0.65);
+        color: #fff;
+        font-size: 11px;
+        padding: 6px 16px;
+        border-radius: 999px;
+        z-index: 100;
+      }
+      .progress {
+        position: fixed;
+        top: 0;
+        left: 0;
+        height: 3px;
+        background: var(--orange);
+        z-index: 100;
+        transition: width 0.2s;
+      }
+      @media print {
+        body {
+          overflow: visible;
+          background: #fff;
+        }
+        .deck {
+          display: block;
+          height: auto;
+        }
+        .slide {
+          display: flex !important;
+          page-break-after: always;
+          width: 100%;
+          height: 100vh;
+          box-shadow: none;
+          margin: 0;
+        }
+        .nav-hint,
+        .progress {
+          display: none;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="progress" id="progress"></div>
+    <div class="nav-hint">← → 또는 Space · F11 전체화면 · Ctrl+P PDF 저장</div>
+
+    <div class="deck" id="deck">
+      <!-- 1. 표지 -->
+      <section class="slide title-slide is-active">
+        <div class="slide__tag">PORTFOLIO</div>
+        <h1><em>NeighborTrade</em></h1>
+        <p class="subtitle">동네 직거래 · 위치 기반 커뮤니티 플랫폼</p>
+        <p class="meta">
+          2026.05 ~ 진행 중 · 개인 프로젝트<br />
+          Spring Boot 3 · PostgreSQL/PostGIS · Thymeleaf · WebSocket<br />
+          <strong style="color: var(--red)">2026-06-12</strong> 발표자료
+        </p>
+        <div class="slide__footer"><span>NeighborTrade</span><span>1 / 20</span></div>
+      </section>
+
+      <!-- 2. 목차 -->
+      <section class="slide">
+        <div class="slide__tag">CONTENTS</div>
+        <h2>목차</h2>
+        <ul class="toc-list">
+          <li>프로젝트 소개 &amp; 미션</li>
+          <li>기술 스택</li>
+          <li>앱 플로우 &amp; 화면 구조</li>
+          <li>안전 설계 (VCRG)</li>
+          <li>주요기능 8선</li>
+          <li>Phase 3 개발 현황</li>
+          <li>시스템 아키텍처</li>
+          <li>테스트 &amp; CI</li>
+          <li>구 우동마켓 vs NeighborTrade</li>
+          <li>로드맵 &amp; Q&amp;A</li>
+        </ul>
+        <div class="slide__footer"><span>NeighborTrade</span><span>2 / 20</span></div>
+      </section>
+
+      <!-- 3. 프로젝트 소개 -->
+      <section class="slide">
+        <div class="slide__tag">01 INTRO</div>
+        <h2>프로젝트 소개</h2>
+        <div class="cols">
+          <div>
+            <p class="lead">
+              <strong>NeighborTrade</strong>는 우리 동네 안에서 물건을 사고팔고, 이웃과 정보를 나누는
+              <strong>위치 기반 웹 플랫폼</strong>입니다.
+            </p>
+            <h3>핵심 가치</h3>
+            <ul>
+              <li>우리 동네 이웃과의 <strong>안전·투명한 직거래</strong></li>
+              <li>비로그인 <strong>공개 탐색</strong> → 가입·동네 인증 전환</li>
+              <li>중고 + <strong>동네생활</strong> + 운영 거버넌스</li>
+            </ul>
+          </div>
+          <div>
+            <div class="card">
+              <strong>서비스 대상</strong>
+              <ul>
+                <li>동네에서 물건을 사고팔고 싶은 개인</li>
+                <li>안전한 중고·지역 정보를 원하는 사용자</li>
+                <li>지역 커뮤니티에 관심 있는 주민</li>
+              </ul>
+            </div>
+            <div class="card" style="margin-top: 12px">
+              <strong>2026 미션 (한 줄)</strong>
+              <p>스마트폰·PC 화면 너머 <strong>가까운 거리의 만남</strong>을 전제로 설계한 하이퍼로컬 MVP</p>
+            </div>
+          </div>
+        </div>
+        <div class="slide__footer"><span>NeighborTrade</span><span>3 / 20</span></div>
+      </section>
+
+      <!-- 4. 핵심 특징 -->
+      <section class="slide">
+        <div class="slide__tag">01 INTRO</div>
+        <h2>핵심 특징</h2>
+        <div class="cols cols-3">
+          <div class="card">
+            <strong>📍 위치 기반</strong>
+            <ul>
+              <li>browsing 쿠키 · sidebar 동네</li>
+              <li>GPS 동네 인증 (PostGIS)</li>
+              <li>열람 vs 인증 동네 분리</li>
+            </ul>
+          </div>
+          <div class="card">
+            <strong>🛒 중고 + 생활</strong>
+            <ul>
+              <li>/market/list 단일 허브</li>
+              <li>ProductCategory 15종</li>
+              <li>/community 공개 열람</li>
+            </ul>
+          </div>
+          <div class="card">
+            <strong>🔗 Connect</strong>
+            <ul>
+              <li>STOMP 1:1 채팅</li>
+              <li>trade 상태 · 후기 · ℃</li>
+              <li>찜 · 끌올 · 인기검색어</li>
+            </ul>
+          </div>
+        </div>
+        <div class="badge-row">
+          <span class="badge">반응형 v2 UI</span>
+          <span class="badge">OAuth 카카오·네이버</span>
+          <span class="badge">admin v2</span>
+          <span class="badge">GitHub Actions CI</span>
+          <span class="badge">AI 제외 MVP</span>
+        </div>
+        <div class="slide__footer"><span>NeighborTrade</span><span>4 / 20</span></div>
+      </section>
+
+      <!-- 5. 기술 스택 -->
+      <section class="slide">
+        <div class="slide__tag">02 STACK</div>
+        <h2>기술 스택</h2>
+        <div class="cols">
+          <div>
+            <h3>Backend</h3>
+            <div class="badge-row">
+              <span class="badge">Java 21</span>
+              <span class="badge">Spring Boot 3</span>
+              <span class="badge">Spring Security 6</span>
+              <span class="badge">Spring Data JPA</span>
+              <span class="badge">OAuth2</span>
+              <span class="badge">WebSocket STOMP</span>
+            </div>
+            <h3>Frontend</h3>
+            <div class="badge-row">
+              <span class="badge">Thymeleaf</span>
+              <span class="badge">HTML5/CSS3/JS</span>
+              <span class="badge">Leaflet (인증 지도)</span>
+            </div>
+            <h3>DevOps</h3>
+            <div class="badge-row">
+              <span class="badge">Gradle</span>
+              <span class="badge">GitHub Actions</span>
+            </div>
+          </div>
+          <div>
+            <h3>Database &amp; GIS</h3>
+            <div class="badge-row">
+              <span class="badge">PostgreSQL</span>
+              <span class="badge">PostGIS</span>
+              <span class="badge">H2 (로컬)</span>
+              <span class="badge">Supabase</span>
+            </div>
+            <div class="card" style="margin-top: 16px">
+              <strong>포트폴리오 어필</strong>
+              <ul>
+                <li>PostGIS 공간 쿼리 · GPS 인증</li>
+                <li>외부 AI 없이 Spring 핵심만으로 완성도</li>
+                <li>SSR + WebSocket 하이브리드</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        <div class="slide__footer"><span>NeighborTrade</span><span>5 / 20</span></div>
+      </section>
+
+      <!-- 6. 플로우 1 -->
+      <section class="slide">
+        <div class="slide__tag">03 FLOW</div>
+        <h2>앱 플로우 · 사용자 여정 (1)</h2>
+        <p class="lead" style="margin-bottom: 12px">메인 → 탐색 → 거래·채팅 → 관리</p>
+        <div class="flow">
+          <span>메인</span><em>→</em><span>로그인</span><em>→</em><span>중고 목록</span><em>→</em><span>상품 상세</span><em>→</em>
+          <span>채팅</span><em>→</em><span>거래 요청</span><em>→</em><span>거래 완료</span><em>→</em><span>후기</span>
+        </div>
+        <div class="flow" style="margin-top: 8px">
+          <span>동네 인증</span><em>→</em><span>판매글 작성</span>
+          <span style="margin-left: 20px">동네생활</span><em>→</em><span>댓글</span>
+        </div>
+        <h3 style="margin-top: 20px">관리자</h3>
+        <div class="flow">
+          <span>관리자</span><em>→</em><span>대시보드</span><em>→</em><span>신고 처리</span><em>→</em><span>숨김</span><em>→</em><span>인기검색어</span>
+        </div>
+        <div class="slide__footer"><span>NeighborTrade</span><span>6 / 20</span></div>
+      </section>
+
+      <!-- 7. 플로우 2 -->
+      <section class="slide">
+        <div class="slide__tag">03 FLOW</div>
+        <h2>화면 구조 맵 (2)</h2>
+        <table>
+          <tr>
+            <th>그룹</th>
+            <th>화면</th>
+            <th>목적</th>
+            <th>인증</th>
+          </tr>
+          <tr>
+            <td>Main</td>
+            <td>/market/list</td>
+            <td>탐색 허브</td>
+            <td>없음</td>
+          </tr>
+          <tr>
+            <td>Location</td>
+            <td>/location/select</td>
+            <td>GPS 동네 인증</td>
+            <td>로그인</td>
+          </tr>
+          <tr>
+            <td>Market</td>
+            <td>list · detail · form</td>
+            <td>중고 CRUD·끌올</td>
+            <td>글쓰기=인증</td>
+          </tr>
+          <tr>
+            <td>Chat</td>
+            <td>/chat/room</td>
+            <td>1:1 STOMP</td>
+            <td>로그인</td>
+          </tr>
+          <tr>
+            <td>Trade</td>
+            <td>/trade/*</td>
+            <td>상태·후기</td>
+            <td>요청=인증</td>
+          </tr>
+          <tr>
+            <td>Community</td>
+            <td>/community/*</td>
+            <td>동네생활</td>
+            <td>열람 공개</td>
+          </tr>
+          <tr>
+            <td>Admin</td>
+            <td>/admin/*</td>
+            <td>운영</td>
+            <td>ADMIN</td>
+          </tr>
+        </table>
+        <div class="slide__footer"><span>NeighborTrade</span><span>7 / 20</span></div>
+      </section>
+
+      <!-- 8. VCRG -->
+      <section class="slide">
+        <div class="slide__tag">04 TRUST</div>
+        <h2>안전 설계 · Verify–Connect–Record–Govern</h2>
+        <div class="vcrg">
+          <div>Verify<small>GPS 동네 인증<br />browsing 분리</small></div>
+          <div>Connect<small>채팅 · trade · trade_place</small></div>
+          <div>Record<small>후기 · manner ℃</small></div>
+          <div>Govern<small>신고 · admin v2</small></div>
+        </div>
+        <div class="cols" style="margin-top: 20px">
+          <div class="card">
+            <strong>Phase 3 구현 ✅</strong>
+            <ul>
+              <li>동네 인증 · 채팅 · 거래·후기</li>
+              <li>신고·숨김·인기검색어 admin</li>
+            </ul>
+          </div>
+          <div class="card">
+            <strong>Phase 4+ 후속 ☐</strong>
+            <ul>
+              <li>수호천사 · SMS (⑥ 검토)</li>
+              <li>QR · 에스크로 (⑧ 검토)</li>
+              <li>보행 길찾기 (⑦ 검토)</li>
+            </ul>
+          </div>
+        </div>
+        <div class="slide__footer"><span>NeighborTrade</span><span>8 / 20</span></div>
+      </section>
+
+      <!-- 9. 주요기능 8선 -->
+      <section class="slide">
+        <div class="slide__tag">05 FEATURES</div>
+        <h2>NeighborTrade 주요기능 8선</h2>
+        <div class="feat-grid">
+          <div class="feat"><div class="feat__num">①</div><div class="feat__title">동네 인증<br />GPS·PostGIS</div></div>
+          <div class="feat"><div class="feat__num">②</div><div class="feat__title">중고 장터<br />list·detail·form</div></div>
+          <div class="feat"><div class="feat__num">③</div><div class="feat__title">실시간 채팅<br />STOMP/SockJS</div></div>
+          <div class="feat"><div class="feat__num">④</div><div class="feat__title">동네생활<br />공개 열람</div></div>
+          <div class="feat"><div class="feat__num">⑤</div><div class="feat__title">거래·후기<br />manner ℃</div></div>
+          <div class="feat"><div class="feat__num">⑥</div><div class="feat__title">탐색·검색<br />인기검색어</div></div>
+          <div class="feat"><div class="feat__num">⑦</div><div class="feat__title">찜·끌올<br />U9 cooldown</div></div>
+          <div class="feat"><div class="feat__num">⑧</div><div class="feat__title">운영·신고<br />admin v2</div></div>
+        </div>
+        <p style="font-size: 11px; color: var(--muted); margin-top: 14px">
+          상세: doc/20260612금_NeighborTrade_주요기능_01~08.html · PNG 동봉
+        </p>
+        <div class="slide__footer"><span>NeighborTrade</span><span>9 / 20</span></div>
+      </section>
+
+      <!-- 10-17: 각 기능 1슬라이드씩 (압축 4슬라이드로 2x2) -->
+      <section class="slide">
+        <div class="slide__tag">05 FEATURES</div>
+        <h2>주요기능 ①~④</h2>
+        <div class="cols cols-3" style="grid-template-columns: 1fr 1fr">
+          <div class="card">
+            <strong>① 동네 인증</strong>
+            <ul>
+              <li>/location/select · Leaflet + GPS</li>
+              <li>Haversine / PostGIS boundary</li>
+              <li>localVerified → 글쓰기·거래</li>
+            </ul>
+          </div>
+          <div class="card">
+            <strong>② 중고 장터</strong>
+            <ul>
+              <li>/market/list 안 B 단일 허브</li>
+              <li>15종 enum · pagination</li>
+              <li>이미지 10장 · trade_place</li>
+            </ul>
+          </div>
+          <div class="card">
+            <strong>③ 실시간 채팅</strong>
+            <ul>
+              <li>POST /chat/start · STOMP</li>
+              <li>상품 바 · DB 이력</li>
+              <li>CHAT_MESSAGE 신고</li>
+            </ul>
+          </div>
+          <div class="card">
+            <strong>④ 동네생활</strong>
+            <ul>
+              <li>GET list/detail 공개</li>
+              <li>댓글·글쓰기=인증</li>
+              <li>community v2 shell</li>
+            </ul>
+          </div>
+        </div>
+        <div class="slide__footer"><span>NeighborTrade</span><span>10 / 20</span></div>
+      </section>
+
+      <section class="slide">
+        <div class="slide__tag">05 FEATURES</div>
+        <h2>주요기능 ⑤~⑧</h2>
+        <div class="cols cols-3" style="grid-template-columns: 1fr 1fr">
+          <div class="card">
+            <strong>⑤ 거래·후기·매너</strong>
+            <ul>
+              <li>REQUESTED→ACCEPTED→COMPLETED</li>
+              <li>/review/form · manner_score</li>
+            </ul>
+          </div>
+          <div class="card">
+            <strong>⑥ 탐색·인기검색어</strong>
+            <ul>
+              <li>search_v2_log · 주간 집계</li>
+              <li>browsing 쿠키 · search band</li>
+            </ul>
+          </div>
+          <div class="card">
+            <strong>⑦ 찜·끌올</strong>
+            <ul>
+              <li>/market/favorites</li>
+              <li>bump 24h · bumpedAt 정렬</li>
+            </ul>
+          </div>
+          <div class="card">
+            <strong>⑧ 운영·신고</strong>
+            <ul>
+              <li>/admin/dashboard v2</li>
+              <li>신고·숨김·키워드 CRUD</li>
+            </ul>
+          </div>
+        </div>
+        <div class="slide__footer"><span>NeighborTrade</span><span>11 / 20</span></div>
+      </section>
+
+      <!-- Phase 3 -->
+      <section class="slide">
+        <div class="slide__tag">06 PROGRESS</div>
+        <h2>Phase 3 개발 현황 (Step 1~7 완료)</h2>
+        <table>
+          <tr>
+            <th>Step</th>
+            <th>ID</th>
+            <th>내용</th>
+            <th>완료</th>
+          </tr>
+          <tr>
+            <td>1</td>
+            <td>U10·R1</td>
+            <td>header nav · region-chip 정합</td>
+            <td>06-05</td>
+          </tr>
+          <tr>
+            <td>2</td>
+            <td>C1</td>
+            <td>동네생활 공개 GET · bottom-nav</td>
+            <td>06-09</td>
+          </tr>
+          <tr>
+            <td>3</td>
+            <td>U9</td>
+            <td>끌올 · N분 전 UI</td>
+            <td>06-09</td>
+          </tr>
+          <tr>
+            <td>4</td>
+            <td>B7-2</td>
+            <td>search_log · 인기검색어 · admin</td>
+            <td>06-09</td>
+          </tr>
+          <tr>
+            <td>5</td>
+            <td>M3</td>
+            <td>mobile detail/form v2</td>
+            <td>06-10</td>
+          </tr>
+          <tr>
+            <td>6</td>
+            <td>COM·ADM</td>
+            <td>community v2 · admin dashboard</td>
+            <td>06-11</td>
+          </tr>
+          <tr>
+            <td>7</td>
+            <td>CI</td>
+            <td>GitHub Actions test 9건</td>
+            <td>06-11</td>
+          </tr>
+        </table>
+        <div class="slide__footer"><span>NeighborTrade</span><span>12 / 20</span></div>
+      </section>
+
+      <!-- 아키텍처 -->
+      <section class="slide">
+        <div class="slide__tag">07 ARCH</div>
+        <h2>시스템 아키텍처</h2>
+        <pre class="arch">Browser (Thymeleaf v2 · chat.js · location.js)
+    ↓
+Spring MVC + WebSocket (STOMP /ws)
+    ↓
+Service Layer
+  ProductPost · Community · Chat · Trade · Location
+  SearchLog · PopularKeyword · Favorite · Report
+    ↓
+JPA Repository → PostgreSQL / H2 (+ PostGIS)
+    ↓
+Scheduler (주간 인기검색어) · GitHub Actions CI</pre>
+        <div class="slide__footer"><span>NeighborTrade</span><span>13 / 20</span></div>
+      </section>
+
+      <!-- CI -->
+      <section class="slide">
+        <div class="slide__tag">08 QA</div>
+        <h2>테스트 &amp; CI</h2>
+        <div class="cols">
+          <div>
+            <h3>로컬 테스트 (9건)</h3>
+            <table>
+              <tr>
+                <th>클래스</th>
+                <th>건수</th>
+              </tr>
+              <tr>
+                <td>MarketControllerTest</td>
+                <td>3</td>
+              </tr>
+              <tr>
+                <td>CommunityControllerTest</td>
+                <td>2</td>
+              </tr>
+              <tr>
+                <td>ProductPostServiceTest</td>
+                <td>4</td>
+              </tr>
+            </table>
+            <p style="font-size: 11px; margin-top: 10px"><code>./gradlew test</code></p>
+          </div>
+          <div>
+            <div class="card">
+              <strong>GitHub Actions</strong>
+              <ul>
+                <li>.github/workflows/ci.yml</li>
+                <li>main push/PR · JDK 21</li>
+                <li>Playwright E2E — 선택·미착수</li>
+              </ul>
+            </div>
+            <div class="card" style="margin-top: 12px">
+              <strong>수동 QA</strong>
+              <p>P2-T1~T7 · Phase2 QA 절차서</p>
+            </div>
+          </div>
+        </div>
+        <div class="slide__footer"><span>NeighborTrade</span><span>14 / 20</span></div>
+      </section>
+
+      <!-- 구 vs NT -->
+      <section class="slide">
+        <div class="slide__tag">09 LEGACY</div>
+        <h2>구 우동마켓 vs NeighborTrade</h2>
+        <table class="compare">
+          <tr>
+            <th>항목</th>
+            <th>구 우동마켓</th>
+            <th>NeighborTrade (2026)</th>
+          </tr>
+          <tr>
+            <td>채널</td>
+            <td>Android 앱 중심</td>
+            <td><strong>반응형 웹</strong> (PC + mobile v2)</td>
+          </tr>
+          <tr>
+            <td>카테고리</td>
+            <td>게시판 DB 생성</td>
+            <td><strong>ProductCategory enum</strong></td>
+          </tr>
+          <tr>
+            <td>채팅</td>
+            <td>// WebSocket · 챗봇</td>
+            <td><strong>STOMP</strong> · AI 제외</td>
+          </tr>
+          <tr>
+            <td>안전</td>
+            <td>수호천사·QR</td>
+            <td><strong>VCRG</strong> · 후속 로드맵</td>
+          </tr>
+          <tr>
+            <td>범위</td>
+            <td>직거래</td>
+            <td><strong>중고+동네생활+admin</strong></td>
+          </tr>
+        </table>
+        <div class="slide__footer"><span>NeighborTrade</span><span>15 / 20</span></div>
+      </section>
+
+      <!-- 검토 요약 -->
+      <section class="slide">
+        <div class="slide__tag">09 LEGACY</div>
+        <h2>구 주요기능 검토 요약 (②~⑧)</h2>
+        <table style="font-size: 10px">
+          <tr>
+            <th>#</th>
+            <th>구 기능</th>
+            <th>Phase 3 판단</th>
+          </tr>
+          <tr>
+            <td>②</td>
+            <td>무한 스크롤</td>
+            <td>불필요 — pagination</td>
+          </tr>
+          <tr>
+            <td>③</td>
+            <td>3D 이미지</td>
+            <td>불필요 — 2D 갤러리</td>
+          </tr>
+          <tr>
+            <td>④</td>
+            <td>게시판 생성</td>
+            <td>불필요 — enum+list</td>
+          </tr>
+          <tr>
+            <td>⑤</td>
+            <td>채팅·챗봇</td>
+            <td>채팅 ✅ · 챗봇 불필요</td>
+          </tr>
+          <tr>
+            <td>⑥</td>
+            <td>수호천사 SMS</td>
+            <td>Phase 4+</td>
+          </tr>
+          <tr>
+            <td>⑦</td>
+            <td>보행 길찾기</td>
+            <td>Phase 4+</td>
+          </tr>
+          <tr>
+            <td>⑧</td>
+            <td>QR 결제</td>
+            <td>Phase 4+</td>
+          </tr>
+        </table>
+        <div class="slide__footer"><span>NeighborTrade</span><span>16 / 20</span></div>
+      </section>
+
+      <!-- 로드맵 -->
+      <section class="slide">
+        <div class="slide__tag">10 ROADMAP</div>
+        <h2>로드맵</h2>
+        <div class="cols">
+          <div class="card">
+            <strong>✅ Phase 3 (완료)</strong>
+            <ul>
+              <li>market/community v2 · mobile</li>
+              <li>끌올 · 인기검색어 · CI</li>
+              <li>동네생활 공개 · admin v2</li>
+            </ul>
+          </div>
+          <div class="card">
+            <strong>☐ Phase 4+ (선택)</strong>
+            <ul>
+              <li>PG 에스크로 · QR</li>
+              <li>수호천사 · 만남 체크인</li>
+              <li>Playwright E2E · rooms v2</li>
+              <li>동네생활 서브토픽</li>
+            </ul>
+          </div>
+        </div>
+        <h3>2026 키워드</h3>
+        <div class="badge-row">
+          <span class="badge">Hyper-local</span>
+          <span class="badge">Trust by design</span>
+          <span class="badge">Open discovery</span>
+          <span class="badge">Web-first MVP</span>
+          <span class="badge">Governance at scale</span>
+        </div>
+        <div class="slide__footer"><span>NeighborTrade</span><span>17 / 20</span></div>
+      </section>
+
+      <!-- 데모 -->
+      <section class="slide">
+        <div class="slide__tag">11 DEMO</div>
+        <h2>데모 &amp; 실행</h2>
+        <div class="cols">
+          <div>
+            <pre class="arch" style="flex: none">cd finalProject/NeighborTrade
+./gradlew bootRun
+# http://localhost:8081
+
+./gradlew test</pre>
+          </div>
+          <div>
+            <div class="card">
+              <strong>주요 URL</strong>
+              <ul>
+                <li>/market/list — 중고</li>
+                <li>/community/list — 동네생활</li>
+                <li>/location/select — 인증</li>
+                <li>/chat/rooms — 채팅</li>
+                <li>/admin/dashboard — 관리</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        <div class="slide__footer"><span>NeighborTrade</span><span>18 / 20</span></div>
+      </section>
+
+      <!-- 참고 -->
+      <section class="slide">
+        <div class="slide__tag">12 DOCS</div>
+        <h2>참고 문서</h2>
+        <ul style="font-size: 13px; line-height: 2">
+          <li><strong>README</strong> — README-NeighborTrade_20260612금.md</li>
+          <li><strong>기획의도</strong> — 20260612금_동네마켓_추세_기획의도_초안.md</li>
+          <li><strong>ERD</strong> — 20260611목_NeighborTrade_설계내용_ERD.html</li>
+          <li><strong>주요기능</strong> — 20260612금_NeighborTrade_주요기능_01~08.html/.png</li>
+          <li><strong>검토</strong> — 20260612금_NeighborTrade_주요기능_*_검토_분석01.md</li>
+        </ul>
+        <div class="slide__footer"><span>NeighborTrade</span><span>19 / 20</span></div>
+      </section>
+
+      <!-- 마무리 -->
+      <section class="slide end-slide">
+        <div class="slide__tag">THANK YOU</div>
+        <h1><em>감사합니다</em></h1>
+        <p class="subtitle" style="margin-top: 16px">NeighborTrade · 동네 직거래 커뮤니티</p>
+        <p class="meta" style="margin-top: 24px">
+          Q &amp; A<br />
+          GitHub · doc · localhost:8081
+        </p>
+        <div class="slide__footer"><span>NeighborTrade</span><span>20 / 20</span></div>
+      </section>
+    </div>
+
+    <script>
+      (function () {
+        var slides = Array.prototype.slice.call(document.querySelectorAll(".slide"));
+        var total = slides.length;
+        var idx = 0;
+        var progress = document.getElementById("progress");
+
+        function updateFooter() {
+          slides.forEach(function (s, i) {
+            var foot = s.querySelector(".slide__footer span:last-child");
+            if (foot) foot.textContent = i + 1 + " / " + total;
+          });
+        }
+
+        function show(n) {
+          if (n < 0) n = 0;
+          if (n >= total) n = total - 1;
+          idx = n;
+          slides.forEach(function (s, i) {
+            s.classList.toggle("is-active", i === idx);
+          });
+          progress.style.width = ((idx + 1) / total) * 100 + "%";
+        }
+
+        function next() {
+          show(idx + 1);
+        }
+        function prev() {
+          show(idx - 1);
+        }
+
+        document.addEventListener("keydown", function (e) {
+          if (e.key === "ArrowRight" || e.key === " " || e.key === "PageDown") {
+            e.preventDefault();
+            next();
+          } else if (e.key === "ArrowLeft" || e.key === "PageUp") {
+            e.preventDefault();
+            prev();
+          } else if (e.key === "Home") {
+            show(0);
+          } else if (e.key === "End") {
+            show(total - 1);
+          }
+        });
+
+        document.getElementById("deck").addEventListener("click", function (e) {
+          if (e.clientX > window.innerWidth / 2) next();
+          else prev();
+        });
+
+        updateFooter();
+        show(0);
+      })();
+    </script>
+  </body>
+</html>

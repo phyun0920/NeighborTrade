@@ -9,7 +9,8 @@
   <h1>검색 로그</h1>
   <p class="admin-dashboard-intro muted">
     search_v2_log 원본 조회 (read-only) · 최근 7일
-    <strong th:text="${searchLogCount7d}">0</strong>건 · 페이지당 50건
+    <strong th:text="${searchLogCount7d}">0</strong>건 · 페이지당
+    <strong th:text="${page != null ? page.size : 10}">10</strong>건
   </p>
 
   <div class="admin-section">
@@ -43,23 +44,36 @@
       search_v2_log에 기록된 검색이 없습니다. /market/list에서 키워드 검색 후 다시 확인하세요.
     </p>
 
-    <nav class="admin-pagination" th:if="${page != null and page.totalPages > 1}">
+    <nav
+            class="admin-pagination"
+            th:if="${page != null and !page.empty and page.totalPages > 1}"
+            aria-label="검색 로그 페이지"
+    >
       <a
-              class="btn secondary admin-btn-compact"
+              class="admin-pagination__edge btn secondary admin-btn-compact"
               th:if="${page.hasPrevious()}"
               th:href="@{/admin/search-logs(page=${page.number - 1})}"
       >이전</a
       >
-      <span
-              class="admin-pagination__info muted"
-              th:text="${page.number + 1} + ' / ' + ${page.totalPages} + ' · 총 ' + ${page.totalElements} + '건'"
-      >1 / 1</span
+      <a
+              class="admin-pagination__num"
+              th:each="i : ${#numbers.sequence(0, page.totalPages - 1)}"
+              th:href="@{/admin/search-logs(page=${i})}"
+              th:text="${i + 1}"
+              th:classappend="${i == page.number} ? ' is-current' : ''"
+              th:attr="aria-current=${i == page.number} ? 'page' : null"
+      >1</a
       >
       <a
-              class="btn secondary admin-btn-compact"
+              class="admin-pagination__edge btn secondary admin-btn-compact"
               th:if="${page.hasNext()}"
               th:href="@{/admin/search-logs(page=${page.number + 1})}"
       >다음</a
+      >
+      <span
+              class="admin-pagination__info muted"
+              th:text="'총 ' + ${page.totalElements} + '건'"
+      >총 0건</span
       >
     </nav>
   </div>
